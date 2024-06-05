@@ -1,4 +1,5 @@
 import type { StorybookConfig } from "@storybook/react-vite";
+import relay from "vite-plugin-relay";
 
 const config: StorybookConfig = {
   stories: ["./**/*.mdx", "./**/*.stories.@(js|jsx|mjs|ts|tsx)"],
@@ -13,6 +14,11 @@ const config: StorybookConfig = {
   framework: {
     name: "@storybook/react-vite",
     options: {},
+  },
+  async viteFinal(config, options) {
+    // Add your configuration here
+    config.plugins?.push(relay);
+    return config;
   },
 };
 export default config;

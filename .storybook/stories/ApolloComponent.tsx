@@ -14,15 +14,15 @@ import {
   useSuspenseQuery,
 } from "@apollo/client";
 
-const delayLink = new ApolloLink((operation, forward) => {
-  return new Observable((observer) => {
-    const handle = setTimeout(() => {
-      forward(operation).subscribe(observer);
-    }, 1000);
+// const delayLink = new ApolloLink((operation, forward) => {
+//   return new Observable((observer) => {
+//     const handle = setTimeout(() => {
+//       forward(operation).subscribe(observer);
+//     }, 1000);
 
-    return () => clearTimeout(handle);
-  });
-});
+//     return () => clearTimeout(handle);
+//   });
+// });
 
 const httpLink = new HttpLink({
   uri: "https://main--hack-the-e-commerce.apollographos.net/graphql",
@@ -30,7 +30,9 @@ const httpLink = new HttpLink({
 
 export const client = new ApolloClient({
   cache: new InMemoryCache(),
-  link: ApolloLink.from([delayLink, httpLink]),
+  // link: ApolloLink.from([delayLink, httpLink]),
+  link: ApolloLink.from([httpLink]),
+  connectToDevTools: true,
 });
 
 const QUERY: TypedDocumentNode<{
@@ -39,19 +41,19 @@ const QUERY: TypedDocumentNode<{
     title: string;
     mediaUrl: string;
     description: string;
-    price: {
-      amount: number;
-      currency: string;
-    };
+    reviews: Array<{ rating: number }>;
   }[];
 }> = gql`
   query AppQuery {
     products {
-      price {
-        amount
-        currency
-      }
       id
+      ... @defer {
+        reviews {
+          id
+          rating
+          content
+        }
+      }
       title
       mediaUrl
       description
@@ -85,7 +87,7 @@ function Main() {
               <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
                 <img
                   src={product.mediaUrl}
-                  // alt={product.imageAlt}
+                  alt={product.description}
                   className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                 />
               </div>
@@ -97,11 +99,18 @@ function Main() {
                       {product.title}
                     </a>
                   </h3>
-                  {/* <p className="mt-1 text-sm text-gray-500">{product.color}</p> */}
                 </div>
-                {/* <p className="text-sm font-medium text-gray-900">
-                  {product.price.amount}
-                </p> */}
+                <p className="text-sm font-medium text-gray-900">
+                  {product?.reviews?.length > 0
+                    ? `${Math.round(
+                        product?.reviews
+                          ?.map((i) => i.rating)
+                          .reduce((curr, acc) => {
+                            return curr + acc;
+                          }) / product.reviews.length
+                      )}/5`
+                    : null}
+                </p>
               </div>
             </div>
           ))}
