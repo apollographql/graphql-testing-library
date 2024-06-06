@@ -1,0 +1,139 @@
+{
+  "name": "@apollo/graphql-testing-library",
+  "version": "0.0.0",
+  "private": true,
+  "repository": {
+    "url": "git+https://github.com/apollographql/graphql-testing-library"
+  },
+  "keywords": [
+    "apollo",
+    "apollo-client",
+    "graphql",
+    "msw"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "exports": {
+    "require": {
+      "types": "./dist/index.d.cts",
+      "default": "./dist/index.cjs"
+    },
+    "default": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "clean": "rm -rf dist",
+    "prepdist:changesets": "node scripts/prepareDist.cjs",
+    "changeset-publish": "pnpm run clean && pnpm run build && pnpm run prepdist:changesets && cd dist && changeset publish",
+    "changeset-version": "changeset version && pnpm i",
+    "changeset-check": "changeset status --verbose --since=origin/main",
+    "test": "jest",
+    "relay": "relay-compiler",
+    "lint": "eslint --ext .ts src",
+    "type-check": "tsc --noEmit",
+    "prepublishOnly": "pnpm run build",
+    "test-storybook": "test-storybook",
+    "build-and-test-storybook": "pnpm run build-storybook && npx concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"npx http-server storybook-static --port 6006 --silent\" \"npx wait-on tcp:6006 && pnpm run test-storybook\"",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@apollo/client": "3.10.5",
+    "@changesets/changelog-github": "0.5.0",
+    "@changesets/cli": "2.27.5",
+    "@graphql-tools/jest-transform": "2.0.0",
+    "@graphql-tools/merge": "9.0.4",
+    "@graphql-tools/mock": "9.0.3",
+    "@graphql-tools/schema": "10.0.4",
+    "@jest/globals": "29.7.0",
+    "@playwright/test": "1.44.1",
+    "@storybook/addon-docs": "8.1.9",
+    "@storybook/addon-essentials": "8.1.9",
+    "@storybook/addon-interactions": "8.1.9",
+    "@storybook/addon-links": "8.1.9",
+    "@storybook/addon-styling-webpack": "1.0.0",
+    "@storybook/blocks": "8.1.9",
+    "@storybook/react": "8.1.9",
+    "@storybook/react-vite": "8.1.9",
+    "@storybook/test": "8.1.9",
+    "@storybook/test-runner": "0.18.2",
+    "@tailwindcss/aspect-ratio": "0.4.2",
+    "@testing-library/dom": "10.1.0",
+    "@testing-library/jest-dom": "6.4.6",
+    "@testing-library/react": "16.0.0",
+    "@tsconfig/recommended": "1.0.6",
+    "@types/jest": "29.5.12",
+    "@types/node": "20.14.2",
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
+    "@types/react-relay": "16.0.6",
+    "@types/relay-runtime": "14.1.24",
+    "@typescript-eslint/eslint-plugin": "7.13.0",
+    "@typescript-eslint/parser": "7.13.0",
+    "autoprefixer": "10.4.19",
+    "babel-plugin-relay": "16.2.0",
+    "concurrently": "8.2.2",
+    "eslint": "8.57.0",
+    "eslint-plugin-storybook": "0.8.0",
+    "graphql": "16.8.2",
+    "http-server": "14.1.1",
+    "jest": "29.7.0",
+    "jest-environment-jsdom": "29.7.0",
+    "jsdom": "24.1.0",
+    "msw": "2.3.1",
+    "msw-storybook-addon": "2.0.2",
+    "playwright": "1.44.1",
+    "postcss": "8.4.38",
+    "react": "18.3.1",
+    "react-relay": "16.2.0",
+    "relay-compiler": "16.2.0",
+    "relay-runtime": "16.2.0",
+    "storybook": "8.1.9",
+    "tailwind": "4.0.0",
+    "tailwindcss": "3.4.4",
+    "ts-jest": "29.1.4",
+    "ts-jest-resolver": "2.0.1",
+    "tsup": "8.1.0",
+    "typescript": "5.4.5",
+    "undici": "6.18.2",
+    "vite-plugin-graphql-loader": "3.0.1",
+    "vite-plugin-relay": "2.1.0",
+    "wait-on": "7.2.0"
+  },
+  "dependencies": {
+    "@graphql-tools/executor": "^1.2.6",
+    "graphql-tag": "^2.12.6"
+  },
+  "peerDependencies": {
+    "graphql": "^15.0.0 || ^16.0.0",
+    "msw": "^2.0.0"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  },
+  "relay": {
+    "src": "./.storybook/stories/components/relay",
+    "schema": "./.storybook/stories/components/relay/schema.graphql",
+    "language": "typescript",
+    "eagerEsModules": true,
+    "exclude": [
+      "**/node_modules/**",
+      "**/__mocks__/**",
+      "**/__generated__/**"
+    ]
+  }
+}
