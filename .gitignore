@@ -1,0 +1,22 @@
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+node_modules/
+tsconfig.tsbuildinfo
+dist/
+.yalc
+yalc.lock
+*.tgz
+.DS_Store
+.vscode/
+.vercel
+.next/
+test-results/
+temp/
+*storybook.log
+
+# output of storybook-build
+storybook-static
