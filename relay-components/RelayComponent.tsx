@@ -145,9 +145,6 @@ const appQuery = graphql`
   query RelayComponentAppQuery {
     products {
       id
-      reviews {
-        id
-      }
       ...RelayComponentReviewsFragment_product @defer
       title
       mediaUrl
@@ -167,8 +164,6 @@ function Main() {
     appQuery,
     queryReference
   );
-
-  console.log("Rendering Main: ", data);
 
   return (
     <div className="bg-white">
@@ -196,10 +191,9 @@ function Main() {
                     </a>
                   </h3>
                 </div>
-                <Reviews
-                  key={product.id}
-                  product={product?.reviews?.length ? product : null}
-                />
+                <Suspense fallback="-">
+                  <Reviews key={product.id} product={product} />
+                </Suspense>
               </div>
             </div>
           ))}

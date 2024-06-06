@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fc398f27c364c7958b56d9f0a3e8fd57>>
+ * @generated SignedSource<<c3853a3faff397fafe6ad0095371cbdc>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,9 +16,6 @@ export type RelayComponentAppQuery$data = {
     readonly description: string | null | undefined;
     readonly id: string;
     readonly mediaUrl: string | null | undefined;
-    readonly reviews: ReadonlyArray<{
-      readonly id: string;
-    } | null | undefined> | null | undefined;
     readonly title: string | null | undefined;
     readonly " $fragmentSpreads": FragmentRefs<"RelayComponentReviewsFragment_product">;
   } | null | undefined> | null | undefined;
@@ -39,30 +36,18 @@ var v0 = {
 v1 = {
   "alias": null,
   "args": null,
-  "concreteType": "Review",
-  "kind": "LinkedField",
-  "name": "reviews",
-  "plural": true,
-  "selections": [
-    (v0/*: any*/)
-  ],
+  "kind": "ScalarField",
+  "name": "title",
   "storageKey": null
 },
 v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "title",
-  "storageKey": null
-},
-v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
   "name": "mediaUrl",
   "storageKey": null
 },
-v4 = {
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -85,7 +70,6 @@ return {
         "plural": true,
         "selections": [
           (v0/*: any*/),
-          (v1/*: any*/),
           {
             "kind": "Defer",
             "selections": [
@@ -96,9 +80,9 @@ return {
               }
             ]
           },
+          (v1/*: any*/),
           (v2/*: any*/),
-          (v3/*: any*/),
-          (v4/*: any*/)
+          (v3/*: any*/)
         ],
         "storageKey": null
       }
@@ -121,7 +105,6 @@ return {
         "plural": true,
         "selections": [
           (v0/*: any*/),
-          (v1/*: any*/),
           {
             "if": null,
             "kind": "Defer",
@@ -155,25 +138,25 @@ return {
               }
             ]
           },
+          (v1/*: any*/),
           (v2/*: any*/),
-          (v3/*: any*/),
-          (v4/*: any*/)
+          (v3/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "4f3c2e36ebfad22b59ca2f814a9f0545",
+    "cacheID": "d8a71936337a80402d5cddfb525ec135",
     "id": null,
     "metadata": {},
     "name": "RelayComponentAppQuery",
     "operationKind": "query",
-    "text": "query RelayComponentAppQuery {\n  products {\n    id\n    reviews {\n      id\n    }\n    ...RelayComponentReviewsFragment_product @defer(label: \"RelayComponentAppQuery$defer$RelayComponentReviewsFragment_product\")\n    title\n    mediaUrl\n    description\n  }\n}\n\nfragment RelayComponentReviewsFragment_product on Product {\n  reviews {\n    id\n    rating\n    content\n  }\n}\n"
+    "text": "query RelayComponentAppQuery {\n  products {\n    id\n    ...RelayComponentReviewsFragment_product @defer(label: \"RelayComponentAppQuery$defer$RelayComponentReviewsFragment_product\")\n    title\n    mediaUrl\n    description\n  }\n}\n\nfragment RelayComponentReviewsFragment_product on Product {\n  reviews {\n    id\n    rating\n    content\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "986bf3fa29378c60abd4ce663e7f1385";
+(node as any).hash = "34db6443c113b6471fea59a54e8029e9";
 
 export default node;

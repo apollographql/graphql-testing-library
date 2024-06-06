@@ -1,29 +1,23 @@
 {
   "extends": "@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "target": "esnext",
-    "rootDir": "src",
-    "declaration": true,
-    "sourceMap": true,
-    "declarationMap": true,
-    "types": ["node"],
-    "allowSyntheticDefaultImports": true
-  },
-  "compilerOptions": {
-    "target": "es2020",
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "noUnusedLocals": true,
-    "noImplicitAny": true,
+    "target": "es2022",
     "allowJs": true,
-    "noEmit": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "module": "NodeNext",
     "outDir": "dist",
-    "resolveJsonModule": true
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "lib": ["es2022", "dom", "dom.iterable"]
   },
   "include": ["src"]
 }
