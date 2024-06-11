@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 import type { RelayComponentAppQuery } from "./__generated__/RelayComponentAppQuery.graphql";
 import {
   RelayEnvironmentProvider,
