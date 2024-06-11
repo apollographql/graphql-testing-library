@@ -40,6 +40,9 @@ export function replaceSchema(newSchema: GraphQLSchema) {
   });
 }
 
+const wait = (time: number) =>
+  new Promise((resolve) => setTimeout(resolve, time));
+
 // TODO: take second arg with options: min/max time
 
 export const createHandler = (schema: GraphQLSchema) => {
@@ -53,7 +56,7 @@ export const createHandler = (schema: GraphQLSchema) => {
   >(async ({ query, variables, operationName }) => {
     const document = gql(query);
     const hasDefer = hasDirectives(["defer"], document);
-    const BOUNDARY = "graphql";
+    const boundaryStr = "-";
 
     if (hasDefer) {
       // create ReadableStream with result
@@ -65,15 +68,20 @@ export const createHandler = (schema: GraphQLSchema) => {
       });
 
       const contentType = "Content-Type: application/json";
-      const boundary = `--${BOUNDARY}`;
-      const terminatingBoundary = `--${BOUNDARY}--`;
+      const boundary = `--${boundaryStr}`;
+      const terminatingBoundary = `--${boundaryStr}--`;
+      const CRLF = "\r\n";
 
       const chunks: Array<string> = [];
+
       if ("initialResult" in result) {
         chunks.push(
+          CRLF,
           boundary,
+          CRLF,
           contentType,
-          "",
+          CRLF,
+          CRLF,
           JSON.stringify(result.initialResult)
         );
       }
@@ -83,26 +91,31 @@ export const createHandler = (schema: GraphQLSchema) => {
         while (!finished) {
           // eslint-disable-next-line no-await-in-loop
           const nextResult = await result.subsequentResults.next();
-          chunks.push(
+          const currentResult = [
+            CRLF,
             boundary,
+            CRLF,
             contentType,
-            "",
-            JSON.stringify(nextResult.value)
-          );
+            CRLF,
+            CRLF,
+            JSON.stringify(nextResult.value),
+          ];
 
           // @ts-expect-error
           if (!nextResult.hasNext) {
             finished = true;
-            chunks.push(terminatingBoundary);
+            currentResult.push(CRLF, terminatingBoundary, CRLF);
           }
+          chunks.push(...currentResult);
         }
       }
 
       const stream = new ReadableStream({
-        start(controller) {
+        async start(controller) {
           try {
             for (const c of chunks) {
-              controller.enqueue(encoder.encode(`${c}\r\n`));
+              await wait(100);
+              controller.enqueue(encoder.encode(c));
             }
           } finally {
             controller.close();
@@ -119,7 +132,7 @@ export const createHandler = (schema: GraphQLSchema) => {
       const result = await execute({
         document,
         operationName,
-        schema,
+        schema: testSchema,
         variableValues: variables,
       });
       // @ts-expect-error error type mismatch

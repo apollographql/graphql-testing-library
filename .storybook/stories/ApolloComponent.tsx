@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 
 import type { TypedDocumentNode } from "@apollo/client";
 
@@ -73,6 +73,7 @@ export default function App() {
 
 function Main() {
   const { data } = useSuspenseQuery(QUERY);
+  console.log({ data });
 
   return (
     <div className="bg-white">
@@ -109,7 +110,7 @@ function Main() {
                             return curr + acc;
                           }) / product.reviews.length
                       )}/5`
-                    : null}
+                    : "-"}
                 </p>
               </div>
             </div>
