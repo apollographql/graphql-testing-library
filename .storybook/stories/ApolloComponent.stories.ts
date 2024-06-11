@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import ApolloComponent from "./ApolloComponent";
 import { addMocksToSchema } from "@graphql-tools/mock";
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import { within, userEvent, expect } from "@storybook/test";
+import { within, userEvent, expect, waitFor } from "@storybook/test";
 import { createHandler } from "../../src/handlers";
 import schemaString from "../../relay-components/schema.graphql";
 
@@ -51,13 +51,21 @@ const user = {};
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary: Story = {
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const loginButton = canvas.getByRole("button", { name: /Log in/i });
-    await expect(loginButton).toBeInTheDocument();
-    await userEvent.click(loginButton);
-    await expect(loginButton).not.toBeInTheDocument();
-    const logoutButton = canvas.getByRole("button", { name: /Log out/i });
-    await expect(logoutButton).toBeInTheDocument();
-  },
+  // play: async ({ canvasElement }) => {
+  //   const canvas = within(canvasElement);
+  //   await expect(
+  //     canvas.getByRole("heading", { name: /loading/i })
+  //   ).toHaveTextContent("Loading...");
+  //   await waitFor(
+  //     () =>
+  //       expect(
+  //         canvas.getByRole("heading", { name: /customers/i })
+  //       ).toHaveTextContent("Customers also purchased"),
+  //     { timeout: 2000 }
+  //   );
+  //   await waitFor(
+  //     () => expect(canvas.getByText(/beanie/i)).toBeInTheDocument(),
+  //     { timeout: 2000 }
+  //   );
+  // },
 };

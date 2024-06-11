@@ -5,17 +5,21 @@ Peer dependencies:
 - MSW
 - graphql
 
+To do:
+
+- rename repo to @apollo/graphql-testing-library with disclaimer that we're not officially offiliated with RTL
+- integration tests with Node + vitest?
+
 Wish list:
 
-- helper to be used with MSW for replacing the schema if used with Node + Jest
+- test helper to be used with MSW for replacing the schema if used with Node + Jest
 - options:
   - random jitter timing min/max threshold
 - what about different handlers for different error cases?
-- `@defer` support
 - subscriptions over multipart HTTP
 - subscriptions over WS
-- Storybook with examples
-- examples
-  - Relay
-  - Apollo Client
-- ## object mocking or just mock resolvers?
+
+# createHandler
+
+- accepts a schema and options
+- supports `@defer`

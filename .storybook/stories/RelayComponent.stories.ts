@@ -17,13 +17,12 @@ const schemaWithMocks = addMocksToSchema({
   schema,
   resolvers: {
     Query: {
-      products: () => {
-        return Array.from({ length: 6 }, (_element, id) => ({
+      products: () =>
+        Array.from({ length: 6 }, (_element, id) => ({
           id,
           title: products[id].charAt(0).toUpperCase() + products[id].slice(1),
           mediaUrl: `https://storage.googleapis.com/hack-the-supergraph/apollo-${products[id]}.jpg`,
-        }));
-      },
+        })),
     },
   },
 });
