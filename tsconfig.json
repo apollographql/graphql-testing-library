@@ -8,7 +8,7 @@
     "resolveJsonModule": true,
     "moduleDetection": "force",
     "isolatedModules": true,
-    "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": false,
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
@@ -17,7 +17,8 @@
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
+    "jsx": "react-jsx",
     "lib": ["es2022", "dom", "dom.iterable"]
   },
-  "include": ["src", "graphql.d.ts"]
+  "include": ["src", "graphql.d.ts", "setupTests.ts"]
 }

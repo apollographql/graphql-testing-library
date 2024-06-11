@@ -15,11 +15,14 @@ const httpLink = new HttpLink({
   uri: "https://main--hack-the-e-commerce.apollographos.net/graphql",
 });
 
-export const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  link: ApolloLink.from([httpLink]),
-  connectToDevTools: true,
-});
+export const makeClient = () =>
+  new ApolloClient({
+    cache: new InMemoryCache(),
+    link: ApolloLink.from([httpLink]),
+    connectToDevTools: true,
+  });
+
+export const client = makeClient();
 
 const QUERY: TypedDocumentNode<{
   products: {
@@ -57,9 +60,9 @@ export default function App() {
   );
 }
 
-function Main() {
+export function Main() {
   const { data } = useSuspenseQuery(QUERY);
-
+  console.log({ data: JSON.stringify(data) });
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
