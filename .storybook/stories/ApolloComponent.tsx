@@ -1,9 +1,6 @@
 import { Suspense } from "react";
-
 import type { TypedDocumentNode } from "@apollo/client";
-
 import {
-  useQuery,
   gql,
   InMemoryCache,
   ApolloClient,
@@ -14,26 +11,18 @@ import {
   useSuspenseQuery,
 } from "@apollo/client";
 
-// const delayLink = new ApolloLink((operation, forward) => {
-//   return new Observable((observer) => {
-//     const handle = setTimeout(() => {
-//       forward(operation).subscribe(observer);
-//     }, 1000);
-
-//     return () => clearTimeout(handle);
-//   });
-// });
-
 const httpLink = new HttpLink({
   uri: "https://main--hack-the-e-commerce.apollographos.net/graphql",
 });
 
-export const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  // link: ApolloLink.from([delayLink, httpLink]),
-  link: ApolloLink.from([httpLink]),
-  connectToDevTools: true,
-});
+export const makeClient = () =>
+  new ApolloClient({
+    cache: new InMemoryCache(),
+    link: ApolloLink.from([httpLink]),
+    connectToDevTools: true,
+  });
+
+export const client = makeClient();
 
 const QUERY: TypedDocumentNode<{
   products: {
@@ -64,16 +53,15 @@ const QUERY: TypedDocumentNode<{
 export default function App() {
   return (
     <ApolloProvider client={client}>
-      <Suspense fallback="Loading...">
+      <Suspense fallback={<h1>Loading...</h1>}>
         <Main />
       </Suspense>
     </ApolloProvider>
   );
 }
 
-function Main() {
+export function Main() {
   const { data } = useSuspenseQuery(QUERY);
-  console.log({ data });
 
   return (
     <div className="bg-white">
