@@ -17,8 +17,11 @@
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
     "jsx": "react-jsx",
-    "lib": ["es2022", "dom", "dom.iterable"]
+    "lib": ["es2022", "dom", "dom.iterable"],
+    "types": ["@testing-library/jest-dom/jest-globals"]
   },
   "include": ["src", "graphql.d.ts", "setupTests.ts"]
 }

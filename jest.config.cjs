@@ -2,7 +2,7 @@ module.exports = {
   globals: {
     "globalThis.__DEV__": JSON.stringify(true),
   },
-  extensionsToTreatAsEsm: [".ts", ".tsx", ".mts"],
+  extensionsToTreatAsEsm: [".ts", ".tsx"],
   testEnvironment: "jsdom",
   roots: ["<rootDir>/src/__tests__"],
   testPathIgnorePatterns: [
