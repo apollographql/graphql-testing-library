@@ -7,17 +7,12 @@ Peer dependencies:
 
 To do:
 
+- build process: copy "leaner" package.json into dist, can omit dev dependencies and scripts
+- find how to run ts-jest with ESM or try vitest
 - rename repo to @apollo/graphql-testing-library with disclaimer that we're not officially offiliated with RTL
 - integration tests with Node + vitest?
-
-Wish list:
-
-- test helper to be used with MSW for replacing the schema if used with Node + Jest
 - options:
   - random jitter timing min/max threshold
-- what about different handlers for different error cases?
-- subscriptions over multipart HTTP
-- subscriptions over WS
 
 # createHandler
 
