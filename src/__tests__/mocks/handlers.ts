@@ -1,7 +1,7 @@
 import { addMocksToSchema } from "@graphql-tools/mock";
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import graphqlSchema from "../../relay-components/schema.graphql";
-import { createHandler } from "../handlers.js";
+import graphqlSchema from "../../../relay-components/schema.graphql";
+import { createHandler } from "../../handlers.js";
 
 // Make a GraphQL schema with no resolvers
 const schema = makeExecutableSchema({ typeDefs: graphqlSchema });
