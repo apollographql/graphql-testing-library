@@ -3,7 +3,6 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import graphqlSchema from "../../../relay-components/schema.graphql";
 import { createHandler } from "../../handlers.js";
 
-// Make a GraphQL schema with no resolvers
 const schema = makeExecutableSchema({ typeDefs: graphqlSchema });
 
 const products = ["beanie", "bottle", "cap", "onesie", "shirt", "socks"];
@@ -28,4 +27,4 @@ const { handler, replaceSchema } = createHandler(schemaWithMocks);
 
 const handlers = [handler];
 
-export { replaceSchema, handlers };
+export { replaceSchema, handlers, schemaWithMocks };

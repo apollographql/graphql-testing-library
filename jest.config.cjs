@@ -23,6 +23,13 @@ module.exports = {
       "ts-jest",
       {
         useESM: true,
+        // Note: We shouldn't need to include `isolatedModules` here because
+        // it's a deprecated config option in TS 5, but setting it to `true`
+        // fixes the `ESM syntax is not allowed in a CommonJS module when
+        // 'verbatimModuleSyntax' is enabled` error that we're seeing when
+        // running our Jest tests.
+        // See https://github.com/kulshekhar/ts-jest/issues/4081
+        isolatedModules: true,
         diagnostics: {
           warnOnly: process.env.TEST_ENV !== "ci",
         },
