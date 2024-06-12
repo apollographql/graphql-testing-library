@@ -24,4 +24,8 @@ const schemaWithMocks = addMocksToSchema({
   },
 });
 
-export const handlers = [createHandler(schemaWithMocks)];
+const { handler, replaceSchema } = createHandler(schemaWithMocks);
+
+const handlers = [handler];
+
+export { replaceSchema, handlers };

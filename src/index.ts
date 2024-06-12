@@ -1,3 +1,3 @@
-import { replaceSchema, createHandler } from "./handlers.js";
+import { createHandler } from "./handlers.js";
 
-export { replaceSchema, createHandler };
+export { createHandler };

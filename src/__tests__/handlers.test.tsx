@@ -4,7 +4,7 @@ import { Main, makeClient } from "../../.storybook/stories/ApolloComponent.js";
 import { addMocksToSchema } from "@graphql-tools/mock";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import graphqlSchema from "../../relay-components/schema.graphql";
-import { replaceSchema } from "../handlers.js";
+import { replaceSchema } from "./handlers.js";
 import { describe, expect, it } from "@jest/globals";
 import { render, screen, waitFor } from "@testing-library/react";
 
