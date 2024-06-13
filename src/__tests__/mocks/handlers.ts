@@ -1,7 +1,7 @@
 import { addMocksToSchema } from "@graphql-tools/mock";
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import graphqlSchema from "../../../.storybook/stories/components/relay/schema.graphql";
 import { createHandler } from "../../handlers.js";
+import graphqlSchema from "../../../.storybook/stories/components/relay/schema.graphql";
 
 const schema = makeExecutableSchema({ typeDefs: graphqlSchema });
 

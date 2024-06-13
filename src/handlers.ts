@@ -5,6 +5,7 @@ import { visit, BREAK } from "graphql";
 import { HttpResponse, graphql } from "msw";
 import type {
   InitialIncrementalExecutionResult,
+  SingularExecutionResult,
   SubsequentIncrementalExecutionResult,
 } from "@graphql-tools/executor";
 
@@ -30,9 +31,24 @@ export function hasDirectives(names: string[], root: ASTNode, all?: boolean) {
 const wait = (time: number) =>
   new Promise((resolve) => setTimeout(resolve, time));
 
+interface Options {
+  delay?: { min: number; max: number };
+}
+
 // TODO: take second arg with options: min/max time
-export const createHandler = (schema: GraphQLSchema) => {
+export const createHandler = (
+  schema: GraphQLSchema,
+  { delay }: Options = {}
+) => {
   let testSchema: GraphQLSchema = schema;
+  const delayMin = delay?.min ?? 30;
+  const delayMax = delay?.max ?? delayMin + 20;
+
+  if (delayMin > delayMax) {
+    throw new Error(
+      "Please configure a minimum delay that is less than the maximum delay. The default minimum delay is 3ms."
+    );
+  }
 
   function replaceSchema(newSchema: GraphQLSchema) {
     const oldSchema = testSchema;
@@ -79,8 +95,9 @@ export const createHandler = (schema: GraphQLSchema) => {
     >(async ({ query, variables, operationName }) => {
       const document = gql(query);
       const hasDefer = hasDirectives(["defer"], document);
+      const hasStream = hasDirectives(["stream"], document);
 
-      if (hasDefer) {
+      if (hasDefer || hasStream) {
         const result = await execute({
           document,
           operationName,
@@ -116,7 +133,11 @@ export const createHandler = (schema: GraphQLSchema) => {
           async start(controller) {
             try {
               for (const c of chunks) {
-                await wait(100);
+                if (delayMin > 0) {
+                  const randomDelay =
+                    Math.random() * (delayMax - delayMin) + delayMin;
+                  await wait(randomDelay);
+                }
                 controller.enqueue(encoder.encode(c));
               }
             } finally {
@@ -137,8 +158,8 @@ export const createHandler = (schema: GraphQLSchema) => {
           schema: testSchema,
           variableValues: variables,
         });
-        // @ts-expect-error error type mismatch
-        return HttpResponse.json(result);
+
+        return HttpResponse.json(result as SingularExecutionResult<any, any>);
       }
     }),
     replaceSchema,
