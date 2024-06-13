@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import type { RelayComponentAppQuery } from "./__generated__/RelayComponentAppQuery.graphql";
+import type { RelayComponentAppQuery } from "./__generated__/RelayComponentAppQuery.graphql.js";
 import {
   RelayEnvironmentProvider,
   loadQuery,
@@ -24,6 +24,8 @@ import {
   handleError,
   readMultipartBody,
 } from "@apollo/client/link/http/parseAndCheckHttpResponse";
+import { Container } from "../Container.js";
+import { Product, Reviews as ReviewsContainer } from "../Product.js";
 
 const uri = "https://main--hack-the-e-commerce.apollographos.net/graphql";
 
@@ -124,7 +126,7 @@ export const RelayEnvironment = new Environment({
 export default function App() {
   return (
     <RelayEnvironmentProvider environment={RelayEnvironment}>
-      <Suspense fallback="Loading...">
+      <Suspense fallback={<h1>Loading...</h1>}>
         <Main />
       </Suspense>
     </RelayEnvironmentProvider>
@@ -166,57 +168,20 @@ function Main() {
   );
 
   return (
-    <div className="bg-white">
-      <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-        <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-          Customers also purchased
-        </h2>
-
-        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-          {data?.products?.map((product) => (
-            <div key={product.id} className="group relative">
-              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
-                <img
-                  src={product.mediaUrl}
-                  alt={product.description}
-                  className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                />
-              </div>
-              <div className="mt-4 flex justify-between">
-                <div>
-                  <h3 className="text-sm text-gray-700">
-                    <a href="#">
-                      <span aria-hidden="true" className="absolute inset-0" />
-                      {product.title}
-                    </a>
-                  </h3>
-                </div>
-                <Suspense fallback="-">
-                  <Reviews key={product.id} product={product} />
-                </Suspense>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+    <Container>
+      {data?.products?.map((product) => (
+        <Product key={product.id} product={product}>
+          <Suspense fallback="-">
+            <Reviews key={product.id} product={product} />
+          </Suspense>
+        </Product>
+      ))}
+    </Container>
   );
 }
 
 function Reviews({ product }) {
   const data = useFragment(ratingsFragment, product);
 
-  return (
-    <p className="text-sm font-medium text-gray-900">
-      {data?.reviews?.length > 0
-        ? `${Math.round(
-            data?.reviews
-              ?.map((i) => i.rating)
-              .reduce((curr, acc) => {
-                return curr + acc;
-              }) / data.reviews.length
-          )}/5`
-        : null}
-    </p>
-  );
+  return <ReviewsContainer reviews={data.reviews} />;
 }

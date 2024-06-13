@@ -1,8 +1,3 @@
-# @apollo/graphql-testing-library
+## @apollo/graphql-testing-library
 
--
-
-## createHandler
-
-- accepts a schema and options
-- supports `@defer`
+### ⚠️ Work in progress ⚠️
