@@ -1,6 +1,6 @@
 import { addMocksToSchema } from "@graphql-tools/mock";
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import graphqlSchema from "../../../relay-components/schema.graphql";
+import graphqlSchema from "../../../.storybook/stories/components/relay/schema.graphql";
 import { createHandler } from "../../handlers.js";
 
 const schema = makeExecutableSchema({ typeDefs: graphqlSchema });
@@ -12,13 +12,12 @@ const schemaWithMocks = addMocksToSchema({
   schema,
   resolvers: {
     Query: {
-      products: () => {
-        return Array.from({ length: 6 }, (_element, id) => ({
+      products: () =>
+        Array.from({ length: products.length }, (_element, id) => ({
           id,
           title: products[id],
           mediaUrl: `https://storage.googleapis.com/hack-the-supergraph/apollo-${products[id]}.jpg`,
-        }));
-      },
+        })),
     },
   },
 });

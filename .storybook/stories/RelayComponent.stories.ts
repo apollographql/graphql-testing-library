@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import RelayComponent from "../../relay-components/RelayComponent";
+import { within, expect, waitFor } from "@storybook/test";
+import RelayComponent from "./components/relay/RelayComponent.js";
 import { createHandler } from "../../src/handlers";
 import { schemaWithMocks } from "../../src/__tests__/mocks/handlers";
 
@@ -22,4 +23,22 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Primary: Story = {};
+export const Primary: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      canvas.getByRole("heading", { name: /loading/i })
+    ).toHaveTextContent("Loading...");
+    await waitFor(
+      () =>
+        expect(
+          canvas.getByRole("heading", { name: /customers/i })
+        ).toHaveTextContent("Customers also purchased"),
+      { timeout: 2000 }
+    );
+    await waitFor(
+      () => expect(canvas.getByText(/beanie/i)).toBeInTheDocument(),
+      { timeout: 2000 }
+    );
+  },
+};

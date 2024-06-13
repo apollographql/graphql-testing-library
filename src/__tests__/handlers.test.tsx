@@ -1,9 +1,12 @@
 import { ApolloProvider } from "@apollo/client";
 import { Suspense } from "react";
-import { Main, makeClient } from "../../.storybook/stories/ApolloComponent.js";
+import {
+  Main,
+  makeClient,
+} from "../../.storybook/stories/components/apollo-client/ApolloComponent.tsx";
 import { addMocksToSchema } from "@graphql-tools/mock";
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import graphqlSchema from "../../relay-components/schema.graphql";
+import graphqlSchema from "../../.storybook/stories/components/relay/schema.graphql";
 import { replaceSchema } from "./mocks/handlers.js";
 import { describe, expect, it } from "@jest/globals";
 import { render, screen, waitFor } from "@testing-library/react";
