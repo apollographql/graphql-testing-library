@@ -35,14 +35,13 @@ interface Options {
   delay?: { min: number; max: number };
 }
 
-// TODO: take second arg with options: min/max time
 export const createHandler = (
   schema: GraphQLSchema,
   { delay }: Options = {}
 ) => {
   let testSchema: GraphQLSchema = schema;
-  const delayMin = delay?.min ?? 30;
-  const delayMax = delay?.max ?? delayMin + 20;
+  const delayMin = delay?.min ?? 300;
+  const delayMax = delay?.max ?? delayMin + 300;
 
   if (delayMin > delayMax) {
     throw new Error(
@@ -136,7 +135,9 @@ export const createHandler = (
                 if (delayMin > 0) {
                   const randomDelay =
                     Math.random() * (delayMax - delayMin) + delayMin;
-                  await wait(randomDelay);
+                  if (c === boundary || c === terminatingBoundary) {
+                    await wait(randomDelay);
+                  }
                 }
                 controller.enqueue(encoder.encode(c));
               }

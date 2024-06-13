@@ -8,6 +8,7 @@ module.exports = {
   testPathIgnorePatterns: [
     "<rootDir>/src/__tests__/mocks",
     "<rootDir>/.storybook",
+    "<rootDir>/dist",
   ],
   setupFiles: ["./jest.polyfills.js"],
   setupFilesAfterEnv: ["<rootDir>/setupTests.ts"],
