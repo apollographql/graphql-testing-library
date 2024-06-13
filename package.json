@@ -43,6 +43,7 @@
     "type-check": "tsc --noEmit",
     "prepublishOnly": "pnpm run build",
     "test-storybook": "test-storybook",
+    "build-and-test-storybook": "pnpm run build-storybook && npx concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"npx http-server storybook-static --port 6006 --silent\" \"npx wait-on tcp:6006 && pnpm run test-storybook\"",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -84,6 +85,7 @@
     "eslint": "^8.57.0",
     "eslint-plugin-storybook": "^0.8.0",
     "graphql": "^16.8.1",
+    "http-server": "^14.1.1",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jsdom": "^24.1.0",
@@ -104,7 +106,8 @@
     "typescript": "^5.4.5",
     "undici": "^6.18.2",
     "vite-plugin-graphql-loader": "^3.0.1",
-    "vite-plugin-relay": "^2.1.0"
+    "vite-plugin-relay": "^2.1.0",
+    "wait-on": "^7.2.0"
   },
   "dependencies": {
     "@graphql-tools/executor": "^1.2.6",

@@ -135,7 +135,7 @@ export const createHandler = (
                 if (delayMin > 0) {
                   const randomDelay =
                     Math.random() * (delayMax - delayMin) + delayMin;
-                  if (c === boundary || c === terminatingBoundary) {
+                  if (c === boundary) {
                     await wait(randomDelay);
                   }
                 }
