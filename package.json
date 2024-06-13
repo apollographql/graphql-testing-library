@@ -83,7 +83,7 @@
     "autoprefixer": "^10.4.19",
     "babel-plugin-relay": "^16.2.0",
     "concurrently": "^8.2.2",
-    "eslint": "^8.57.0",
+    "eslint": "^9.0.0",
     "eslint-plugin-storybook": "^0.8.0",
     "graphql": "^16.8.1",
     "http-server": "^14.1.1",
