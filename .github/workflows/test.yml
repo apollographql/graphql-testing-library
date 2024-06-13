@@ -6,7 +6,7 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   test:
-    name: Test
+    name: Testq
     # Prevents action from creating a PR on forks
     if: github.repository == 'apollographql/graphql-testing-library'
     runs-on: ubuntu-latest
