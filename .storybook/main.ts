@@ -1,6 +1,5 @@
 import type { StorybookConfig } from "@storybook/react-vite";
 import relay from "vite-plugin-relay";
-import vitePluginReact from "@vitejs/plugin-react";
 import graphqlLoader from "vite-plugin-graphql-loader";
 
 const config: StorybookConfig = {
@@ -18,7 +17,7 @@ const config: StorybookConfig = {
   },
   async viteFinal(config, options) {
     // Add your configuration here
-    config.plugins?.push(relay, graphqlLoader(), vitePluginReact());
+    config.plugins?.push(relay, graphqlLoader());
     return config;
   },
 };

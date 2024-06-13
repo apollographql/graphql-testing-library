@@ -126,7 +126,7 @@ export const RelayEnvironment = new Environment({
 export default function App() {
   return (
     <RelayEnvironmentProvider environment={RelayEnvironment}>
-      <Suspense fallback="Loading...">
+      <Suspense fallback={<h1>Loading...</h1>}>
         <Main />
       </Suspense>
     </RelayEnvironmentProvider>
