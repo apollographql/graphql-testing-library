@@ -58,6 +58,7 @@
     "@graphql-tools/mock": "9.0.3",
     "@graphql-tools/schema": "10.0.4",
     "@jest/globals": "29.7.0",
+    "@playwright/test": "1.44.1",
     "@storybook/addon-docs": "8.1.9",
     "@storybook/addon-essentials": "8.1.9",
     "@storybook/addon-interactions": "8.1.9",
