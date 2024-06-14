@@ -67,7 +67,7 @@ const schemaWithMocks = addMocksToSchema({
 // createHandler returns an object with `handler` and `replaceSchema`
 // functions: `handler` is your MSW handler, and `replaceSchema` can
 // be used in tests to pass a new `schemaWithMocks` that your `handler`
-// with use to resolve requests against
+// will use to resolve requests against
 const { handler, replaceSchema } = createHandler(schemaWithMocks, {
   delay: { min: 200, max: 500 },
 });
