@@ -10,9 +10,8 @@ import { schemaWithMocks } from "../../src/__tests__/mocks/handlers.js";
 const { handler } = createHandler(schemaWithMocks);
 
 const meta = {
-  title: "Example/Apollo",
+  title: "Example/Apollo Client",
   component: ApolloApp,
-  // tags: ["autodocs"],
   parameters: {
     layout: "centered",
     msw: {
