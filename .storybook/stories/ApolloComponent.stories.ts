@@ -1,14 +1,18 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { within, expect, waitFor } from "@storybook/test";
-import ApolloComponent from "./components/apollo-client/ApolloComponent.js";
+import {
+  ApolloApp,
+  ApolloAppWithDefer,
+} from "./components/apollo-client/ApolloComponent.js";
 import { createHandler } from "../../src/handlers";
 import { schemaWithMocks } from "../../src/__tests__/mocks/handlers";
+import { Canvas } from "@storybook/blocks";
 
 const { handler } = createHandler(schemaWithMocks);
 
 const meta = {
   title: "Example/ApolloComponent",
-  component: ApolloComponent,
+  component: ApolloApp,
   parameters: {
     layout: "centered",
     msw: {
@@ -17,13 +21,15 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof ApolloComponent>;
+} satisfies Meta<typeof ApolloApp>;
 
 export default meta;
 
+export { ApolloAppWithDefer };
+
 type Story = StoryObj<typeof meta>;
 
-export const Primary: Story = {
+export const ApolloAppWithoutDefer: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(

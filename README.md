@@ -19,23 +19,13 @@ This library currently supports incremental delivery features `@defer` and `@str
 
 ## Installation
 
-```
-npm install --save-dev @apollo/graphql-testing-library
-```
-
-or for installation via yarn
+This library has `peerDependencies` listings for `msw` at `^2.0.0` and `graphql` at `^15.0.0 || ^16.0.0`. Install them along with this library using your preferred package manager:
 
 ```
-yarn add --dev @apollo/graphql-testing-library
-```
-
-This library has `peerDependencies` listings for `msw` at `^2.0.0` and `graphql` at `^15.0.0 || ^16.0.0`.
-
-```
-npm install --save-dev msw graphql
-
-
-yarn add --dev msw graphql
+npm install --save-dev @apollo/graphql-testing-library msw graphql
+pnpm add --save-dev @apollo/graphql-testing-library msw graphql
+yarn add --dev @apollo/graphql-testing-library msw graphql
+bun add --dev @apollo/graphql-testing-library msw graphql
 ```
 
 ## Usage
@@ -64,11 +54,15 @@ const schemaWithMocks = addMocksToSchema({
   },
 });
 
-// createHandler returns an object with `handler` and `replaceSchema`
-// functions: `handler` is your MSW handler, and `replaceSchema` can
-// be used in tests to pass a new `schemaWithMocks` that your `handler`
-// will use to resolve requests against
+// `createHandler` returns an object with `handler` and `replaceSchema`
+// functions: `handler` is a MSW handler that will intercept all GraphQL
+// operations, and `replaceSchema` allows you to replace the mock schema
+// the `handler` use to resolve requests against.
 const { handler, replaceSchema } = createHandler(schemaWithMocks, {
+  // It accepts a config object as the second argument where you can specify a 
+  // delay min and max, which will add random delays to your tests within the /
+  // threshold to simulate a real network connection.
+  // Default: delay: { min: 300, max: 300 }
   delay: { min: 200, max: 500 },
 });
 ```
