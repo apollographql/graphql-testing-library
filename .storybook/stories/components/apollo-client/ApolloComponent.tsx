@@ -30,8 +30,7 @@ const APP_QUERY: TypedDocumentNode<{
     id: string;
     title: string;
     mediaUrl: string;
-    description: string;
-    reviews: Array<{ rating: number; id: string; content: string }>;
+    reviews: Array<{ rating: number; id: string }>;
   }[];
 }> = gql`
   query AppQuery {
@@ -40,11 +39,9 @@ const APP_QUERY: TypedDocumentNode<{
       reviews {
         id
         rating
-        content
       }
       title
       mediaUrl
-      description
     }
   }
 `;
@@ -54,23 +51,20 @@ const APP_QUERY_WITH_DEFER: TypedDocumentNode<{
     id: string;
     title: string;
     mediaUrl: string;
-    description: string;
-    reviews?: Array<{ rating: number; id: string; content: string }>;
+    reviews?: Array<{ rating: number; id: string }>;
   }[];
 }> = gql`
-  query AppQuery {
+  query AppQueryWithDefer {
     products {
       id
       ... @defer {
         reviews {
           id
           rating
-          content
         }
       }
       title
       mediaUrl
-      description
     }
   }
 `;

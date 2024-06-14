@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<843955ee0dad1a85c5d26675958f3437>>
+ * @generated SignedSource<<622b20ed5026c732388dc5f7e1487d6d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,7 +12,6 @@ import { Fragment, ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type RelayComponentReviewsFragment_product$data = {
   readonly reviews: ReadonlyArray<{
-    readonly content: string | null | undefined;
     readonly id: string;
     readonly rating: number | null | undefined;
   } | null | undefined> | null | undefined;
@@ -50,13 +49,6 @@ const node: ReaderFragment = {
           "kind": "ScalarField",
           "name": "rating",
           "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "content",
-          "storageKey": null
         }
       ],
       "storageKey": null
@@ -66,6 +58,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "5b7ce55ebe39bb7898d3e849a96ad6f3";
+(node as any).hash = "9017708b7b8d3c62f47be61c11fa4625";
 
 export default node;

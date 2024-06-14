@@ -1,18 +1,18 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { within, expect, waitFor } from "@storybook/test";
 import {
-  ApolloApp,
-  ApolloAppWithDefer as AppWithDefer,
-} from "./components/apollo-client/ApolloComponent.js";
-import { createHandler } from "../../src/handlers";
-import { schemaWithMocks } from "../../src/__tests__/mocks/handlers";
-import { Canvas } from "@storybook/blocks";
+  RelayApp,
+  RelayAppWithDefer as AppWithDefer,
+} from "./components/relay/RelayComponent.js";
+import { createHandler } from "../../src/handlers.js";
+import { schemaWithMocks } from "../../src/__tests__/mocks/handlers.js";
 
 const { handler } = createHandler(schemaWithMocks);
 
 const meta = {
-  title: "Example/Apollo",
-  component: ApolloApp,
+  title: "Example/Relay",
+  component: RelayApp,
+  // tags: ["autodocs"],
   parameters: {
     layout: "centered",
     msw: {
@@ -21,7 +21,7 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof ApolloApp>;
+} satisfies Meta<typeof RelayApp>;
 
 export default meta;
 

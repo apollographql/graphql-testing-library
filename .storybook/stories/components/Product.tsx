@@ -3,7 +3,6 @@ import type { ReactNode } from "react";
 type Product = {
   id: string;
   mediaUrl: string | null | undefined;
-  description: string | null | undefined;
   title: string | null | undefined;
 };
 
@@ -19,7 +18,6 @@ function Product({
       <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
         <img
           src={product.mediaUrl || ""}
-          alt={product.description || ""}
           className="h-full w-full object-cover object-center lg:h-full lg:w-full"
         />
       </div>
@@ -38,7 +36,7 @@ function Product({
   );
 }
 
-type ReviewType = { rating: number; id: string; content: string };
+type ReviewType = { rating: number; id: string };
 
 function Reviews({ reviews }: { reviews: Array<ReviewType> }) {
   return reviews?.length > 0
