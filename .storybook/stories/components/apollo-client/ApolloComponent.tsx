@@ -75,7 +75,7 @@ const APP_QUERY_WITH_DEFER: TypedDocumentNode<{
   }
 `;
 
-export function Wrapper({ children }: { children: ReactNode }) {
+function Wrapper({ children }: { children: ReactNode }) {
   return (
     <ApolloProvider client={client}>
       <Suspense fallback={<h1>Loading...</h1>}>{children}</Suspense>

@@ -160,7 +160,8 @@ export const createHandler = (
           schema: testSchema,
           variableValues: variables,
         });
-
+        const randomDelay = Math.random() * (delayMax - delayMin) + delayMin;
+        await wait(randomDelay);
         return HttpResponse.json(result as SingularExecutionResult<any, any>);
       }
     }),

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a85c38cc7d612228276089944f119b72>>
+ * @generated SignedSource<<67e68fd02a277ad442924bac7db281d6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,8 +10,8 @@
 
 import { ConcreteRequest, Query } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type RelayComponentAppQuery$variables = Record<PropertyKey, never>;
-export type RelayComponentAppQuery$data = {
+export type RelayComponentWithDeferAppQuery$variables = Record<PropertyKey, never>;
+export type RelayComponentWithDeferAppQuery$data = {
   readonly products: ReadonlyArray<{
     readonly description: string | null | undefined;
     readonly id: string;
@@ -20,9 +20,9 @@ export type RelayComponentAppQuery$data = {
     readonly " $fragmentSpreads": FragmentRefs<"RelayComponentReviewsFragment_product">;
   } | null | undefined> | null | undefined;
 };
-export type RelayComponentAppQuery = {
-  response: RelayComponentAppQuery$data;
-  variables: RelayComponentAppQuery$variables;
+export type RelayComponentWithDeferAppQuery = {
+  response: RelayComponentWithDeferAppQuery$data;
+  variables: RelayComponentWithDeferAppQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -59,7 +59,7 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "RelayComponentAppQuery",
+    "name": "RelayComponentWithDeferAppQuery",
     "selections": [
       {
         "alias": null,
@@ -71,9 +71,14 @@ return {
         "selections": [
           (v0/*: any*/),
           {
-            "args": null,
-            "kind": "FragmentSpread",
-            "name": "RelayComponentReviewsFragment_product"
+            "kind": "Defer",
+            "selections": [
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "RelayComponentReviewsFragment_product"
+              }
+            ]
           },
           (v1/*: any*/),
           (v2/*: any*/),
@@ -89,7 +94,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "RelayComponentAppQuery",
+    "name": "RelayComponentWithDeferAppQuery",
     "selections": [
       {
         "alias": null,
@@ -101,30 +106,37 @@ return {
         "selections": [
           (v0/*: any*/),
           {
-            "alias": null,
-            "args": null,
-            "concreteType": "Review",
-            "kind": "LinkedField",
-            "name": "reviews",
-            "plural": true,
+            "if": null,
+            "kind": "Defer",
+            "label": "RelayComponentWithDeferAppQuery$defer$RelayComponentReviewsFragment_product",
             "selections": [
-              (v0/*: any*/),
               {
                 "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "rating",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "content",
+                "concreteType": "Review",
+                "kind": "LinkedField",
+                "name": "reviews",
+                "plural": true,
+                "selections": [
+                  (v0/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "rating",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "content",
+                    "storageKey": null
+                  }
+                ],
                 "storageKey": null
               }
-            ],
-            "storageKey": null
+            ]
           },
           (v1/*: any*/),
           (v2/*: any*/),
@@ -135,16 +147,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "3b9c3b8cd3c59679be38e6d0f8dfc557",
+    "cacheID": "5d0a1e385798573ffda670a713f233e4",
     "id": null,
     "metadata": {},
-    "name": "RelayComponentAppQuery",
+    "name": "RelayComponentWithDeferAppQuery",
     "operationKind": "query",
-    "text": "query RelayComponentAppQuery {\n  products {\n    id\n    ...RelayComponentReviewsFragment_product\n    title\n    mediaUrl\n    description\n  }\n}\n\nfragment RelayComponentReviewsFragment_product on Product {\n  reviews {\n    id\n    rating\n    content\n  }\n}\n"
+    "text": "query RelayComponentWithDeferAppQuery {\n  products {\n    id\n    ...RelayComponentReviewsFragment_product @defer(label: \"RelayComponentWithDeferAppQuery$defer$RelayComponentReviewsFragment_product\")\n    title\n    mediaUrl\n    description\n  }\n}\n\nfragment RelayComponentReviewsFragment_product on Product {\n  reviews {\n    id\n    rating\n    content\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "fe50ea1f5ee94d4806b295f629910cd4";
+(node as any).hash = "191fcdc886b10cd48ed92df8b781b5c0";
 
 export default node;
