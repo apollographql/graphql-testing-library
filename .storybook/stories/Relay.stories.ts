@@ -12,7 +12,6 @@ const { handler } = createHandler(schemaWithMocks);
 const meta = {
   title: "Example/Relay",
   component: RelayApp,
-  // tags: ["autodocs"],
   parameters: {
     layout: "centered",
     msw: {
