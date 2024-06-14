@@ -38,3 +38,5 @@ jobs:
         with:
           path: storybook-static
           build_command: pnpm run build-storybook
+          install_command: pnpm i
+          checkout: false
