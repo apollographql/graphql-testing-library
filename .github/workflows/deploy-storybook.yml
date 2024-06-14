@@ -1,0 +1,40 @@
+name: Deploy Storybook
+
+on:
+  push:
+    branches:
+      - "main"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+    
+      - name: Build and publish
+        id: build-publish
+        uses: bitovi/github-actions-storybook-to-github-pages@v1.0.3
+        with:
+          path: storybook-static
+          build_command: pnpm run build-storybook
