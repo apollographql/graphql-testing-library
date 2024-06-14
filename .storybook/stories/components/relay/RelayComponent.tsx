@@ -69,6 +69,8 @@ export function RelayAppWithDefer() {
 }
 
 function App() {
+  // Use useLazyLoadQuery here because we want to demo the loading experience
+  // with/without defer.
   const data = useLazyLoadQuery<RelayComponentAppQuery>(appQuery, {});
 
   return (
@@ -85,6 +87,8 @@ function App() {
 }
 
 function AppWithDefer() {
+  // Use useLazyLoadQuery here because we want to demo the loading experience
+  // with/without defer.
   const data = useLazyLoadQuery<RelayComponentAppQuery>(appQueryWithDefer, {});
 
   return (

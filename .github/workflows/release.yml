@@ -54,13 +54,13 @@ jobs:
           version: 9
           run_install: true
 
-      # - name: Create release PR or publish to npm + GitHub
-      #   id: changesets
-      #   if: steps.check_files.outputs.files_exists == 'false'
-      #   uses: changesets/action@v1
-      #   with:
-      #     version: pnpm run changeset-version
-      #     publish: pnpm run changeset-publish
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Create release PR or publish to npm + GitHub
+        id: changesets
+        if: steps.check_files.outputs.files_exists == 'false'
+        uses: changesets/action@v1
+        with:
+          version: pnpm run changeset-version
+          publish: pnpm run changeset-publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

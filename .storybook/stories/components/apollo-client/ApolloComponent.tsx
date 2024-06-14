@@ -100,6 +100,8 @@ export function ApolloAppWithDefer() {
 }
 
 export function App() {
+  // Use useSuspenseQuery here because we want to demo the loading experience
+  // with/without defer.
   const { data } = useSuspenseQuery(APP_QUERY);
 
   return (
@@ -114,6 +116,8 @@ export function App() {
 }
 
 export function AppWithDefer() {
+  // Use useSuspenseQuery here because we want to demo the loading experience
+  // with/without defer.
   const { data } = useSuspenseQuery(APP_QUERY_WITH_DEFER);
 
   return (
