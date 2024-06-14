@@ -62,8 +62,8 @@ const schemaWithMocks = addMocksToSchema({
   },
 });
 
-// `createHandler` returns an object with `handler` and `replaceSchema`
-// functions: `handler` is a MSW handler that will intercept all GraphQL
+// `createHandler` returns an object with a `handler` and `replaceSchema`
+// function: `handler` is a MSW handler that will intercept all GraphQL
 // operations, and `replaceSchema` allows you to replace the mock schema
 // the `handler` use to resolve requests against.
 const { handler, replaceSchema } = createHandler(schemaWithMocks, {

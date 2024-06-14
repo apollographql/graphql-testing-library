@@ -34,6 +34,7 @@
   "scripts": {
     "build": "tsup",
     "clean": "rm -rf dist",
+    "clean-storybook": "rm -rf storybook-static",
     "prepdist:changesets": "node scripts/prepareDist.cjs",
     "changeset-publish": "pnpm run clean && pnpm run build && pnpm run prepdist:changesets && cd dist && changeset publish",
     "changeset-version": "changeset version && pnpm i",
@@ -46,7 +47,7 @@
     "test-storybook": "test-storybook",
     "build-and-test-storybook": "pnpm run build-storybook && npx concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"npx http-server storybook-static --port 6006 --silent\" \"npx wait-on tcp:6006 && pnpm run test-storybook\"",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "pnpm run clean-storybook && storybook build"
   },
   "license": "MIT",
   "devDependencies": {
