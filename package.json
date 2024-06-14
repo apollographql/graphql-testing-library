@@ -1,6 +1,6 @@
 {
   "name": "@apollo/graphql-testing-library",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "repository": {
     "url": "git+https://github.com/apollographql/graphql-testing-library"
