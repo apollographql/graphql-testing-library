@@ -131,15 +131,16 @@ export const createHandler = (
         const stream = new ReadableStream({
           async start(controller) {
             try {
-              for (const c of chunks) {
+              for (const chunk of chunks) {
                 if (delayMin > 0) {
                   const randomDelay =
                     Math.random() * (delayMax - delayMin) + delayMin;
-                  if (c === boundary) {
+
+                  if (chunk === boundary || chunk === terminatingBoundary) {
                     await wait(randomDelay);
                   }
                 }
-                controller.enqueue(encoder.encode(c));
+                controller.enqueue(encoder.encode(chunk));
               }
             } finally {
               controller.close();
@@ -159,7 +160,8 @@ export const createHandler = (
           schema: testSchema,
           variableValues: variables,
         });
-
+        const randomDelay = Math.random() * (delayMax - delayMin) + delayMin;
+        await wait(randomDelay);
         return HttpResponse.json(result as SingularExecutionResult<any, any>);
       }
     }),

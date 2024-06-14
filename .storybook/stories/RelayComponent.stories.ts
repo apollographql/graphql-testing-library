@@ -1,14 +1,17 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { within, expect, waitFor } from "@storybook/test";
-import RelayComponent from "./components/relay/RelayComponent.js";
+import {
+  RelayApp,
+  RelayAppWithDefer as AppWithDefer,
+} from "./components/relay/RelayComponent.js";
 import { createHandler } from "../../src/handlers";
 import { schemaWithMocks } from "../../src/__tests__/mocks/handlers";
 
 const { handler } = createHandler(schemaWithMocks);
 
 const meta = {
-  title: "Example/RelayComponent",
-  component: RelayComponent,
+  title: "Example/Relay",
+  component: RelayApp,
   parameters: {
     layout: "centered",
     msw: {
@@ -17,13 +20,15 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof RelayComponent>;
+} satisfies Meta<typeof RelayApp>;
 
 export default meta;
 
+export { AppWithDefer };
+
 type Story = StoryObj<typeof meta>;
 
-export const Primary: Story = {
+export const App: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(

@@ -1,7 +1,7 @@
 import { ApolloProvider } from "@apollo/client";
 import { Suspense } from "react";
 import {
-  Main,
+  AppWithDefer,
   makeClient,
 } from "../../.storybook/stories/components/apollo-client/ApolloComponent.tsx";
 import { addMocksToSchema } from "@graphql-tools/mock";
@@ -18,7 +18,7 @@ describe("integration tests", () => {
     render(
       <ApolloProvider client={client}>
         <Suspense fallback={<h1>Loading...</h1>}>
-          <Main />
+          <AppWithDefer />
         </Suspense>
       </ApolloProvider>
     );
@@ -73,7 +73,7 @@ describe("integration tests", () => {
     render(
       <ApolloProvider client={client}>
         <Suspense fallback={<h1>Loading...</h1>}>
-          <Main />
+          <AppWithDefer />
         </Suspense>
       </ApolloProvider>
     );
