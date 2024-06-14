@@ -2,6 +2,19 @@ import type { Preview } from "@storybook/react";
 import { initialize, mswLoader, getWorker } from "msw-storybook-addon";
 import "./stories/input.css";
 
+let options = {};
+
+if (location.hostname === "apollographql.github.io") {
+  options = {
+    serviceWorker: {
+      url: "/graphql-testing-library/mockServiceWorker.js",
+    },
+  };
+}
+
+// Initialize MSW
+initialize(options);
+
 const preview: Preview = {
   // calling getWorker().start() is a workaround for an issue
   // where Storybook doesn't wait for MSW before running:
@@ -16,17 +29,5 @@ const preview: Preview = {
     },
   },
 };
-
-let options = {};
-if (location.hostname === "apollographql.github.io") {
-  options = {
-    serviceWorker: {
-      url: "/graphql-testing-library/mockServiceWorker.js",
-    },
-  };
-}
-
-// Initialize MSW
-initialize(options);
 
 export default preview;
