@@ -1,41 +1,149 @@
-name: Test
+name: Run
 
 on: [push]
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  test:
-    name: Test
-    # Prevents action from creating a PR on forks
+  install-and-cache:
+    name: Install and cache
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+  test-jest:
+    name: Jest tests
     if: github.repository == 'apollographql/graphql-testing-library'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 20.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-
-      - name: Install pnpm and dependencies
+      - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 9
-          run_install: true
+          run_install: false
 
-      - name: Install Playwright
-        run: npx playwright install --with-deps
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
 
-      - name: Check types
-        run: pnpm run type-check
-        
-      - name: Lint
-        run: pnpm run lint
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Run Jest tests
         run: pnpm run test
 
+  test-playwright:
+    name: Playwright tests
+    if: github.repository == 'apollographql/graphql-testing-library'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+
       - name: Serve Storybook and run tests
         run: pnpm run build-and-test-storybook
+
+  lint:
+    name: Lint
+    if: github.repository == 'apollographql/graphql-testing-library'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+          
+      - name: Lint
+        run: pnpm run lint
+
+  type-check:
+    name: Check types
+    if: github.repository == 'apollographql/graphql-testing-library'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Check types
+        run: pnpm run type-check
