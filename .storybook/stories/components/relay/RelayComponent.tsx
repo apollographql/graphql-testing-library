@@ -23,7 +23,6 @@ const ratingsFragment = graphql`
     reviews {
       id
       rating
-      content
     }
   }
 `;
@@ -35,7 +34,6 @@ const appQuery = graphql`
       ...RelayComponentReviewsFragment_product
       title
       mediaUrl
-      description
     }
   }
 `;
@@ -47,7 +45,6 @@ const appQueryWithDefer = graphql`
       ...RelayComponentReviewsFragment_product @defer
       title
       mediaUrl
-      description
     }
   }
 `;

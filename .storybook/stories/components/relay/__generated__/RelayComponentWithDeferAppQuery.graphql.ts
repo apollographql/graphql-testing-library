@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<67e68fd02a277ad442924bac7db281d6>>
+ * @generated SignedSource<<05485eb90f8c7d75d8b2c69e733128a7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,7 +13,6 @@ import { FragmentRefs } from "relay-runtime";
 export type RelayComponentWithDeferAppQuery$variables = Record<PropertyKey, never>;
 export type RelayComponentWithDeferAppQuery$data = {
   readonly products: ReadonlyArray<{
-    readonly description: string | null | undefined;
     readonly id: string;
     readonly mediaUrl: string | null | undefined;
     readonly title: string | null | undefined;
@@ -46,13 +45,6 @@ v2 = {
   "kind": "ScalarField",
   "name": "mediaUrl",
   "storageKey": null
-},
-v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "description",
-  "storageKey": null
 };
 return {
   "fragment": {
@@ -81,8 +73,7 @@ return {
             ]
           },
           (v1/*: any*/),
-          (v2/*: any*/),
-          (v3/*: any*/)
+          (v2/*: any*/)
         ],
         "storageKey": null
       }
@@ -125,13 +116,6 @@ return {
                     "kind": "ScalarField",
                     "name": "rating",
                     "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "content",
-                    "storageKey": null
                   }
                 ],
                 "storageKey": null
@@ -139,24 +123,23 @@ return {
             ]
           },
           (v1/*: any*/),
-          (v2/*: any*/),
-          (v3/*: any*/)
+          (v2/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "5d0a1e385798573ffda670a713f233e4",
+    "cacheID": "d39365cfca4b78af84446cd9fdb61a63",
     "id": null,
     "metadata": {},
     "name": "RelayComponentWithDeferAppQuery",
     "operationKind": "query",
-    "text": "query RelayComponentWithDeferAppQuery {\n  products {\n    id\n    ...RelayComponentReviewsFragment_product @defer(label: \"RelayComponentWithDeferAppQuery$defer$RelayComponentReviewsFragment_product\")\n    title\n    mediaUrl\n    description\n  }\n}\n\nfragment RelayComponentReviewsFragment_product on Product {\n  reviews {\n    id\n    rating\n    content\n  }\n}\n"
+    "text": "query RelayComponentWithDeferAppQuery {\n  products {\n    id\n    ...RelayComponentReviewsFragment_product @defer(label: \"RelayComponentWithDeferAppQuery$defer$RelayComponentReviewsFragment_product\")\n    title\n    mediaUrl\n  }\n}\n\nfragment RelayComponentReviewsFragment_product on Product {\n  reviews {\n    id\n    rating\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "191fcdc886b10cd48ed92df8b781b5c0";
+(node as any).hash = "f282e572ab3878c9ccb2f4ad43491878";
 
 export default node;

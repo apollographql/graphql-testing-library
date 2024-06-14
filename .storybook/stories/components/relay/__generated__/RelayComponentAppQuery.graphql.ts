@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a85c38cc7d612228276089944f119b72>>
+ * @generated SignedSource<<12bf2f218fc1496a2703731552a99cb9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,7 +13,6 @@ import { FragmentRefs } from "relay-runtime";
 export type RelayComponentAppQuery$variables = Record<PropertyKey, never>;
 export type RelayComponentAppQuery$data = {
   readonly products: ReadonlyArray<{
-    readonly description: string | null | undefined;
     readonly id: string;
     readonly mediaUrl: string | null | undefined;
     readonly title: string | null | undefined;
@@ -46,13 +45,6 @@ v2 = {
   "kind": "ScalarField",
   "name": "mediaUrl",
   "storageKey": null
-},
-v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "description",
-  "storageKey": null
 };
 return {
   "fragment": {
@@ -76,8 +68,7 @@ return {
             "name": "RelayComponentReviewsFragment_product"
           },
           (v1/*: any*/),
-          (v2/*: any*/),
-          (v3/*: any*/)
+          (v2/*: any*/)
         ],
         "storageKey": null
       }
@@ -115,36 +106,28 @@ return {
                 "kind": "ScalarField",
                 "name": "rating",
                 "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "content",
-                "storageKey": null
               }
             ],
             "storageKey": null
           },
           (v1/*: any*/),
-          (v2/*: any*/),
-          (v3/*: any*/)
+          (v2/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "3b9c3b8cd3c59679be38e6d0f8dfc557",
+    "cacheID": "0f4ff7bfd1b621ec073644a2e8b2a199",
     "id": null,
     "metadata": {},
     "name": "RelayComponentAppQuery",
     "operationKind": "query",
-    "text": "query RelayComponentAppQuery {\n  products {\n    id\n    ...RelayComponentReviewsFragment_product\n    title\n    mediaUrl\n    description\n  }\n}\n\nfragment RelayComponentReviewsFragment_product on Product {\n  reviews {\n    id\n    rating\n    content\n  }\n}\n"
+    "text": "query RelayComponentAppQuery {\n  products {\n    id\n    ...RelayComponentReviewsFragment_product\n    title\n    mediaUrl\n  }\n}\n\nfragment RelayComponentReviewsFragment_product on Product {\n  reviews {\n    id\n    rating\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "fe50ea1f5ee94d4806b295f629910cd4";
+(node as any).hash = "03cceceba96fb0404eb4759dc44bb7c9";
 
 export default node;
