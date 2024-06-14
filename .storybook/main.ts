@@ -4,7 +4,7 @@ import graphqlLoader from "vite-plugin-graphql-loader";
 
 const config: StorybookConfig = {
   stories: ["./**/*.mdx", "./**/*.stories.@(js|jsx|mjs|ts|tsx)"],
-  staticDirs: ["../public"],
+  staticDirs: ["./public"],
   addons: [
     "@storybook/addon-links",
     "@storybook/addon-essentials",
