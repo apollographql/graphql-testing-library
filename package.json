@@ -108,7 +108,7 @@
     "ts-jest-resolver": "2.0.1",
     "tsup": "8.1.0",
     "typescript": "5.4.5",
-    "undici": "6.18.2",
+    "undici": "6.19.0",
     "vite-plugin-graphql-loader": "3.0.1",
     "vite-plugin-relay": "2.1.0",
     "wait-on": "7.2.0"

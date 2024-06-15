@@ -187,8 +187,8 @@ importers:
         specifier: 5.4.5
         version: 5.4.5
       undici:
-        specifier: 6.18.2
-        version: 6.18.2
+        specifier: 6.19.0
+        version: 6.19.0
       vite-plugin-graphql-loader:
         specifier: 3.0.1
         version: 3.0.1
@@ -6604,8 +6604,8 @@ packages:
   undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
-  undici@6.18.2:
-    resolution: {integrity: sha512-o/MQLTwRm9IVhOqhZ0NQ9oXax1ygPjw6Vs+Vq/4QRjbOAC3B1GCHy7TYxxbExKlb7bzDRzt9vBWU6BDz0RFfYg==}
+  undici@6.19.0:
+    resolution: {integrity: sha512-9gGwbSLgYMjp4r6M5P9bhqhx1E+RyUIHqZE0r7BmrRoqroJUG6xlVu5TXH9DnwmCPLkcaVNrcYtxUE9d3InnyQ==}
     engines: {node: '>=18.17'}
 
   unicode-canonical-property-names-ecmascript@2.0.0:
@@ -14996,7 +14996,7 @@ snapshots:
 
   undici-types@5.26.5: {}
 
-  undici@6.18.2: {}
+  undici@6.19.0: {}
 
   unicode-canonical-property-names-ecmascript@2.0.0: {}
 
