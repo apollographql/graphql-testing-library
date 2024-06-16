@@ -103,8 +103,8 @@ importers:
         specifier: 16.0.6
         version: 16.0.6
       '@types/relay-runtime':
-        specifier: 14.1.24
-        version: 14.1.24
+        specifier: 17.0.0
+        version: 17.0.0
       '@typescript-eslint/eslint-plugin':
         specifier: 7.13.0
         version: 7.13.0(@typescript-eslint/parser@7.13.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0)(typescript@5.4.5)
@@ -115,8 +115,8 @@ importers:
         specifier: 10.4.19
         version: 10.4.19(postcss@8.4.38)
       babel-plugin-relay:
-        specifier: 16.2.0
-        version: 16.2.0
+        specifier: 17.0.0
+        version: 17.0.0
       concurrently:
         specifier: 8.2.2
         version: 8.2.2
@@ -157,14 +157,14 @@ importers:
         specifier: 18.3.1
         version: 18.3.1
       react-relay:
-        specifier: 16.2.0
-        version: 16.2.0(react@18.3.1)
+        specifier: 17.0.0
+        version: 17.0.0(react@18.3.1)
       relay-compiler:
-        specifier: 16.2.0
-        version: 16.2.0
+        specifier: 17.0.0
+        version: 17.0.0
       relay-runtime:
-        specifier: 16.2.0
-        version: 16.2.0
+        specifier: 17.0.0
+        version: 17.0.0
       storybook:
         specifier: 8.1.9
         version: 8.1.9(@babel/preset-env@7.24.6(@babel/core@7.24.5))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -194,7 +194,7 @@ importers:
         version: 3.0.1
       vite-plugin-relay:
         specifier: 2.1.0
-        version: 2.1.0(babel-plugin-relay@16.2.0)(vite@5.2.12(@types/node@20.14.2)(terser@5.31.0))
+        version: 2.1.0(babel-plugin-relay@17.0.0)(vite@5.2.12(@types/node@20.14.2)(terser@5.31.0))
       wait-on:
         specifier: 7.2.0
         version: 7.2.0
@@ -2347,8 +2347,8 @@ packages:
   '@types/react@18.3.3':
     resolution: {integrity: sha512-hti/R0pS0q1/xx+TsI73XIqk26eBsISZ2R0wUijXIngRK9R/e7Xw/cXVxQK7R5JjW+SV4zGcn5hXjudkN/pLIw==}
 
-  '@types/relay-runtime@14.1.24':
-    resolution: {integrity: sha512-ta7vPoFXtEG1wu0Mk7sTngzhmfNGnIe8cDiy3yBEm8pJcGpv55YY/+vWrd9gYd9OQht8rALZpXIYSOLzS/0PVg==}
+  '@types/relay-runtime@17.0.0':
+    resolution: {integrity: sha512-m4VYXp3Y4dSPOfH3eQQo7MPEkLw/bwLKsRyZl2n1kDXdd5csVoe+OCo/qAO8KYzYxz61cMgvp8zqXYmbXYKFPQ==}
 
   '@types/resolve@1.20.6':
     resolution: {integrity: sha512-A4STmOXPhMUtHH+S6ymgE2GiBSMqf4oTvcQZMcHzokuTLVYzXTB8ttjcgxOVaAp2lGwEdzZ0J+cRbbeevQj1UQ==}
@@ -2835,8 +2835,8 @@ packages:
     peerDependencies:
       '@babel/core': ^7.4.0 || ^8.0.0-0 <8.0.0
 
-  babel-plugin-relay@16.2.0:
-    resolution: {integrity: sha512-+3n7kSFH5MelySnO5MLXl2S+Bq4nAGcdWylXeqNXZODbzgYtqak194Z4u5KElLAHGhsyKIMTW7qazBPvMbxhFQ==}
+  babel-plugin-relay@17.0.0:
+    resolution: {integrity: sha512-aBIEDp6jFOAO+CD+GGKv4/WOQ7cnS6hZysJI0dFbLRQXZ6XQar0lytxQ4zuqPU0RpGnUeN5htK3NTewu2TZ53A==}
 
   babel-preset-current-node-syntax@1.0.1:
     resolution: {integrity: sha512-M7LQ0bxarkxQoN+vz5aJPsLBn77n8QgTFmo8WK0/44auK2xlCXrYcUxHFxgU7qW5Yzw/CjmLRK2uJzaCd7LvqQ==}
@@ -5725,8 +5725,8 @@ packages:
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
 
-  react-relay@16.2.0:
-    resolution: {integrity: sha512-f/HtC4whyYmK6/WUeOVakXRoBkV+JEgoSeBHXfIC2U6AuH14NrKXnFicX65LksfzgD1OUfYF6IqGQ4MvO52lTQ==}
+  react-relay@17.0.0:
+    resolution: {integrity: sha512-Kn0CMiKZtWc+EisFPmzuZ53RtDeLlJO+EUVJwqxNkOs5g1jDjVi1v+k48kHeTyim2X43Rr0S2aeailllci5SgQ==}
     peerDependencies:
       react: ^16.9.0 || ^17 || ^18
 
@@ -5849,12 +5849,12 @@ packages:
   rehype-slug@6.0.0:
     resolution: {integrity: sha512-lWyvf/jwu+oS5+hL5eClVd3hNdmwM1kAC0BUvEGD19pajQMIzcNUd/k9GsfQ+FfECvX+JE+e9/btsKH0EjJT6A==}
 
-  relay-compiler@16.2.0:
-    resolution: {integrity: sha512-KuyzUBKL9PZRNtIZWNlWEOl7OliUxaGJ2d+3mkiWEiGCEuGnNTxqEg4kJyL341aIGZC4gSqEpfvRTcMqnSM4qQ==}
+  relay-compiler@17.0.0:
+    resolution: {integrity: sha512-U2e/R0o40HJOQ13pwkvToqWqk6J3ASMyHmcxixVMZKfcwcpsTTOiKob215ZRh+4bqPwkNy97+V9CuzJ5hJmGtw==}
     hasBin: true
 
-  relay-runtime@16.2.0:
-    resolution: {integrity: sha512-SrIyYItH1EZUj37NI8nZALasuq7mNyFrrSNgMefhgxNZxTVnr1KCp43LaxUfZqhsWbw4Y00JSGDRQXlcv4STHQ==}
+  relay-runtime@17.0.0:
+    resolution: {integrity: sha512-7b2R3G3DP7VHq7/1ltwQfYn3KkTHIB2NNt3KijIZoNQ73avwpOXBEL0MelSXwq8L+K8lcgAW5VAT7o0LUhnJPQ==}
 
   release-zalgo@1.0.0:
     resolution: {integrity: sha512-gUAyHVHPPC5wdqX/LG4LWtRYtgjxyX78oanFNTMMyFEfOqdC54s3eE82imuWKbOeqYht2CrNf64Qb8vgmmtZGA==}
@@ -9913,14 +9913,14 @@ snapshots:
   '@types/react-relay@16.0.6':
     dependencies:
       '@types/react': 18.3.3
-      '@types/relay-runtime': 14.1.24
+      '@types/relay-runtime': 17.0.0
 
   '@types/react@18.3.3':
     dependencies:
       '@types/prop-types': 15.7.12
       csstype: 3.1.3
 
-  '@types/relay-runtime@14.1.24': {}
+  '@types/relay-runtime@17.0.0': {}
 
   '@types/resolve@1.20.6': {}
 
@@ -10524,7 +10524,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  babel-plugin-relay@16.2.0:
+  babel-plugin-relay@17.0.0:
     dependencies:
       babel-plugin-macros: 2.8.0
       cosmiconfig: 5.2.1
@@ -13965,14 +13965,14 @@ snapshots:
 
   react-is@18.3.1: {}
 
-  react-relay@16.2.0(react@18.3.1):
+  react-relay@17.0.0(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.24.6
       fbjs: 3.0.5
       invariant: 2.2.4
       nullthrows: 1.1.1
       react: 18.3.1
-      relay-runtime: 16.2.0
+      relay-runtime: 17.0.0
     transitivePeerDependencies:
       - encoding
 
@@ -14130,9 +14130,9 @@ snapshots:
       hast-util-to-string: 3.0.0
       unist-util-visit: 5.0.0
 
-  relay-compiler@16.2.0: {}
+  relay-compiler@17.0.0: {}
 
-  relay-runtime@16.2.0:
+  relay-runtime@17.0.0:
     dependencies:
       '@babel/runtime': 7.24.6
       fbjs: 3.0.5
@@ -15142,10 +15142,10 @@ snapshots:
       graphql: 16.8.2
       graphql-tag: 2.12.6(graphql@16.8.2)
 
-  vite-plugin-relay@2.1.0(babel-plugin-relay@16.2.0)(vite@5.2.12(@types/node@20.14.2)(terser@5.31.0)):
+  vite-plugin-relay@2.1.0(babel-plugin-relay@17.0.0)(vite@5.2.12(@types/node@20.14.2)(terser@5.31.0)):
     dependencies:
       '@babel/core': 7.24.5
-      babel-plugin-relay: 16.2.0
+      babel-plugin-relay: 17.0.0
       vite: 5.2.12(@types/node@20.14.2)(terser@5.31.0)
     transitivePeerDependencies:
       - supports-color
