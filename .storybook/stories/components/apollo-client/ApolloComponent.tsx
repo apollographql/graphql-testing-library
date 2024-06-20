@@ -8,18 +8,41 @@ import {
   ApolloLink,
   HttpLink,
   useSuspenseQuery,
+  split,
+  useSubscription,
 } from "@apollo/client";
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { createClient } from "graphql-ws";
 import { Product, Reviews } from "../Product.js";
 import { Container } from "../Container.js";
+import { getMainDefinition } from "@apollo/client/utilities";
+
+const wsLink = new GraphQLWsLink(
+  createClient({
+    url: "ws://localhost:4000/graphql",
+  })
+);
 
 const httpLink = new HttpLink({
   uri: "https://main--hack-the-e-commerce.apollographos.net/graphql",
 });
 
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === "OperationDefinition" &&
+      definition.operation === "subscription"
+    );
+  },
+  wsLink,
+  httpLink
+);
+
 export const makeClient = () =>
   new ApolloClient({
     cache: new InMemoryCache(),
-    link: ApolloLink.from([httpLink]),
+    link: splitLink,
     connectToDevTools: true,
   });
 
@@ -69,6 +92,14 @@ const APP_QUERY_WITH_DEFER: TypedDocumentNode<{
   }
 `;
 
+const APP_SUBSCRIPTION: TypedDocumentNode<{
+  numberIncremented: number;
+}> = gql`
+  subscription AppSubscription {
+    numberIncremented
+  }
+`;
+
 function Wrapper({ children }: { children: ReactNode }) {
   return (
     <ApolloProvider client={client}>
@@ -89,6 +120,14 @@ export function ApolloAppWithDefer() {
   return (
     <Wrapper>
       <AppWithDefer />
+    </Wrapper>
+  );
+}
+
+export function ApolloAppSubscription() {
+  return (
+    <Wrapper>
+      <AppWithWSSubscription />
     </Wrapper>
   );
 }
@@ -123,4 +162,10 @@ export function AppWithDefer() {
       ))}
     </Container>
   );
+}
+
+export function AppWithWSSubscription() {
+  const { data } = useSubscription(APP_SUBSCRIPTION);
+
+  return <>{data?.numberIncremented}</>;
 }

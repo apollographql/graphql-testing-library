@@ -1,8 +1,9 @@
 import { gql } from "graphql-tag";
-import { execute } from "@graphql-tools/executor";
+import { execute as gqlExecute } from "graphql";
+import { execute, subscribe } from "@graphql-tools/executor";
 import type { ExecutionResult, GraphQLSchema, ASTNode } from "graphql";
 import { visit, BREAK } from "graphql";
-import { HttpResponse, graphql } from "msw";
+import { HttpResponse, graphql, ws } from "msw";
 import type {
   InitialIncrementalExecutionResult,
   SingularExecutionResult,
@@ -10,6 +11,8 @@ import type {
 } from "@graphql-tools/executor";
 
 const encoder = new TextEncoder();
+
+const subscription = ws.link("ws://localhost:4000/graphql");
 
 export function hasDirectives(names: string[], root: ASTNode, all?: boolean) {
   const nameSet = new Set(names);
@@ -166,5 +169,47 @@ export const createHandler = (
       }
     }),
     replaceSchema,
+  };
+};
+
+export const createWSHandler = (schema: GraphQLSchema) => {
+  return {
+    wsHandler: subscription.on("connection", ({ client, server }) => {
+      client.addEventListener("message", async (event) => {
+        // console.log(event.data);
+        const json = JSON.parse(
+          typeof event.data === "string" ? event.data : ""
+        );
+
+        if (json.type === "connection_init") {
+          client.send(JSON.stringify({ type: "connection_ack" }));
+        }
+
+        if (json.type === "subscribe") {
+          const document = gql(json.payload.query);
+          console.log(json.id);
+          const result = await subscribe({
+            document,
+            schema,
+            operationName: json.payload.operationName,
+            variableValues: json.payload.variables,
+          });
+
+          console.log(result);
+          // const nextResult = await result.next();
+          // console.log(nextResult);
+          for await (const chunk of result) {
+            console.log(chunk);
+            client.send(
+              JSON.stringify({
+                id: json.id,
+                type: "next",
+                payload: chunk,
+              })
+            );
+          }
+        }
+      });
+    }),
   };
 };

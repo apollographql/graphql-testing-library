@@ -3,11 +3,16 @@ import { within, expect, waitFor } from "@storybook/test";
 import {
   ApolloApp,
   ApolloAppWithDefer as AppWithDefer,
+  ApolloAppSubscription,
 } from "./components/apollo-client/ApolloComponent.js";
-import { createHandler } from "../../src/handlers.js";
-import { schemaWithMocks } from "../../src/__tests__/mocks/handlers.js";
+import { createHandler, createWSHandler } from "../../src/handlers.js";
+import {
+  schemaWithMocks,
+  schemaWithWSMocks,
+} from "../../src/__tests__/mocks/handlers.js";
 
 const { handler } = createHandler(schemaWithMocks);
+const { wsHandler } = createWSHandler(schemaWithWSMocks);
 
 const meta = {
   title: "Example/Apollo Client",
@@ -16,7 +21,8 @@ const meta = {
     layout: "centered",
     msw: {
       handlers: {
-        graphql: handler,
+        // graphql: [handler, wsHandler],
+        graphql: [wsHandler],
       },
     },
   },
@@ -24,7 +30,7 @@ const meta = {
 
 export default meta;
 
-export { AppWithDefer };
+export { AppWithDefer, ApolloAppSubscription };
 
 type Story = StoryObj<typeof meta>;
 
