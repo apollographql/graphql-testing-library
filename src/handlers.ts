@@ -176,7 +176,6 @@ export const createWSHandler = (schema: GraphQLSchema) => {
   return {
     wsHandler: subscription.on("connection", ({ client, server }) => {
       client.addEventListener("message", async (event) => {
-        // console.log(event.data);
         const json = JSON.parse(
           typeof event.data === "string" ? event.data : ""
         );
@@ -186,8 +185,9 @@ export const createWSHandler = (schema: GraphQLSchema) => {
         }
 
         if (json.type === "subscribe") {
+          console.log("SUBSCRIBE");
           const document = gql(json.payload.query);
-          console.log(json.id);
+
           const result = await subscribe({
             document,
             schema,
@@ -195,9 +195,6 @@ export const createWSHandler = (schema: GraphQLSchema) => {
             variableValues: json.payload.variables,
           });
 
-          console.log(result);
-          // const nextResult = await result.next();
-          // console.log(nextResult);
           for await (const chunk of result) {
             console.log(chunk);
             client.send(
