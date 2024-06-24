@@ -27,14 +27,12 @@ const schemaWithMocks = addMocksToSchema({
   schema,
   resolvers: {
     Query: {
-      products: () => {
-        console.log("test");
-        return Array.from({ length: products.length }, (_element, id) => ({
+      products: () =>
+        Array.from({ length: products.length }, (_element, id) => ({
           id,
           title: products[id],
           mediaUrl: `https://storage.googleapis.com/hack-the-supergraph/apollo-${products[id]}.jpg`,
-        }));
-      },
+        })),
     },
   },
 });
@@ -47,10 +45,11 @@ const schemaWithWSMocks = addMocksToSchema({
     Subscription: {
       numberIncremented: {
         async *subscribe() {
-          while (number < 1000) {
-            number += 1;
-            await wait(3000);
+          console.log("SUBSCRIBE", number);
+          while (number < 5) {
+            await wait(1000);
             yield number;
+            number++;
           }
         },
         resolve: (value: number) => value,

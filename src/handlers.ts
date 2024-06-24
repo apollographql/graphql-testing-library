@@ -1,5 +1,4 @@
 import { gql } from "graphql-tag";
-import { execute as gqlExecute } from "graphql";
 import { execute, subscribe } from "@graphql-tools/executor";
 import type { ExecutionResult, GraphQLSchema, ASTNode } from "graphql";
 import { visit, BREAK } from "graphql";
@@ -173,24 +172,23 @@ export const createHandler = (
 };
 
 export const createWSHandler = (schema: GraphQLSchema) => {
+  let isComplete = false;
   return {
-    wsHandler: subscription.on("connection", ({ client, server }) => {
+    wsHandler: subscription.on("connection", ({ client }) => {
       client.addEventListener("message", async (event) => {
         const json = JSON.parse(
           typeof event.data === "string" ? event.data : ""
         );
 
-        if (json.type === "connection_init") {
+        console.log(json.type === "connection_init" && !isComplete);
+        if (json.type === "connection_init" && !isComplete) {
           client.send(JSON.stringify({ type: "connection_ack" }));
         }
 
-        if (json.type === "subscribe") {
-          console.log("SUBSCRIBE");
-          const document = gql(json.payload.query);
-
+        if (json.type === "subscribe" && !isComplete) {
           const result = await subscribe({
-            document,
             schema,
+            document: gql(json.payload.query),
             operationName: json.payload.operationName,
             variableValues: json.payload.variables,
           });
@@ -204,6 +202,12 @@ export const createWSHandler = (schema: GraphQLSchema) => {
                 payload: chunk,
               })
             );
+          }
+          const next = await result.next();
+          console.log(next.done);
+          if (next.done && !isComplete) {
+            isComplete = true;
+            client.close(1000, "No more responses");
           }
         }
       });

@@ -21,8 +21,7 @@ const meta = {
     layout: "centered",
     msw: {
       handlers: {
-        // graphql: [handler, wsHandler],
-        graphql: [wsHandler],
+        graphql: [handler, wsHandler],
       },
     },
   },
