@@ -11,7 +11,9 @@ import type {
 
 const encoder = new TextEncoder();
 
-const subscription = ws.link("ws://localhost:4000/graphql");
+function isAsyncGenerator(T: unknown): T is AsyncGenerator {
+  return typeof T[Symbol.asyncIterator] !== "undefined";
+}
 
 export function hasDirectives(names: string[], root: ASTNode, all?: boolean) {
   const nameSet = new Set(names);
@@ -171,16 +173,31 @@ export const createHandler = (
   };
 };
 
-export const createWSHandler = (schema: GraphQLSchema) => {
+type CreateWSHandlerOptions = {
+  uri?: string;
+};
+
+export const createWSHandler = (
+  schema: GraphQLSchema,
+  options: CreateWSHandlerOptions = {}
+) => {
   let isComplete = false;
+  let subscription = ws.link(options.uri || "ws://localhost:4000/graphql");
+
+  function restore() {
+    isComplete = false;
+  }
+
   return {
+    [Symbol.dispose]() {
+      restore();
+    },
     wsHandler: subscription.on("connection", ({ client }) => {
       client.addEventListener("message", async (event) => {
         const json = JSON.parse(
           typeof event.data === "string" ? event.data : ""
         );
 
-        console.log(json.type === "connection_init" && !isComplete);
         if (json.type === "connection_init" && !isComplete) {
           client.send(JSON.stringify({ type: "connection_ack" }));
         }
@@ -193,21 +210,23 @@ export const createWSHandler = (schema: GraphQLSchema) => {
             variableValues: json.payload.variables,
           });
 
-          for await (const chunk of result) {
-            console.log(chunk);
-            client.send(
-              JSON.stringify({
-                id: json.id,
-                type: "next",
-                payload: chunk,
-              })
-            );
-          }
-          const next = await result.next();
-          console.log(next.done);
-          if (next.done && !isComplete) {
-            isComplete = true;
-            client.close(1000, "No more responses");
+          if (isAsyncGenerator(result)) {
+            for await (const chunk of result) {
+              client.send(
+                JSON.stringify({
+                  id: json.id,
+                  type: "next",
+                  payload: chunk,
+                })
+              );
+            }
+
+            const next = await result.next();
+
+            if (next.done && !isComplete) {
+              isComplete = true;
+              client.close(1000, "No more responses");
+            }
           }
         }
       });
