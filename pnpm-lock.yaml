@@ -103,8 +103,8 @@ importers:
         specifier: 16.0.6
         version: 16.0.6
       '@types/relay-runtime':
-        specifier: 17.0.0
-        version: 17.0.0
+        specifier: 17.0.1
+        version: 17.0.1
       '@typescript-eslint/eslint-plugin':
         specifier: 7.13.1
         version: 7.13.1(@typescript-eslint/parser@7.13.1(eslint@8.57.0)(typescript@5.5.2))(eslint@8.57.0)(typescript@5.5.2)
@@ -2358,8 +2358,8 @@ packages:
   '@types/react@18.3.3':
     resolution: {integrity: sha512-hti/R0pS0q1/xx+TsI73XIqk26eBsISZ2R0wUijXIngRK9R/e7Xw/cXVxQK7R5JjW+SV4zGcn5hXjudkN/pLIw==}
 
-  '@types/relay-runtime@17.0.0':
-    resolution: {integrity: sha512-m4VYXp3Y4dSPOfH3eQQo7MPEkLw/bwLKsRyZl2n1kDXdd5csVoe+OCo/qAO8KYzYxz61cMgvp8zqXYmbXYKFPQ==}
+  '@types/relay-runtime@17.0.1':
+    resolution: {integrity: sha512-Sz3QREVGiP3KSyBUsdNOazJryYd32u+sKoL7y1X4ffNlsCAEABVxBc5XzjzoRMo/XnyZXWNhVXee82pW7dAnFA==}
 
   '@types/resolve@1.20.6':
     resolution: {integrity: sha512-A4STmOXPhMUtHH+S6ymgE2GiBSMqf4oTvcQZMcHzokuTLVYzXTB8ttjcgxOVaAp2lGwEdzZ0J+cRbbeevQj1UQ==}
@@ -9788,14 +9788,14 @@ snapshots:
   '@types/react-relay@16.0.6':
     dependencies:
       '@types/react': 18.3.3
-      '@types/relay-runtime': 17.0.0
+      '@types/relay-runtime': 17.0.1
 
   '@types/react@18.3.3':
     dependencies:
       '@types/prop-types': 15.7.12
       csstype: 3.1.3
 
-  '@types/relay-runtime@17.0.0': {}
+  '@types/relay-runtime@17.0.1': {}
 
   '@types/resolve@1.20.6': {}
 
