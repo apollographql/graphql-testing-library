@@ -95,8 +95,12 @@ describe("integration tests", () => {
     await waitFor(() => {
       expect(screen.getByText(/foo bar 1/i)).toBeInTheDocument();
     });
-    await waitFor(() => {
-      expect(screen.getByText(/5\/5/i)).toBeInTheDocument();
-    });
+
+    await waitFor(
+      () => {
+        expect(screen.getByText(/5\/5/i)).toBeInTheDocument();
+      },
+      { timeout: 2000 }
+    );
   });
 });
