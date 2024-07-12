@@ -121,9 +121,9 @@ export const createHandler = (
           async start(controller) {
             try {
               for (const chunk of chunks) {
-                if (chunk === boundary || chunk === terminatingBoundary) {
-                  await mswDelay(delay);
-                }
+                // if (chunk === boundary || chunk === terminatingBoundary) {
+                //   await mswDelay(delay);
+                // }
                 controller.enqueue(encoder.encode(chunk));
               }
             } finally {
@@ -144,7 +144,7 @@ export const createHandler = (
           schema: testSchema,
           variableValues: variables,
         });
-        await mswDelay(delay);
+        // await mswDelay(delay);
         return HttpResponse.json(result as SingularExecutionResult<any, any>);
       }
     }),
