@@ -34,9 +34,8 @@ interface Options {
 
 export const createHandler = (
   schema: GraphQLSchema,
-  { delay }: Options = { delay: "real" }
+  { delay }: Options = { delay: 5 }
 ) => {
-  console.time("handler");
   let testSchema: GraphQLSchema = schema;
 
   function replaceSchema(newSchema: GraphQLSchema) {
