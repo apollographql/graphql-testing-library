@@ -36,6 +36,7 @@ describe("integration tests", () => {
         ).toHaveTextContent("Customers also purchased"),
       { timeout: 2000 }
     );
+    screen.debug();
 
     await waitFor(() => {
       expect(screen.getByText(/beanie/i)).toBeInTheDocument();

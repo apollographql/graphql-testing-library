@@ -36,6 +36,7 @@ export const createHandler = (
   schema: GraphQLSchema,
   { delay }: Options = { delay: "real" }
 ) => {
+  console.time("handler");
   let testSchema: GraphQLSchema = schema;
 
   function replaceSchema(newSchema: GraphQLSchema) {
@@ -122,7 +123,11 @@ export const createHandler = (
             try {
               for (const chunk of chunks) {
                 if (chunk === boundary || chunk === terminatingBoundary) {
+                  console.timeLog("handler");
+                  console.log("before mswDelay, multipart chunk");
                   await mswDelay(delay);
+                  console.timeLog("handler");
+                  console.log("after mswDelay, multipart chunk");
                 }
                 controller.enqueue(encoder.encode(chunk));
               }
@@ -144,7 +149,11 @@ export const createHandler = (
           schema: testSchema,
           variableValues: variables,
         });
+        console.timeLog("handler");
+        console.log("before mswDelay, json");
         await mswDelay(delay);
+        console.timeLog("handler");
+        console.log("after mswDelay, json");
         return HttpResponse.json(result as SingularExecutionResult<any, any>);
       }
     }),
