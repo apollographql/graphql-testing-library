@@ -12,8 +12,37 @@ import { describe, expect, it } from "@jest/globals";
 import { render, screen, waitFor } from "@testing-library/react";
 
 describe("integration tests", () => {
+  it("runs a test", async () => {
+    const client = makeClient();
+
+    render(
+      <ApolloProvider client={client}>
+        <Suspense fallback={<h1>Loading...</h1>}>
+          <AppWithDefer />
+        </Suspense>
+      </ApolloProvider>
+    );
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole("heading", { name: /loading/i })
+      ).toHaveTextContent("Loading...")
+    );
+
+    await waitFor(
+      () =>
+        expect(
+          screen.getByRole("heading", { name: /customers/i })
+        ).toHaveTextContent("Customers also purchased"),
+      { timeout: 2000 }
+    );
+    screen.debug();
+
+    await waitFor(() => {
+      expect(screen.getByText(/beanie/i)).toBeInTheDocument();
+    });
+  });
   it("runs a second test", async () => {
-    console.time("handler");
     // Make a GraphQL schema with no resolvers
     const schema = makeExecutableSchema({ typeDefs: graphqlSchema });
 
@@ -61,73 +90,15 @@ describe("integration tests", () => {
         expect(
           screen.getByRole("heading", { name: /customers/i })
         ).toHaveTextContent("Customers also purchased"),
-      { timeout: 2000, interval: 1 }
-    );
-
-    await waitFor(
-      () => {
-        expect(screen.getByText(/foo bar 1/i)).toBeInTheDocument();
-      },
-      { interval: 1, timeout: 3000 }
-    );
-
-    await waitFor(
-      () => {
-        expect(screen.getByText(/5\/5/i)).toBeInTheDocument();
-      },
-      { interval: 1, timeout: 3000 }
-    );
-    console.timeEnd("handler");
-  });
-  it("runs a test", async () => {
-    console.time("handler");
-    const client = makeClient();
-
-    const products = ["beanie", "bottle", "cap", "onesie", "shirt", "socks"];
-    const schema = makeExecutableSchema({ typeDefs: graphqlSchema });
-
-    const schemaWithMocks = addMocksToSchema({
-      schema,
-      resolvers: {
-        Query: {
-          products: () =>
-            Array.from({ length: products.length }, (_element, id) => ({
-              id,
-              title: products[id],
-              mediaUrl: `https://storage.googleapis.com/hack-the-supergraph/apollo-${products[id]}.jpg`,
-            })),
-        },
-      },
-    });
-
-    replaceSchema(schemaWithMocks);
-
-    render(
-      <ApolloProvider client={client}>
-        <Suspense fallback={<h1>Loading...</h1>}>
-          <AppWithDefer />
-        </Suspense>
-      </ApolloProvider>
-    );
-
-    await waitFor(() =>
-      expect(
-        screen.getByRole("heading", { name: /loading/i })
-      ).toHaveTextContent("Loading...")
-    );
-
-    await waitFor(
-      () =>
-        expect(
-          screen.getByRole("heading", { name: /customers/i })
-        ).toHaveTextContent("Customers also purchased"),
       { timeout: 2000 }
     );
-    screen.debug();
 
     await waitFor(() => {
-      expect(screen.getByText(/beanie/i)).toBeInTheDocument();
+      expect(screen.getByText(/foo bar 1/i)).toBeInTheDocument();
     });
-    console.timeEnd("handler");
+    screen.debug();
+    await waitFor(() => {
+      expect(screen.getByText(/5\/5/i)).toBeInTheDocument();
+    });
   });
 });

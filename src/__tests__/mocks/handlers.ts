@@ -17,12 +17,6 @@ const schemaWithMocks = addMocksToSchema({
           id,
           title: products[id],
           mediaUrl: `https://storage.googleapis.com/hack-the-supergraph/apollo-${products[id]}.jpg`,
-          reviews: [
-            {
-              id: `review-${id}`,
-              rating: id.toFixed(1),
-            },
-          ],
         })),
     },
   },
