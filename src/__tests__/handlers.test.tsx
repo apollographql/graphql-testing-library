@@ -13,7 +13,6 @@ import { render, screen, waitFor } from "@testing-library/react";
 
 describe("integration tests", () => {
   it("runs a test", async () => {
-    console.time("handler");
     const client = makeClient();
 
     const products = ["beanie", "bottle", "cap", "onesie", "shirt", "socks"];
@@ -58,10 +57,8 @@ describe("integration tests", () => {
     await waitFor(() => {
       expect(screen.getByText(/beanie/i)).toBeInTheDocument();
     });
-    console.timeEnd("handler");
   });
   it("runs a second test", async () => {
-    console.time("handler");
     // Make a GraphQL schema with no resolvers
     const schema = makeExecutableSchema({ typeDefs: graphqlSchema });
 
@@ -117,10 +114,8 @@ describe("integration tests", () => {
     await waitFor(() => {
       expect(screen.getByText(/5\/5/i)).toBeInTheDocument();
     });
-    console.timeEnd("handler");
   });
   it("runs a third test", async () => {
-    console.time("handler");
     // Make a GraphQL schema with no resolvers
     const schema = makeExecutableSchema({ typeDefs: graphqlSchema });
 
@@ -176,10 +171,8 @@ describe("integration tests", () => {
     await waitFor(() => {
       expect(screen.getByText(/5\/5/i)).toBeInTheDocument();
     });
-    console.timeEnd("handler");
   });
   it("runs a fourth test", async () => {
-    console.time("handler");
     // Make a GraphQL schema with no resolvers
     const schema = makeExecutableSchema({ typeDefs: graphqlSchema });
 
@@ -235,10 +228,8 @@ describe("integration tests", () => {
     await waitFor(() => {
       expect(screen.getByText(/5\/5/i)).toBeInTheDocument();
     });
-    console.timeEnd("handler");
   });
   it("runs a fifth test", async () => {
-    console.time("handler");
     // Make a GraphQL schema with no resolvers
     const schema = makeExecutableSchema({ typeDefs: graphqlSchema });
 
@@ -294,6 +285,5 @@ describe("integration tests", () => {
     await waitFor(() => {
       expect(screen.getByText(/5\/5/i)).toBeInTheDocument();
     });
-    console.timeEnd("handler");
   });
 });

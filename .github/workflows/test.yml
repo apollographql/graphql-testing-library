@@ -65,7 +65,7 @@ jobs:
         run: pnpm install
 
       - name: Run Jest tests
-        run: pnpm run test --runInBand
+        run: pnpm run test
 
   test-playwright:
     name: Playwright tests

@@ -1,5 +1,6 @@
 import { gql } from "graphql-tag";
 import { execute } from "@graphql-tools/executor";
+import { isNodeProcess } from "is-node-process";
 import type { ExecutionResult, GraphQLSchema, ASTNode } from "graphql";
 import { visit, BREAK } from "graphql";
 import { HttpResponse, graphql, delay as mswDelay } from "msw";
@@ -34,9 +35,17 @@ interface Options {
 
 export const createHandler = (
   schema: GraphQLSchema,
-  { delay }: Options = { delay: 4 }
+  { delay: _delay }: Options = { delay: "real" }
 ) => {
-  // console.time("handler");
+  let delay = _delay;
+  // The default node server response time in MSW's delay utility is 5ms.
+  // See https://github.com/mswjs/msw/blob/main/src/core/delay.ts#L16
+  // This did not reliably cause multipart responses to be batched into a
+  // single render by React, so we'll use a shorter delay of 1ms.
+  if (_delay === "real" && isNodeProcess()) {
+    delay = 1;
+  }
+
   let testSchema: GraphQLSchema = schema;
 
   function replaceSchema(newSchema: GraphQLSchema) {
@@ -127,7 +136,6 @@ export const createHandler = (
                     chunk
                   )
                 ) {
-                  console.log({ chunk });
                   await mswDelay(delay);
                 }
                 controller.enqueue(encoder.encode(chunk));
@@ -150,11 +158,9 @@ export const createHandler = (
           schema: testSchema,
           variableValues: variables,
         });
-        console.timeLog("handler");
-        console.log("before mswDelay, json");
+
         await mswDelay(delay);
-        console.timeLog("handler");
-        console.log("after mswDelay, json");
+
         return HttpResponse.json(result as SingularExecutionResult<any, any>);
       }
     }),
