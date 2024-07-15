@@ -111,22 +111,22 @@ describe("integration tests", () => {
       () =>
         expect(
           screen.getByRole("heading", { name: /customers/i })
-        ).toHaveTextContent("Customers also purchased")
-      // { interval: 1, timeout: 2000 }
+        ).toHaveTextContent("Customers also purchased"),
+      { interval: 1, timeout: 3000 }
     );
 
     await waitFor(
       () => {
         expect(screen.getByText(/foo bar 1/i)).toBeInTheDocument();
-      }
-      // { interval: 1, timeout: 3000 }
+      },
+      { interval: 1, timeout: 3000 }
     );
 
     await waitFor(
       () => {
         expect(screen.getByText(/5\/5/i)).toBeInTheDocument();
-      }
-      // { interval: 1, timeout: 5000 }
+      },
+      { interval: 1, timeout: 5000 }
     );
     console.timeEnd("handler");
   });
