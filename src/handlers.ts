@@ -36,7 +36,7 @@ export const createHandler = (
   schema: GraphQLSchema,
   { delay }: Options = { delay: "real" }
 ) => {
-  console.time("handler");
+  // console.time("handler");
   let testSchema: GraphQLSchema = schema;
 
   function replaceSchema(newSchema: GraphQLSchema) {
@@ -121,13 +121,17 @@ export const createHandler = (
         const stream = new ReadableStream({
           async start(controller) {
             try {
-              for (const chunk of chunks) {
-                if (chunk === boundary || chunk === terminatingBoundary) {
-                  console.timeLog("handler");
-                  console.log("before mswDelay, multipart chunk");
+              for (const [index, chunk] of chunks.entries()) {
+                if (
+                  index > 1 &&
+                  (chunk === boundary || chunk === terminatingBoundary)
+                ) {
+                  console.log(chunk);
+                  // console.timeLog("handler");
+                  // console.log("before mswDelay, multipart chunk");
                   await mswDelay(delay);
-                  console.timeLog("handler");
-                  console.log("after mswDelay, multipart chunk");
+                  // console.timeLog("handler");
+                  // console.log("after mswDelay, multipart chunk");
                 }
                 controller.enqueue(encoder.encode(chunk));
               }
