@@ -1,0 +1,19 @@
+diff --git a/lib/core/delay.js b/lib/core/delay.js
+index ddebb37c300493515691e8521263151bdab175be..3818d97580f764bd1fd95668b89d25f58d230688 100644
+--- a/lib/core/delay.js
++++ b/lib/core/delay.js
+@@ -66,6 +66,13 @@ async function delay(durationOrMode) {
+     }
+     delayTime = durationOrMode;
+   }
+-  return new Promise((resolve) => setTimeout(resolve, delayTime));
++  console.log({ delayTime });
++  console.time("insideMSW");
++  console.timeLog("insideMSW");
++  // return new Promise((resolve) => setTimeout(resolve, delayTime));
++  return new Promise((resolve) => setTimeout(() => {
++    console.timeLog("insideMSW");
++    resolve();
++  }, delayTime));
+ }
+ //# sourceMappingURL=delay.js.map
