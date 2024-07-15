@@ -49,14 +49,11 @@ describe("integration tests", () => {
       ).toHaveTextContent("Loading...")
     );
 
-    await waitFor(
-      () =>
-        expect(
-          screen.getByRole("heading", { name: /customers/i })
-        ).toHaveTextContent("Customers also purchased"),
-      { timeout: 2000 }
+    await waitFor(() =>
+      expect(
+        screen.getByRole("heading", { name: /customers/i })
+      ).toHaveTextContent("Customers also purchased")
     );
-    screen.debug();
 
     await waitFor(() => {
       expect(screen.getByText(/beanie/i)).toBeInTheDocument();
@@ -107,27 +104,196 @@ describe("integration tests", () => {
       ).toHaveTextContent("Loading...")
     );
 
-    await waitFor(
-      () =>
-        expect(
-          screen.getByRole("heading", { name: /customers/i })
-        ).toHaveTextContent("Customers also purchased"),
-      { interval: 1 }
+    await waitFor(() =>
+      expect(
+        screen.getByRole("heading", { name: /customers/i })
+      ).toHaveTextContent("Customers also purchased")
     );
 
-    await waitFor(
-      () => {
-        expect(screen.getByText(/foo bar 1/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/foo bar 1/i)).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(/5\/5/i)).toBeInTheDocument();
+    });
+    console.timeEnd("handler");
+  });
+  it("runs a third test", async () => {
+    console.time("handler");
+    // Make a GraphQL schema with no resolvers
+    const schema = makeExecutableSchema({ typeDefs: graphqlSchema });
+
+    // Create a new schema with mocks
+    const schemaWithMocks = addMocksToSchema({
+      schema,
+      resolvers: {
+        Query: {
+          products: () => {
+            return Array.from({ length: 6 }, (_element, id) => ({
+              id,
+              title: `Foo bar ${id}`,
+              reviews: [
+                {
+                  id: `review-${id}`,
+                  rating: parseFloat(`${id}.2`),
+                },
+              ],
+            }));
+          },
+        },
       },
-      { interval: 1 }
+    });
+
+    replaceSchema(schemaWithMocks);
+
+    const client = makeClient();
+
+    render(
+      <ApolloProvider client={client}>
+        <Suspense fallback={<h1>Loading...</h1>}>
+          <AppWithDefer />
+        </Suspense>
+      </ApolloProvider>
     );
 
-    await waitFor(
-      () => {
-        expect(screen.getByText(/5\/5/i)).toBeInTheDocument();
-      },
-      { interval: 1 }
+    await waitFor(() =>
+      expect(
+        screen.getByRole("heading", { name: /loading/i })
+      ).toHaveTextContent("Loading...")
     );
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole("heading", { name: /customers/i })
+      ).toHaveTextContent("Customers also purchased")
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/foo bar 1/i)).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(/5\/5/i)).toBeInTheDocument();
+    });
+    console.timeEnd("handler");
+  });
+  it("runs a fourth test", async () => {
+    console.time("handler");
+    // Make a GraphQL schema with no resolvers
+    const schema = makeExecutableSchema({ typeDefs: graphqlSchema });
+
+    // Create a new schema with mocks
+    const schemaWithMocks = addMocksToSchema({
+      schema,
+      resolvers: {
+        Query: {
+          products: () => {
+            return Array.from({ length: 6 }, (_element, id) => ({
+              id,
+              title: `Foo bar ${id}`,
+              reviews: [
+                {
+                  id: `review-${id}`,
+                  rating: parseFloat(`${id}.2`),
+                },
+              ],
+            }));
+          },
+        },
+      },
+    });
+
+    replaceSchema(schemaWithMocks);
+
+    const client = makeClient();
+
+    render(
+      <ApolloProvider client={client}>
+        <Suspense fallback={<h1>Loading...</h1>}>
+          <AppWithDefer />
+        </Suspense>
+      </ApolloProvider>
+    );
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole("heading", { name: /loading/i })
+      ).toHaveTextContent("Loading...")
+    );
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole("heading", { name: /customers/i })
+      ).toHaveTextContent("Customers also purchased")
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/foo bar 1/i)).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(/5\/5/i)).toBeInTheDocument();
+    });
+    console.timeEnd("handler");
+  });
+  it("runs a fifth test", async () => {
+    console.time("handler");
+    // Make a GraphQL schema with no resolvers
+    const schema = makeExecutableSchema({ typeDefs: graphqlSchema });
+
+    // Create a new schema with mocks
+    const schemaWithMocks = addMocksToSchema({
+      schema,
+      resolvers: {
+        Query: {
+          products: () => {
+            return Array.from({ length: 6 }, (_element, id) => ({
+              id,
+              title: `Foo bar ${id}`,
+              reviews: [
+                {
+                  id: `review-${id}`,
+                  rating: parseFloat(`${id}.2`),
+                },
+              ],
+            }));
+          },
+        },
+      },
+    });
+
+    replaceSchema(schemaWithMocks);
+
+    const client = makeClient();
+
+    render(
+      <ApolloProvider client={client}>
+        <Suspense fallback={<h1>Loading...</h1>}>
+          <AppWithDefer />
+        </Suspense>
+      </ApolloProvider>
+    );
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole("heading", { name: /loading/i })
+      ).toHaveTextContent("Loading...")
+    );
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole("heading", { name: /customers/i })
+      ).toHaveTextContent("Customers also purchased")
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/foo bar 1/i)).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(/5\/5/i)).toBeInTheDocument();
+    });
     console.timeEnd("handler");
   });
 });
