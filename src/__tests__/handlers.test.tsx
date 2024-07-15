@@ -80,7 +80,7 @@ describe("integration tests", () => {
               reviews: [
                 {
                   id: `review-${id}`,
-                  rating: id.toFixed(1),
+                  rating: parseFloat(`${id}.2`),
                 },
               ],
             }));
