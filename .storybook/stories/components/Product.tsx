@@ -30,7 +30,9 @@ function Product({
             </a>
           </h3>
         </div>
-        <p className="text-sm font-medium text-gray-900">{children}</p>
+        <p data-testid="rating" className="text-sm font-medium text-gray-900">
+          {children}
+        </p>
       </div>
     </div>
   );

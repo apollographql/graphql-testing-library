@@ -14,6 +14,9 @@ importers:
       graphql-tag:
         specifier: ^2.12.6
         version: 2.12.6(graphql@16.9.0)
+      is-node-process:
+        specifier: ^1.2.0
+        version: 1.2.0
     devDependencies:
       '@apollo/client':
         specifier: 3.10.8

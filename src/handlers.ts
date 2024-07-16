@@ -1,8 +1,9 @@
 import { gql } from "graphql-tag";
 import { execute } from "@graphql-tools/executor";
+import { isNodeProcess } from "is-node-process";
 import type { ExecutionResult, GraphQLSchema, ASTNode } from "graphql";
 import { visit, BREAK } from "graphql";
-import { HttpResponse, graphql } from "msw";
+import { HttpResponse, graphql, delay as mswDelay } from "msw";
 import type {
   InitialIncrementalExecutionResult,
   SingularExecutionResult,
@@ -28,26 +29,24 @@ export function hasDirectives(names: string[], root: ASTNode, all?: boolean) {
   return all ? !nameSet.size : nameSet.size < uniqueCount;
 }
 
-const wait = (time: number) =>
-  new Promise((resolve) => setTimeout(resolve, time));
-
 interface Options {
-  delay?: { min: number; max: number };
+  delay?: number | "infinite" | "real";
 }
 
 export const createHandler = (
   schema: GraphQLSchema,
-  { delay }: Options = {}
+  { delay: _delay }: Options = { delay: "real" }
 ) => {
-  let testSchema: GraphQLSchema = schema;
-  const delayMin = delay?.min ?? 300;
-  const delayMax = delay?.max ?? delayMin + 300;
-
-  if (delayMin > delayMax) {
-    throw new Error(
-      "Please configure a minimum delay that is less than the maximum delay. The default minimum delay is 3ms."
-    );
+  let delay = _delay;
+  // The default node server response time in MSW's delay utility is 5ms.
+  // See https://github.com/mswjs/msw/blob/main/src/core/delay.ts#L16
+  // This did not reliably cause multipart responses to be batched into a
+  // single render by React, so we'll use a shorter delay of 1ms.
+  if (_delay === "real" && isNodeProcess()) {
+    delay = 1;
   }
+
+  let testSchema: GraphQLSchema = schema;
 
   function replaceSchema(newSchema: GraphQLSchema) {
     const oldSchema = testSchema;
@@ -55,6 +54,21 @@ export const createHandler = (
 
     function restore() {
       testSchema = oldSchema;
+    }
+
+    return Object.assign(restore, {
+      [Symbol.dispose]() {
+        restore();
+      },
+    });
+  }
+
+  function replaceDelay(newDelay: Options["delay"]) {
+    const oldDelay = delay;
+    delay = newDelay;
+
+    function restore() {
+      delay = oldDelay;
     }
 
     return Object.assign(restore, {
@@ -132,13 +146,12 @@ export const createHandler = (
           async start(controller) {
             try {
               for (const chunk of chunks) {
-                if (delayMin > 0) {
-                  const randomDelay =
-                    Math.random() * (delayMax - delayMin) + delayMin;
-
-                  if (chunk === boundary || chunk === terminatingBoundary) {
-                    await wait(randomDelay);
-                  }
+                if (
+                  ![CRLF, contentType, terminatingBoundary, boundary].includes(
+                    chunk
+                  )
+                ) {
+                  await mswDelay(delay);
                 }
                 controller.enqueue(encoder.encode(chunk));
               }
@@ -160,11 +173,13 @@ export const createHandler = (
           schema: testSchema,
           variableValues: variables,
         });
-        const randomDelay = Math.random() * (delayMax - delayMin) + delayMin;
-        await wait(randomDelay);
+
+        await mswDelay(delay);
+
         return HttpResponse.json(result as SingularExecutionResult<any, any>);
       }
     }),
     replaceSchema,
+    replaceDelay,
   };
 };

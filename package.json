@@ -112,7 +112,8 @@
   },
   "dependencies": {
     "@graphql-tools/executor": "^1.2.7",
-    "graphql-tag": "^2.12.6"
+    "graphql-tag": "^2.12.6",
+    "is-node-process": "^1.2.0"
   },
   "peerDependencies": {
     "graphql": "^15.0.0 || ^16.0.0",

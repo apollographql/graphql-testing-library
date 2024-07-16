@@ -16,7 +16,6 @@ This library currently supports incremental delivery features `@defer` and `@str
 
 > This project is not affiliated with the ["Testing Library"](https://github.com/testing-library) ecosystem that inspired it. We're just fans :)
 
-
 ## Installation
 
 This library has `peerDependencies` listings for `msw` at `^2.0.0` and `graphql` at `^15.0.0 || ^16.0.0`. Install them along with this library using your preferred package manager:
@@ -63,10 +62,10 @@ const schemaWithMocks = addMocksToSchema({
 // operations, and `replaceSchema` allows you to replace the mock schema
 // the `handler` use to resolve requests against.
 const { handler, replaceSchema } = createHandler(schemaWithMocks, {
-  // It accepts a config object as the second argument where you can specify a 
-  // delay min and max, which will add random delays to your tests within the /
-  // threshold to simulate a real network connection.
-  // Default: delay: { min: 300, max: 300 }
-  delay: { min: 200, max: 500 },
+  // It accepts a config object as the second argument where you can specify a
+  // delay duration, which uses MSW's delay API:
+  // https://mswjs.io/docs/api/delay
+  // Default: "real"
+  delay: number | "infinite" | "real",
 });
 ```
