@@ -63,6 +63,21 @@ export const createHandler = (
     });
   }
 
+  function replaceDelay(newDelay: Options["delay"]) {
+    const oldDelay = delay;
+    delay = newDelay;
+
+    function restore() {
+      delay = oldDelay;
+    }
+
+    return Object.assign(restore, {
+      [Symbol.dispose]() {
+        restore();
+      },
+    });
+  }
+
   const boundaryStr = "-";
   const contentType = "Content-Type: application/json";
   const boundary = `--${boundaryStr}`;
@@ -165,5 +180,6 @@ export const createHandler = (
       }
     }),
     replaceSchema,
+    replaceDelay,
   };
 };

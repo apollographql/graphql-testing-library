@@ -17,13 +17,19 @@ const schemaWithMocks = addMocksToSchema({
           id,
           title: products[id],
           mediaUrl: `https://storage.googleapis.com/hack-the-supergraph/apollo-${products[id]}.jpg`,
+          reviews: [
+            {
+              id: `review-${id}`,
+              rating: id * 2,
+            },
+          ],
         })),
     },
   },
 });
 
-const { handler, replaceSchema } = createHandler(schemaWithMocks);
+const { handler, replaceSchema, replaceDelay } = createHandler(schemaWithMocks);
 
 const handlers = [handler];
 
-export { replaceSchema, handlers, schemaWithMocks };
+export { replaceSchema, replaceDelay, handlers, schemaWithMocks };

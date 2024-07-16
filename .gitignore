@@ -20,3 +20,6 @@ temp/
 
 # output of storybook-build
 storybook-static
+
+# jest coverage
+coverage
