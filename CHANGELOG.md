@@ -1,5 +1,11 @@
 # @apollo/graphql-testing-library
 
+## 0.2.2
+
+### Patch Changes
+
+- [#57](https://github.com/apollographql/graphql-testing-library/pull/57) [`47bf677`](https://github.com/apollographql/graphql-testing-library/commit/47bf6778dc2a89ebed5cc103006210d0da555522) Thanks [@alessbell](https://github.com/alessbell)! - Adds support for MSW's delay API and infinite loading states
+
 ## 0.2.1
 
 ### Patch Changes
