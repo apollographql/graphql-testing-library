@@ -65,7 +65,49 @@ jobs:
         run: pnpm install
 
       - name: Run Jest tests
-        run: pnpm run test
+        run: pnpm run test --coverage | tee ./coverage.txt && exit ${PIPESTATUS[0]}
+
+      - name: Jest Coverage Comment
+        id: coverageComment
+        uses: MishaKav/jest-coverage-comment@main
+        with:
+          coverage-path: ./coverage.txt
+          junitxml-path: ./coverage/junit.xml
+
+      - name: Check the output coverage
+        run: |
+          echo "Summary Report"
+          echo "Coverage Percentage - ${{ steps.coverageComment.outputs.coverage }}"
+          echo "Coverage Color - ${{ steps.coverageComment.outputs.color }}"
+          echo "Summary Html - ${{ steps.coverageComment.outputs.summaryHtml }}"
+
+          echo "JUnit Report"
+          echo "tests - ${{ steps.coverageComment.outputs.tests }}"
+          echo "skipped - ${{ steps.coverageComment.outputs.skipped }}"
+          echo "failures - ${{ steps.coverageComment.outputs.failures }}"
+          echo "errors - ${{ steps.coverageComment.outputs.errors }}"
+          echo "time - ${{ steps.coverageComment.outputs.time }}"
+
+          echo "Coverage Report"
+          echo "lines - ${{ steps.coverageComment.outputs.lines }}"
+          echo "branches - ${{ steps.coverageComment.outputs.branches }}"
+          echo "functions - ${{ steps.coverageComment.outputs.functions }}"
+          echo "statements - ${{ steps.coverageComment.outputs.statements }}"
+          echo "coverage - ${{ steps.coverageComment.outputs.coverage }}"
+          echo "color - ${{ steps.coverageComment.outputs.color }}"
+          echo "Coverage Html - ${{ steps.coverageComment.outputs.coverageHtml }}"
+
+      - name: Create the badge
+        if: github.ref == 'refs/heads/main'
+        uses: schneegans/dynamic-badges-action@v1.6.0
+        with:
+          auth: ${{ secrets.GIST_BADGE_SECRET }}
+          gistID: 3fd56e82b55e134ee9cf57f28b0b3d49
+          filename: jest-coverage-comment__main.json
+          label: coverage
+          message: ${{ steps.coverageComment.outputs.coverage }}%
+          color: ${{ steps.coverageComment.outputs.color }}
+          namedLogo: typescript
 
   test-playwright:
     name: Playwright tests

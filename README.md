@@ -1,9 +1,12 @@
 <div align="center">
+  <p>
+	  <a href="https://www.apollographql.com/"><img src="https://raw.githubusercontent.com/apollographql/apollo-client-devtools/main/assets/apollo-wordmark.svg" height="100" alt="Apollo GraphQL Logo"></a>
+  </p>
   <h1>GraphQL Testing Library</h1>
 
-  <!-- <a href="https://www.apollographql.com/"><img src="https://raw.githubusercontent.com/apollographql/apollo-client-devtools/main/assets/apollo-wordmark.svg" height="100" alt="Apollo Client"></a> -->
+  <p>Testing utilities that encourage good practices for TypeScript apps built with GraphQL.</p>
 
-  <p>Testing utilities that encourage good practices for apps built with GraphQL.</p>
+[![npm version](https://badge.fury.io/js/%40apollo%2Fgraphql-testing-library.svg)](https://badge.fury.io/js/%40apollo%2Fgraphql-testing-library) ![workflow](https://github.com/apollographql/graphql-testing-library/actions/workflows/test.yml/badge.svg) [![Join our Discord server](https://img.shields.io/discord/1022972389463687228.svg?color=7389D8&labelColor=6A7EC2&logo=discord&logoColor=ffffff&style=flat-square)](https://discord.gg/graphos)
 
 </div>
 <hr />

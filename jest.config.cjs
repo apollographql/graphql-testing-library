@@ -18,6 +18,9 @@ module.exports = {
   testEnvironmentOptions: {
     customExportConditions: [""],
   },
+  collectCoverageFrom: ["src/**/*.ts", "!src/__tests__/**/*.ts"],
+  coverageReporters: ["html", "json-summary", "text", "text-summary"],
+  reporters: ["default", ["jest-junit", { outputDirectory: "coverage" }]],
   transform: {
     "\\.(gql|graphql)$": "@graphql-tools/jest-transform",
     "^.+\\.tsx?$": [
