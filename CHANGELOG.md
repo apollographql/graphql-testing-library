@@ -1,5 +1,11 @@
 # @apollo/graphql-testing-library
 
+## 0.2.3
+
+### Patch Changes
+
+- [#60](https://github.com/apollographql/graphql-testing-library/pull/60) [`8896595`](https://github.com/apollographql/graphql-testing-library/commit/889659514d175c110d112f76062a241e50d19670) Thanks [@alessbell](https://github.com/alessbell)! - Bump default "real" delay in Node processes to 20ms.
+
 ## 0.2.2
 
 ### Patch Changes
