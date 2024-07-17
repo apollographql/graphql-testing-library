@@ -35,7 +35,7 @@ interface Options {
 
 export const createHandler = (
   schema: GraphQLSchema,
-  { delay: _delay }: Options = { delay: "real" }
+  { delay: _delay }: Options = { delay: "real" },
 ) => {
   let delay = _delay;
   // The default node server response time in MSW's delay utility is 5ms.
@@ -43,7 +43,7 @@ export const createHandler = (
   // This did not reliably cause multipart responses to be batched into a
   // single render by React, so we'll use a shorter delay of 1ms.
   if (_delay === "real" && isNodeProcess()) {
-    delay = 15;
+    delay = 20;
   }
 
   let testSchema: GraphQLSchema = schema;
@@ -93,7 +93,7 @@ export const createHandler = (
   function createChunkArray(
     value:
       | InitialIncrementalExecutionResult<any, Record<string, unknown>>
-      | SubsequentIncrementalExecutionResult<any, Record<string, unknown>>
+      | SubsequentIncrementalExecutionResult<any, Record<string, unknown>>,
   ) {
     return [
       CRLF,
@@ -113,10 +113,9 @@ export const createHandler = (
       // with a stream vs. json
     >(async ({ query, variables, operationName }) => {
       const document = gql(query);
-      const hasDefer = hasDirectives(["defer"], document);
-      const hasStream = hasDirectives(["stream"], document);
+      const hasDeferOrStream = hasDirectives(["defer", "stream"], document);
 
-      if (hasDefer || hasStream) {
+      if (hasDeferOrStream) {
         const result = await execute({
           document,
           operationName,
@@ -154,7 +153,7 @@ export const createHandler = (
               for (const chunk of chunks) {
                 if (
                   ![CRLF, contentType, terminatingBoundary, boundary].includes(
-                    chunk
+                    chunk,
                   )
                 ) {
                   await mswDelay(delay);

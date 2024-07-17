@@ -32,18 +32,18 @@ export const App: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
-      canvas.getByRole("heading", { name: /loading/i })
+      canvas.getByRole("heading", { name: /loading/i }),
     ).toHaveTextContent("Loading...");
     await waitFor(
       () =>
         expect(
-          canvas.getByRole("heading", { name: /customers/i })
+          canvas.getByRole("heading", { name: /customers/i }),
         ).toHaveTextContent("Customers also purchased"),
-      { timeout: 2000 }
+      { timeout: 2000 },
     );
     await waitFor(
       () => expect(canvas.getByText(/beanie/i)).toBeInTheDocument(),
-      { timeout: 2000 }
+      { timeout: 2000 },
     );
   },
 };

@@ -25,7 +25,7 @@ const backupFetch = maybe(() => fetch);
 function fetchQuery(
   operation: RequestParameters,
   variables: Variables,
-  cacheConfig: CacheConfig
+  cacheConfig: CacheConfig,
 ) {
   const queryID = operation.text;
   const isMutation = operation.operationKind === "mutation";
