@@ -99,12 +99,13 @@ jobs:
 
       - name: Create the badge
         if: github.ref == 'refs/heads/main'
-        uses: schneegans/dynamic-badges-action@v1.6.0
+        uses: schneegans/dynamic-badges-action@v1.7.0
         with:
           auth: ${{ secrets.GIST_BADGE_SECRET }}
           gistID: 3fd56e82b55e134ee9cf57f28b0b3d49
           filename: jest-coverage-comment__main.json
           label: coverage
+          host: https://api.github.com/gists/
           message: ${{ steps.coverageComment.outputs.coverage }}%
           color: ${{ steps.coverageComment.outputs.color }}
           namedLogo: typescript
