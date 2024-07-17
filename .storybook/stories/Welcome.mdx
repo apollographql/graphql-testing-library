@@ -73,7 +73,7 @@ const { handler, replaceSchema } = createHandler(schemaWithMocks, {
   // It accepts a config object as the second argument where you can specify a
   // delay duration, which uses MSW's delay API:
   // https://mswjs.io/docs/api/delay
-  // Default: "real"
+  // Default: "real" (100-400ms in browsers, 20ms in Node-like processes)
   delay: number | "infinite" | "real",
 });
 ```

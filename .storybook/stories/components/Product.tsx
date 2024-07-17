@@ -47,7 +47,7 @@ function Reviews({ reviews }: { reviews: Array<ReviewType> }) {
           ?.map((i) => i.rating)
           .reduce((curr, acc) => {
             return curr + acc;
-          }) / reviews.length
+          }) / reviews.length,
       )}/5`
     : "-";
 }

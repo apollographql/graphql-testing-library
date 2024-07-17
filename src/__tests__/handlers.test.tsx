@@ -1,6 +1,7 @@
 import { ApolloProvider } from "@apollo/client";
 import { Suspense } from "react";
 import {
+  App,
   AppWithDefer,
   makeClient,
 } from "../../.storybook/stories/components/apollo-client/ApolloComponent.tsx";
@@ -12,141 +13,181 @@ import { describe, expect, it } from "@jest/globals";
 import { render, screen, waitFor } from "@testing-library/react";
 
 describe("integration tests", () => {
-  it("uses the initial mock schema set in the handler passed to setupServer by default", async () => {
-    const client = makeClient();
+  describe("single execution result response", () => {
+    it("intercepts and resolves with a single payload", async () => {
+      const client = makeClient();
 
-    render(
-      <ApolloProvider client={client}>
-        <Suspense fallback={<h1>Loading...</h1>}>
-          <AppWithDefer />
-        </Suspense>
-      </ApolloProvider>
-    );
+      render(
+        <ApolloProvider client={client}>
+          <Suspense fallback={<h1>Loading...</h1>}>
+            <App />
+          </Suspense>
+        </ApolloProvider>,
+      );
 
-    // The app kicks off the request and we see the initial loading indicator...
-    await waitFor(() =>
-      expect(
-        screen.getByRole("heading", { name: /loading/i })
-      ).toHaveTextContent("Loading...")
-    );
+      // The app kicks off the request and we see the initial loading indicator...
+      await waitFor(() =>
+        expect(
+          screen.getByRole("heading", { name: /loading/i }),
+        ).toHaveTextContent("Loading..."),
+      );
 
-    // Once the screen unsuspends, we have rendered all data from both the
-    // first and second chunk.
-    await waitFor(() =>
-      expect(
-        screen.getByRole("heading", { name: /customers/i })
-      ).toHaveTextContent("Customers also purchased")
-    );
+      await waitFor(() =>
+        expect(
+          screen.getByRole("heading", { name: /customers/i }),
+        ).toHaveTextContent("Customers also purchased"),
+      );
 
-    // The default "real" delay in a Node process is 1ms, so here we expect the
-    // two deferred chunks to be batched into a single render.
-    expect(screen.getAllByTestId(/rating/i)[0]).not.toHaveTextContent("-");
-    expect(screen.getByText(/beanie/i)).toBeInTheDocument();
+      expect(screen.getByText(/beanie/i)).toBeInTheDocument();
+      expect(screen.getAllByTestId(/rating/i)[0]).not.toHaveTextContent("-");
+    });
   });
+  describe("multipart response", () => {
+    it("uses the initial mock schema set in the handler by default", async () => {
+      const client = makeClient();
 
-  it("can set a new schema via replaceSchema", async () => {
-    // Create an executable GraphQL schema with no resolvers
-    const schema = makeExecutableSchema({ typeDefs: graphqlSchema });
+      render(
+        <ApolloProvider client={client}>
+          <Suspense fallback={<h1>Loading...</h1>}>
+            <AppWithDefer />
+          </Suspense>
+        </ApolloProvider>,
+      );
 
-    // Create a new schema with mocks
-    const schemaWithMocks = addMocksToSchema({
-      schema,
-      resolvers: {
-        Query: {
-          products: () => {
-            return Array.from({ length: 6 }, (_element, id) => ({
-              id,
-              title: `Foo bar ${id}`,
-              reviews: [
-                {
-                  id: `review-${id}`,
-                  rating: id,
-                },
-              ],
-            }));
+      // The app kicks off the request and we see the initial loading indicator...
+      await waitFor(() =>
+        expect(
+          screen.getByRole("heading", { name: /loading/i }),
+        ).toHaveTextContent("Loading..."),
+      );
+
+      await waitFor(() =>
+        expect(
+          screen.getByRole("heading", { name: /customers/i }),
+        ).toHaveTextContent("Customers also purchased"),
+      );
+
+      // The default "real" delay in a Node process is 20ms to avoid render
+      // batching
+      // Once the screen unsuspends, we have rendered the first chunk
+      expect(screen.getAllByTestId(/rating/i)[0]).toHaveTextContent("-");
+      expect(screen.getByText(/beanie/i)).toBeInTheDocument();
+
+      await waitFor(() => {
+        expect(screen.getAllByTestId(/rating/i)[0]).not.toHaveTextContent("-");
+      });
+    });
+    it("can set a new schema via replaceSchema", async () => {
+      // Create an executable GraphQL schema with no resolvers
+      const schema = makeExecutableSchema({ typeDefs: graphqlSchema });
+
+      // Create a new schema with mocks
+      const schemaWithMocks = addMocksToSchema({
+        schema,
+        resolvers: {
+          Query: {
+            products: () => {
+              return Array.from({ length: 6 }, (_element, id) => ({
+                id,
+                title: `Foo bar ${id}`,
+                reviews: [
+                  {
+                    id: `review-${id}`,
+                    rating: id,
+                  },
+                ],
+              }));
+            },
           },
         },
-      },
+      });
+
+      using _restore = replaceSchema(schemaWithMocks);
+
+      const client = makeClient();
+
+      render(
+        <ApolloProvider client={client}>
+          <Suspense fallback={<h1>Loading...</h1>}>
+            <AppWithDefer />
+          </Suspense>
+        </ApolloProvider>,
+      );
+
+      // The app kicks off the request and we see the initial loading indicator...
+      await waitFor(() =>
+        expect(
+          screen.getByRole("heading", { name: /loading/i }),
+        ).toHaveTextContent("Loading..."),
+      );
+
+      // The default "real" delay in a Node process is 20ms to avoid batching
+      // Once the screen unsuspends, we have rendered the first chunk
+      await waitFor(() =>
+        expect(
+          screen.getByRole("heading", { name: /customers/i }),
+        ).toHaveTextContent("Customers also purchased"),
+      );
+
+      expect(screen.getAllByTestId(/rating/i)[0]).toHaveTextContent("-");
+      expect(screen.getByText(/foo bar 1/i)).toBeInTheDocument();
+
+      await waitFor(() => {
+        // This "5/5" review value was set when we called `replaceSchema` with a
+        // new executable schema in this test
+        expect(screen.getByText(/5\/5/i)).toBeInTheDocument();
+      });
     });
+    it("can set a new delay via replaceDelay", async () => {
+      // In this test we set a new delay value via `replaceDelay` which is used to
+      // simulate network latency
+      // Usually, in Jest tests we want this to be 20ms (the default in Node
+      // processes) so renders are *not* auto-batched, but in certain tests we may
+      // want a shorter or longer delay before chunks or entire responses resolve
+      using _restore = replaceDelay(1);
 
-    using _restore = replaceSchema(schemaWithMocks);
+      const client = makeClient();
 
-    const client = makeClient();
+      render(
+        <ApolloProvider client={client}>
+          <Suspense fallback={<h1>Loading...</h1>}>
+            <AppWithDefer />
+          </Suspense>
+        </ApolloProvider>,
+      );
 
-    render(
-      <ApolloProvider client={client}>
-        <Suspense fallback={<h1>Loading...</h1>}>
-          <AppWithDefer />
-        </Suspense>
-      </ApolloProvider>
-    );
+      // The app kicks off the request and we see the initial loading indicator...
+      await waitFor(() =>
+        expect(
+          screen.getByRole("heading", { name: /loading/i }),
+        ).toHaveTextContent("Loading..."),
+      );
 
-    // The app kicks off the request and we see the initial loading indicator...
-    await waitFor(() =>
-      expect(
-        screen.getByRole("heading", { name: /loading/i })
-      ).toHaveTextContent("Loading...")
-    );
+      await waitFor(() =>
+        expect(
+          screen.getByRole("heading", { name: /customers/i }),
+        ).toHaveTextContent("Customers also purchased"),
+      );
 
-    // Once the screen unsuspends, we have rendered all data from both the
-    // first and second chunk.
-    await waitFor(() =>
-      expect(
-        screen.getByRole("heading", { name: /customers/i })
-      ).toHaveTextContent("Customers also purchased")
-    );
-
-    expect(screen.getByText(/foo bar 1/i)).toBeInTheDocument();
-
-    // This "5/5" review value was set when we called `replaceSchema` with a new
-    // executable schema in this test.
-    expect(screen.getByText(/5\/5/i)).toBeInTheDocument();
+      // Since our renders are batched, we will see the final review value
+      // in the initial render, since renders have been batched
+      expect(screen.getAllByTestId(/rating/i)[0]).toHaveTextContent("0/5");
+      expect(screen.getByText(/beanie/i)).toBeInTheDocument();
+    });
   });
+});
 
-  it("can set a new delay via replaceDelay", async () => {
-    // In this test we set a new delay value via `replaceDelay` which is used to
-    // simulate network latency.
-    // Usually, in Jest tests we want this to be 1ms (the default in Node
-    // processes) but in certain tests we may want to validate that e.g.
-    // a multipart response activates Suspense boundaries.
+describe("unit tests", () => {
+  it("can roll back delay via disposable", () => {
+    function innerFn() {
+      using _restore = replaceDelay(250);
+      // @ts-expect-error
+      expect(replaceDelay["currentDelay"]).toBe(250);
+    }
 
-    // Also, by creating a disposable via `using`, the delay gets
-    // automatically restored to its previous value at the end of the test.
-    using _restore = replaceDelay(500);
+    innerFn();
 
-    const client = makeClient();
-
-    render(
-      <ApolloProvider client={client}>
-        <Suspense fallback={<h1>Loading...</h1>}>
-          <AppWithDefer />
-        </Suspense>
-      </ApolloProvider>
-    );
-
-    // The app kicks off the request and we see the initial loading indicator...
-    await waitFor(() =>
-      expect(
-        screen.getByRole("heading", { name: /loading/i })
-      ).toHaveTextContent("Loading...")
-    );
-
-    await waitFor(() =>
-      expect(
-        screen.getByRole("heading", { name: /customers/i })
-      ).toHaveTextContent("Customers also purchased")
-    );
-
-    // Since our renders are no longer batched due to the 500ms delay, we will
-    // now see a loading state for the reviews, indicated by a "-" placeholder.
-    expect(screen.getAllByTestId(/rating/i)[0]).toHaveTextContent("-");
-    expect(screen.getByText(/beanie/i)).toBeInTheDocument();
-
-    // And one final render once the second chunk resolves after the delay and
-    // the reviews can be displayed. Note that the original schema has been
-    // restored.
-    await waitFor(() => {
-      expect(screen.getByText(/10\/5/i)).toBeInTheDocument();
-    });
+    // @ts-expect-error
+    expect(replaceDelay["currentDelay"]).toBe(20);
   });
 });
