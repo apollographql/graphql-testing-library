@@ -40,8 +40,8 @@ export const createHandler = (
   let delay = _delay;
   // The default node server response time in MSW's delay utility is 5ms.
   // See https://github.com/mswjs/msw/blob/main/src/core/delay.ts#L16
-  // This did not reliably cause multipart responses to be batched into a
-  // single render by React, so we'll use a shorter delay of 1ms.
+  // This sometimes caused multipart responses to be batched into a single
+  // render by React, so we'll use a longer delay of 20ms.
   if (_delay === "real" && isNodeProcess()) {
     delay = 20;
   }
