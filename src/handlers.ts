@@ -43,7 +43,7 @@ export const createHandler = (
   // This did not reliably cause multipart responses to be batched into a
   // single render by React, so we'll use a shorter delay of 1ms.
   if (_delay === "real" && isNodeProcess()) {
-    delay = 1;
+    delay = 15;
   }
 
   let testSchema: GraphQLSchema = schema;
@@ -77,6 +77,12 @@ export const createHandler = (
       },
     });
   }
+
+  Object.defineProperty(replaceDelay, "currentDelay", {
+    get() {
+      return delay;
+    },
+  });
 
   const boundaryStr = "-";
   const contentType = "Content-Type: application/json";

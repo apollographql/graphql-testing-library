@@ -94,6 +94,7 @@
     "msw-storybook-addon": "2.0.2",
     "playwright": "1.45.0",
     "postcss": "8.4.39",
+    "prettier": "3.3.3",
     "react": "18.3.1",
     "react-relay": "17.0.0",
     "relay-compiler": "17.0.0",
