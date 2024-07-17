@@ -39,6 +39,7 @@
     "test": "jest",
     "relay": "relay-compiler",
     "lint": "eslint --ext .ts src",
+    "prettier": "prettier --check .",
     "type-check": "tsc --noEmit",
     "prepublishOnly": "pnpm run build",
     "test-storybook": "test-storybook",
