@@ -6,7 +6,7 @@
 
   <p>Testing utilities that encourage good practices for TypeScript apps built with GraphQL.</p>
 
-[![npm version](https://badge.fury.io/js/%40apollo%2Fgraphql-testing-library.svg)](https://badge.fury.io/js/%40apollo%2Fgraphql-testing-library) ![workflow](https://github.com/apollographql/graphql-testing-library/actions/workflows/test.yml/badge.svg) [![Join our Discord server](https://img.shields.io/discord/1022972389463687228.svg?color=7389D8&labelColor=6A7EC2&logo=discord&logoColor=ffffff&style=flat-square)](https://discord.gg/graphos)
+[![npm version](https://badge.fury.io/js/%40apollo%2Fgraphql-testing-library.svg)](https://badge.fury.io/js/%40apollo%2Fgraphql-testing-library) ![badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/alessbell/3fd56e82b55e134ee9cf57f28b0b3d49/raw/jest-coverage-comment__main.json) ![workflow](https://github.com/apollographql/graphql-testing-library/actions/workflows/test.yml/badge.svg) [![Join our Discord server](https://img.shields.io/discord/1022972389463687228.svg?color=7389D8&labelColor=6A7EC2&logo=discord&logoColor=ffffff&style=flat-square)](https://discord.gg/graphos)
 
 </div>
 <hr />
