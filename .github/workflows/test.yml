@@ -41,6 +41,32 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+  test-vitest:
+    name: Vitest tests
+    if: github.repository == 'apollographql/graphql-testing-library'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run Vitest tests
+        run: pnpm run test:vitest
+
   test-jest:
     name: Jest tests
     if: github.repository == 'apollographql/graphql-testing-library'
@@ -65,7 +91,7 @@ jobs:
         run: pnpm install
 
       - name: Run Jest tests
-        run: pnpm run test --coverage | tee ./coverage.txt && exit ${PIPESTATUS[0]}
+        run: pnpm run test:jest --coverage | tee ./coverage.txt && exit ${PIPESTATUS[0]}
 
       - name: Jest Coverage Comment
         id: coverageComment
