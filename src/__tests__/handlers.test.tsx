@@ -9,7 +9,6 @@ import { addMocksToSchema } from "@graphql-tools/mock";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import graphqlSchema from "../../.storybook/stories/components/relay/schema.graphql";
 import { replaceSchema, replaceDelay } from "./mocks/handlers.js";
-import { describe, expect, it } from "@jest/globals";
 import { render, screen, waitFor } from "@testing-library/react";
 
 describe("integration tests", () => {
