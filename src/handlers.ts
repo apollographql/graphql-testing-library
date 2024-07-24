@@ -12,6 +12,8 @@ import type {
 
 const encoder = new TextEncoder();
 
+export const foo = () => "Foo!";
+
 export function hasDirectives(names: string[], root: ASTNode, all?: boolean) {
   const nameSet = new Set(names);
   const uniqueCount = nameSet.size;
