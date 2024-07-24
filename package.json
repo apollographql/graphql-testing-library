@@ -37,7 +37,7 @@
     "changeset-version": "changeset version && pnpm i",
     "changeset-check": "changeset status --verbose --since=origin/main",
     "test:jest": "jest",
-    "test:vitest": "vitest",
+    "test:vitest": "vitest run",
     "test:storybook": "test-storybook",
     "relay": "relay-compiler",
     "lint": "eslint --ext .ts src",
