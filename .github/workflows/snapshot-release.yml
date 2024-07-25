@@ -142,7 +142,7 @@ jobs:
 
       - name: Deprecate version
         if: ${{ steps.added-files.outputs.changesets != '' }}
-        run: pnpm deprecate @apollo/graphql-testing-library@${{ steps.get-version.outputs.version }} "This is a snapshot release created to test @apollo/graphql-testing-library. It should not be installed in production environments."
+        run: pnpm deprecate @apollo/graphql-testing-library@${{ steps.get-version.outputs.version }} "This is a snapshot release from https://github.com/apollographql/graphql-testing-library/pull/${{ github.event.issue.number }}. Use at your own discretion."
 
       - name: Create comment
         if: ${{ steps.added-files.outputs.changesets != '' }}
