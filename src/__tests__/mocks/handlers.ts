@@ -1,20 +1,16 @@
-import { addMocksToSchema } from "@graphql-tools/mock";
-import { makeExecutableSchema } from "@graphql-tools/schema";
 import { createHandler } from "../../handlers.js";
-import graphqlSchema from "../../../.storybook/stories/components/relay/schema.graphql";
+import typeDefs from "../../../.storybook/stories/components/relay/schema.graphql";
+import type { Resolvers } from "../../__generated__/resolvers-types.ts";
 
-const schema = makeExecutableSchema({ typeDefs: graphqlSchema });
+export const products = ["beanie", "bottle", "cap", "onesie", "shirt", "socks"];
 
-const products = ["beanie", "bottle", "cap", "onesie", "shirt", "socks"];
-
-// Create a new schema with mocks
-const schemaWithMocks = addMocksToSchema({
-  schema,
+const { handler, replaceSchema, replaceDelay } = createHandler<Resolvers>({
+  typeDefs,
   resolvers: {
     Query: {
       products: () =>
         Array.from({ length: products.length }, (_element, id) => ({
-          id,
+          id: `${id}`,
           title: products[id],
           mediaUrl: `https://storage.googleapis.com/hack-the-supergraph/apollo-${products[id]}.jpg`,
           reviews: [
@@ -28,8 +24,6 @@ const schemaWithMocks = addMocksToSchema({
   },
 });
 
-const { handler, replaceSchema, replaceDelay } = createHandler(schemaWithMocks);
-
 const handlers = [handler];
 
-export { replaceSchema, replaceDelay, handlers, schemaWithMocks };
+export { replaceSchema, replaceDelay, handlers, handler };

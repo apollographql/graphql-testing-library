@@ -1,15 +1,12 @@
-import { ApolloProvider } from "@apollo/client";
 import { Suspense } from "react";
+import { ApolloProvider } from "@apollo/client";
+import { render, screen, waitFor } from "@testing-library/react";
 import {
   App,
   AppWithDefer,
   makeClient,
 } from "../../.storybook/stories/components/apollo-client/ApolloComponent.tsx";
-import { addMocksToSchema } from "@graphql-tools/mock";
-import { makeExecutableSchema } from "@graphql-tools/schema";
-import graphqlSchema from "../../.storybook/stories/components/relay/schema.graphql";
-import { replaceSchema, replaceDelay } from "./mocks/handlers.js";
-import { render, screen, waitFor } from "@testing-library/react";
+import { replaceSchema, replaceDelay, products } from "./mocks/handlers.js";
 
 describe("integration tests", () => {
   describe("single execution result response", () => {
@@ -77,18 +74,14 @@ describe("integration tests", () => {
       });
     });
     it("can set a new schema via replaceSchema", async () => {
-      // Create an executable GraphQL schema with no resolvers
-      const schema = makeExecutableSchema({ typeDefs: graphqlSchema });
-
-      // Create a new schema with mocks
-      const schemaWithMocks = addMocksToSchema({
-        schema,
+      using _restore = replaceSchema({
         resolvers: {
           Query: {
             products: () => {
               return Array.from({ length: 6 }, (_element, id) => ({
-                id,
+                id: `${id}`,
                 title: `Foo bar ${id}`,
+                mediaUrl: `https://storage.googleapis.com/hack-the-supergraph/apollo-${products[id]}.jpg`,
                 reviews: [
                   {
                     id: `review-${id}`,
@@ -100,8 +93,6 @@ describe("integration tests", () => {
           },
         },
       });
-
-      using _restore = replaceSchema(schemaWithMocks);
 
       const client = makeClient();
 

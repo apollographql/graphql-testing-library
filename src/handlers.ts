@@ -1,7 +1,13 @@
 import { gql } from "graphql-tag";
 import { execute } from "@graphql-tools/executor";
 import { isNodeProcess } from "is-node-process";
-import type { ExecutionResult, GraphQLSchema, ASTNode } from "graphql";
+import type {
+  ExecutionResult,
+  GraphQLSchema,
+  ASTNode,
+  DocumentNode,
+  GraphQLResolveInfo,
+} from "graphql";
 import { visit, BREAK } from "graphql";
 import { HttpResponse, graphql, delay as mswDelay } from "msw";
 import type {
@@ -9,6 +15,8 @@ import type {
   SingularExecutionResult,
   SubsequentIncrementalExecutionResult,
 } from "@graphql-tools/executor";
+import { makeExecutableSchema } from "@graphql-tools/schema";
+import { addMocksToSchema, type IMockStore } from "@graphql-tools/mock";
 
 const encoder = new TextEncoder();
 
@@ -29,28 +37,69 @@ export function hasDirectives(names: string[], root: ASTNode, all?: boolean) {
   return all ? !nameSet.size : nameSet.size < uniqueCount;
 }
 
-interface Options {
-  delay?: number | "infinite" | "real";
+type Delay = number | "infinite" | "real";
+
+interface DelayOptions {
+  delay?: Delay;
 }
 
-export const createHandler = (
-  schema: GraphQLSchema,
-  { delay: _delay }: Options = { delay: "real" },
+type DocumentNodeAndResolversOptions<TResolvers> = {
+  typeDefs: DocumentNode;
+  resolvers: Partial<TResolvers> | ((store: IMockStore) => Partial<TResolvers>);
+  schema?: never;
+} & DelayOptions;
+
+type SchemaOptions = {
+  schema: GraphQLSchema;
+  typeDefs?: never;
+  resolvers?: never;
+} & DelayOptions;
+
+export type CreateHandlerDefinition<TResolvers> =
+  | SchemaOptions
+  | DocumentNodeAndResolversOptions<TResolvers>;
+
+export const createHandler = <TResolvers>(
+  schemaOrDocumentAndResolvers: CreateHandlerDefinition<TResolvers>,
 ) => {
-  let delay = _delay;
+  const { schema, resolvers, delay, typeDefs } = schemaOrDocumentAndResolvers;
+
+  let executableSchema = schema ?? makeExecutableSchema({ typeDefs });
+
+  let schemaWithMocks =
+    schema ??
+    addMocksToSchema<TResolvers>({
+      schema: executableSchema,
+      resolvers,
+    });
+
+  let _delay = delay ?? "real";
   // The default node server response time in MSW's delay utility is 5ms.
   // See https://github.com/mswjs/msw/blob/main/src/core/delay.ts#L16
   // This sometimes caused multipart responses to be batched into a single
   // render by React, so we'll use a longer delay of 20ms.
   if (_delay === "real" && isNodeProcess()) {
-    delay = 20;
+    _delay = 20;
   }
 
-  let testSchema: GraphQLSchema = schema;
+  let testSchema: GraphQLSchema = schemaWithMocks;
 
-  function replaceSchema(newSchema: GraphQLSchema) {
+  function replaceSchema(
+    newSchemaOrResolvers: Omit<
+      CreateHandlerDefinition<TResolvers>,
+      "delay" | "typeDefs"
+    >,
+  ) {
     const oldSchema = testSchema;
-    testSchema = newSchema;
+
+    const { schema: newSchema, resolvers: newResolvers } = newSchemaOrResolvers;
+
+    testSchema =
+      newSchema ??
+      addMocksToSchema<TResolvers>({
+        schema: executableSchema,
+        resolvers: newResolvers,
+      });
 
     function restore() {
       testSchema = oldSchema;
@@ -63,12 +112,18 @@ export const createHandler = (
     });
   }
 
-  function replaceDelay(newDelay: Options["delay"]) {
-    const oldDelay = delay;
-    delay = newDelay;
+  // TODO:
+  // function replaceResolvers() {}
+
+  // TODO:
+  // function mergeResolvers() {}
+
+  function replaceDelay(newDelay: Delay) {
+    const oldDelay = _delay;
+    _delay = newDelay;
 
     function restore() {
-      delay = oldDelay;
+      _delay = oldDelay;
     }
 
     return Object.assign(restore, {
@@ -80,7 +135,7 @@ export const createHandler = (
 
   Object.defineProperty(replaceDelay, "currentDelay", {
     get() {
-      return delay;
+      return _delay;
     },
   });
 
@@ -156,7 +211,7 @@ export const createHandler = (
                     chunk,
                   )
                 ) {
-                  await mswDelay(delay);
+                  await mswDelay(_delay);
                 }
                 controller.enqueue(encoder.encode(chunk));
               }
@@ -179,7 +234,7 @@ export const createHandler = (
           variableValues: variables,
         });
 
-        await mswDelay(delay);
+        await mswDelay(_delay);
 
         return HttpResponse.json(result as SingularExecutionResult<any, any>);
       }

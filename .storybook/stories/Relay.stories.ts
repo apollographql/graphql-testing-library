@@ -4,12 +4,9 @@ import {
   RelayApp,
   RelayAppWithDefer as AppWithDefer,
 } from "./components/relay/RelayComponent.js";
-import { createHandler } from "../../src/handlers.js";
-import { schemaWithMocks } from "../../src/__tests__/mocks/handlers.js";
+import { handler } from "../../src/__tests__/mocks/handlers.js";
 
-const { handler } = createHandler(schemaWithMocks);
-
-const meta = {
+export default {
   title: "Example/Relay",
   component: RelayApp,
   parameters: {
@@ -22,13 +19,9 @@ const meta = {
   },
 } satisfies Meta<typeof RelayApp>;
 
-export default meta;
-
 export { AppWithDefer };
 
-type Story = StoryObj<typeof meta>;
-
-export const App: Story = {
+export const App: StoryObj<typeof RelayApp> = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
