@@ -58,7 +58,6 @@
     "@graphql-codegen/typescript": "4.0.9",
     "@graphql-codegen/typescript-resolvers": "4.2.1",
     "@graphql-tools/jest-transform": "2.0.0",
-    "@graphql-tools/merge": "9.0.4",
     "@playwright/test": "1.45.0",
     "@storybook/addon-docs": "8.2.2",
     "@storybook/addon-essentials": "8.2.2",
@@ -118,6 +117,7 @@
   },
   "dependencies": {
     "@graphql-tools/executor": "^1.2.7",
+    "@graphql-tools/merge": "^9.0.4",
     "@graphql-tools/mock": "^9.0.4",
     "@graphql-tools/schema": "^10.0.4",
     "graphql-tag": "^2.12.6",

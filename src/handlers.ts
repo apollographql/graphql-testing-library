@@ -1,12 +1,18 @@
 import { gql } from "graphql-tag";
 import { execute } from "@graphql-tools/executor";
 import { isNodeProcess } from "is-node-process";
-import type {
-  ExecutionResult,
-  GraphQLSchema,
-  ASTNode,
-  DocumentNode,
-  GraphQLResolveInfo,
+import {
+  type ExecutionResult,
+  type GraphQLSchema,
+  type ASTNode,
+  type DocumentNode,
+  type GraphQLResolveInfo,
+  GraphQLEnumType,
+  type GraphQLEnumValue,
+  isUnionType,
+  isInterfaceType,
+  isObjectType,
+  isScalarType,
 } from "graphql";
 import { visit, BREAK } from "graphql";
 import { HttpResponse, graphql, delay as mswDelay } from "msw";
@@ -15,8 +21,16 @@ import type {
   SingularExecutionResult,
   SubsequentIncrementalExecutionResult,
 } from "@graphql-tools/executor";
-import { makeExecutableSchema } from "@graphql-tools/schema";
-import { addMocksToSchema, type IMockStore } from "@graphql-tools/mock";
+import {
+  addResolversToSchema,
+  makeExecutableSchema,
+} from "@graphql-tools/schema";
+import {
+  addMocksToSchema,
+  type IMocks,
+  type IMockStore,
+} from "@graphql-tools/mock";
+import { mergeResolvers } from "@graphql-tools/merge";
 
 const encoder = new TextEncoder();
 
@@ -43,35 +57,135 @@ interface DelayOptions {
   delay?: Delay;
 }
 
-type DocumentNodeAndResolversOptions<TResolvers> = {
+type DocumentResolversWithOptions<TResolvers> = {
   typeDefs: DocumentNode;
   resolvers: Partial<TResolvers> | ((store: IMockStore) => Partial<TResolvers>);
-  schema?: never;
+  mocks?: IMocks<TResolvers>;
 } & DelayOptions;
 
-type SchemaOptions = {
+type SchemaWithOptions = {
   schema: GraphQLSchema;
-  typeDefs?: never;
-  resolvers?: never;
 } & DelayOptions;
 
-export type CreateHandlerDefinition<TResolvers> =
-  | SchemaOptions
-  | DocumentNodeAndResolversOptions<TResolvers>;
+// Generates a Map of possible types. The keys are Union | Interface type names
+// which map to Sets of either union members or types that implement the
+// interface.
+const createPossibleTypesMap = (executableSchema: GraphQLSchema) => {
+  const typeMap = executableSchema.getTypeMap();
+  const typesMap = new Map<string, Set<string>>();
+
+  for (const typeName of Object.keys(typeMap)) {
+    const type = typeMap[typeName];
+
+    if (isUnionType(type) && !typesMap.has(typeName)) {
+      typesMap.set(typeName, new Set(type.getTypes().map((item) => item.name)));
+    }
+
+    if (isObjectType(type) && type.getInterfaces().length > 0) {
+      for (const interfaceType of type.getInterfaces()) {
+        if (typesMap.has(interfaceType.name)) {
+          const setOfTypes = typesMap.get(interfaceType.name);
+          if (setOfTypes) {
+            typesMap.set(
+              interfaceType.name,
+              new Set([...Array.from(setOfTypes), typeName]),
+            );
+          }
+        } else {
+          typesMap.set(interfaceType.name, new Set([typeName]));
+        }
+      }
+    }
+  }
+  return typesMap;
+};
+
+// From a Map of possible types, create
+const createDefaultResolvers = (typesMap: Map<string, Set<string>>) => {
+  const defaultResolvers: {
+    [key: string]: {
+      __resolveType(data: { __typename?: string }): string;
+    };
+  } = {};
+
+  for (const key of typesMap.keys()) {
+    defaultResolvers[key] = {
+      __resolveType(data: { __typename?: string }) {
+        return data.__typename || typesMap.get(key)?.values().next().value;
+      },
+    };
+  }
+  return defaultResolvers;
+};
+
+const sortEnumsByValue = () => {
+  const key = "value";
+  return (a: GraphQLEnumValue, b: GraphQLEnumValue) =>
+    a[key] > b[key] ? 1 : b[key] > a[key] ? -1 : 0;
+};
+
+// TODO: memoize
+// Creates a map of enum types and mock resolver functions that return
+// the first possible value.
+export const mockEnums = (schema: GraphQLSchema) => {
+  return Object.fromEntries(
+    Object.entries(schema.getTypeMap())
+      .filter(
+        (arg): arg is [string, GraphQLEnumType] =>
+          arg[1] instanceof GraphQLEnumType,
+      )
+      .map(([typeName, type]) => {
+        const value = type
+          .getValues()
+          .concat()
+          .sort(sortEnumsByValue())[0]?.value;
+        return [typeName, () => value] as const;
+      }),
+  );
+};
+
+const mockScalars = (schema: GraphQLSchema) => {
+  const typeMap = schema.getTypeMap();
+  const mockScalarsMap: Record<string, () => string> = {};
+
+  for (const typeName of Object.keys(typeMap)) {
+    const type = typeMap[typeName];
+    if (isScalarType(type) && type.astNode) {
+      // console.log(typeName, type);
+      mockScalarsMap[typeName] = () =>
+        `Default value for custom scalar \`${typeName}\``;
+    }
+  }
+  return mockScalarsMap;
+};
 
 export const createHandler = <TResolvers>(
-  schemaOrDocumentAndResolvers: CreateHandlerDefinition<TResolvers>,
+  documentResolversWithOptions: DocumentResolversWithOptions<TResolvers>,
 ) => {
-  const { schema, resolvers, delay, typeDefs } = schemaOrDocumentAndResolvers;
+  const { resolvers, typeDefs, mocks, ...rest } = documentResolversWithOptions;
 
-  let executableSchema = schema ?? makeExecutableSchema({ typeDefs });
+  let executableSchema = makeExecutableSchema({ typeDefs });
 
-  let schemaWithMocks =
-    schema ??
-    addMocksToSchema<TResolvers>({
-      schema: executableSchema,
-      resolvers,
-    });
+  const enumMocks = mockEnums(executableSchema);
+  const typesMap = createPossibleTypesMap(executableSchema);
+  const defaultResolvers = createDefaultResolvers(typesMap);
+  const defaultMockScalars = mockScalars(executableSchema);
+
+  let schemaWithMocks = addMocksToSchema<TResolvers>({
+    schema: executableSchema,
+    // TODO: combine with default custom scalar mocks and user-defined scalar mocks
+    mocks: { ...enumMocks, ...defaultMockScalars },
+    resolvers,
+    preserveResolvers: true,
+  });
+
+  return createHandlerFromSchema({ schema: schemaWithMocks, ...rest });
+};
+
+export const createHandlerFromSchema = (
+  schemaWithOptions: SchemaWithOptions,
+) => {
+  const { schema, delay } = schemaWithOptions;
 
   let _delay = delay ?? "real";
   // The default node server response time in MSW's delay utility is 5ms.
@@ -82,24 +196,12 @@ export const createHandler = <TResolvers>(
     _delay = 20;
   }
 
-  let testSchema: GraphQLSchema = schemaWithMocks;
+  let testSchema: GraphQLSchema = schema;
 
-  function replaceSchema(
-    newSchemaOrResolvers: Omit<
-      CreateHandlerDefinition<TResolvers>,
-      "delay" | "typeDefs"
-    >,
-  ) {
+  function replaceSchema(newSchema: GraphQLSchema) {
     const oldSchema = testSchema;
 
-    const { schema: newSchema, resolvers: newResolvers } = newSchemaOrResolvers;
-
-    testSchema =
-      newSchema ??
-      addMocksToSchema<TResolvers>({
-        schema: executableSchema,
-        resolvers: newResolvers,
-      });
+    testSchema = newSchema;
 
     function restore() {
       testSchema = oldSchema;
