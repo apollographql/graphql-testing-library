@@ -1,7 +1,4 @@
 [build]
   base = "docs"
   publish = "docs/dist"
-  command = """\
-  pnpm i
-  npm run build
-  """
+  command = "pnpm i && pnpm run build"
