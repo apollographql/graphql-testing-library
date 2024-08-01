@@ -104,10 +104,77 @@ type Query {
   viewer: User
 }
 
+scalar Date
+
+type EntitiesError {
+  message: String!
+}
+
+type EntitiesErrorResponse {
+  errors: [EntitiesError!]!
+}
+
+type EntitiesResponse {
+  entities: [Entity!]!
+}
+
+union EntitiesResponseOrError = EntitiesResponse | EntitiesErrorResponse
+
+type Entity {
+  typename: String!
+}
+
 type Review {
   id: ID!
   rating: Float
   content: String
+}
+
+interface Book {
+  id: ID!
+  title: String
+  publishedAt: Date
+}
+
+interface ReadableObject {
+  text: String
+}
+
+type TextBook implements Book & ReadableObject {
+  id: ID!
+  title: String
+  publishedAt: Date
+  text: String
+}
+
+type ColoringBook implements Book {
+  id: ID!
+  title: String
+  publishedAt: Date
+  colors: [String]
+}
+
+enum ContractVariantFailedStep {
+  ADD_DIRECTIVE_DEFINITIONS_IF_NOT_PRESENT
+  ADD_INACCESSIBLE_SPEC_PURPOSE
+  DIRECTIVE_DEFINITION_LOCATION_AUGMENTING
+  EMPTY_ENUM_MASKING
+  EMPTY_INPUT_OBJECT_MASKING
+  EMPTY_OBJECT_AND_INTERFACE_FIELD_MASKING
+  EMPTY_OBJECT_AND_INTERFACE_MASKING
+  EMPTY_UNION_MASKING
+  INPUT_VALIDATION
+  PARSING
+  PARSING_TAG_DIRECTIVES
+  PARTIAL_INTERFACE_MASKING
+  SCHEMA_RETRIEVAL
+  TAG_INHERITING
+  TAG_MATCHING
+  TO_API_SCHEMA
+  TO_FILTER_SCHEMA
+  UNKNOWN
+  UNREACHABLE_TYPE_MASKING
+  VERSION_CHECK
 }
 
 """

@@ -1,15 +1,22 @@
-import { ApolloProvider } from "@apollo/client";
 import { Suspense } from "react";
+import {
+  ApolloProvider,
+  gql,
+  useSuspenseQuery,
+  type TypedDocumentNode,
+} from "@apollo/client";
+import { render, screen, waitFor } from "@testing-library/react";
 import {
   App,
   AppWithDefer,
   makeClient,
 } from "../../.storybook/stories/components/apollo-client/ApolloComponent.tsx";
-import { addMocksToSchema } from "@graphql-tools/mock";
-import { makeExecutableSchema } from "@graphql-tools/schema";
-import graphqlSchema from "../../.storybook/stories/components/relay/schema.graphql";
-import { replaceSchema, replaceDelay } from "./mocks/handlers.js";
-import { render, screen, waitFor } from "@testing-library/react";
+import {
+  replaceSchema,
+  replaceDelay,
+  products,
+  withResolvers,
+} from "./mocks/handlers.js";
 
 describe("integration tests", () => {
   describe("single execution result response", () => {
@@ -77,31 +84,23 @@ describe("integration tests", () => {
       });
     });
     it("can set a new schema via replaceSchema", async () => {
-      // Create an executable GraphQL schema with no resolvers
-      const schema = makeExecutableSchema({ typeDefs: graphqlSchema });
-
-      // Create a new schema with mocks
-      const schemaWithMocks = addMocksToSchema({
-        schema,
-        resolvers: {
-          Query: {
-            products: () => {
-              return Array.from({ length: 6 }, (_element, id) => ({
-                id,
-                title: `Foo bar ${id}`,
-                reviews: [
-                  {
-                    id: `review-${id}`,
-                    rating: id,
-                  },
-                ],
-              }));
-            },
+      using _restore = withResolvers({
+        Query: {
+          products: () => {
+            return Array.from({ length: 6 }, (_element, id) => ({
+              id: `${id}`,
+              title: `Foo bar ${id}`,
+              mediaUrl: `https://storage.googleapis.com/hack-the-supergraph/apollo-${products[id]}.jpg`,
+              reviews: [
+                {
+                  id: `review-${id}`,
+                  rating: id,
+                },
+              ],
+            }));
           },
         },
       });
-
-      using _restore = replaceSchema(schemaWithMocks);
 
       const client = makeClient();
 
@@ -179,6 +178,59 @@ describe("integration tests", () => {
     });
   });
 });
+
+// describe.skip("integration tests with github schema", () => {
+//   it("renders a component fetching from the GitHub api", async () => {
+//     const client = makeClient();
+
+//     const APP_QUERY = gql`
+//       query AppQuery {
+//         repository(owner: "octocat", name: "Hello-World") {
+//           issues(last: 20, states: CLOSED) {
+//             edges {
+//               node {
+//                 title
+//                 url
+//                 labels(first: 5) {
+//                   edges {
+//                     node {
+//                       name
+//                     }
+//                   }
+//                 }
+//               }
+//             }
+//           }
+//         }
+//       }
+//     `;
+
+//     const Shell = () => {
+//       console.log("render");
+//       return (
+//         <ApolloProvider client={client}>
+//           <Suspense fallback={<h1>Loading...</h1>}>
+//             <App />
+//           </Suspense>
+//         </ApolloProvider>
+//       );
+//     };
+
+//     const App = () => {
+//       const { data } = useSuspenseQuery(APP_QUERY);
+//       if (data) {
+//         console.log(data.repository.issues.edges);
+//       }
+//       return <>hi</>;
+//     };
+
+//     render(<Shell />);
+
+//     await waitFor(() =>
+//       expect(screen.getByText(/beanie/i)).toBeInTheDocument(),
+//     );
+//   });
+// });
 
 describe("unit tests", () => {
   it("can roll back delay via disposable", () => {
