@@ -4,52 +4,29 @@ import { isNodeProcess } from "is-node-process";
 import {
   type ExecutionResult,
   type GraphQLSchema,
-  type ASTNode,
   type DocumentNode,
-  type GraphQLResolveInfo,
-  GraphQLEnumType,
-  type GraphQLEnumValue,
-  isUnionType,
-  isInterfaceType,
-  isObjectType,
-  isScalarType,
 } from "graphql";
-import { visit, BREAK } from "graphql";
 import { HttpResponse, graphql, delay as mswDelay } from "msw";
 import type {
   InitialIncrementalExecutionResult,
   SingularExecutionResult,
   SubsequentIncrementalExecutionResult,
 } from "@graphql-tools/executor";
-import {
-  addResolversToSchema,
-  makeExecutableSchema,
-} from "@graphql-tools/schema";
+import { makeExecutableSchema } from "@graphql-tools/schema";
 import {
   addMocksToSchema,
   type IMocks,
   type IMockStore,
 } from "@graphql-tools/mock";
-import { mergeResolvers } from "@graphql-tools/merge";
+import {
+  createDefaultResolvers,
+  createPossibleTypesMap,
+  mockCustomScalars,
+  mockEnums,
+  hasDirectives,
+} from "./utilities.ts";
 
 const encoder = new TextEncoder();
-
-export function hasDirectives(names: string[], root: ASTNode, all?: boolean) {
-  const nameSet = new Set(names);
-  const uniqueCount = nameSet.size;
-
-  visit(root, {
-    Directive(node) {
-      if (nameSet.delete(node.name.value) && (!all || !nameSet.size)) {
-        return BREAK;
-      }
-    },
-  });
-
-  // If we found all the names, nameSet will be empty. If we only care about
-  // finding some of them, the < condition is sufficient.
-  return all ? !nameSet.size : nameSet.size < uniqueCount;
-}
 
 type Delay = number | "infinite" | "real";
 
@@ -67,98 +44,6 @@ type SchemaWithOptions = {
   schema: GraphQLSchema;
 } & DelayOptions;
 
-// Generates a Map of possible types. The keys are Union | Interface type names
-// which map to Sets of either union members or types that implement the
-// interface.
-const createPossibleTypesMap = (executableSchema: GraphQLSchema) => {
-  const typeMap = executableSchema.getTypeMap();
-  const typesMap = new Map<string, Set<string>>();
-
-  for (const typeName of Object.keys(typeMap)) {
-    const type = typeMap[typeName];
-
-    if (isUnionType(type) && !typesMap.has(typeName)) {
-      typesMap.set(typeName, new Set(type.getTypes().map((item) => item.name)));
-    }
-
-    if (isObjectType(type) && type.getInterfaces().length > 0) {
-      for (const interfaceType of type.getInterfaces()) {
-        if (typesMap.has(interfaceType.name)) {
-          const setOfTypes = typesMap.get(interfaceType.name);
-          if (setOfTypes) {
-            typesMap.set(
-              interfaceType.name,
-              new Set([...Array.from(setOfTypes), typeName]),
-            );
-          }
-        } else {
-          typesMap.set(interfaceType.name, new Set([typeName]));
-        }
-      }
-    }
-  }
-  return typesMap;
-};
-
-// From a Map of possible types, create
-const createDefaultResolvers = (typesMap: Map<string, Set<string>>) => {
-  const defaultResolvers: {
-    [key: string]: {
-      __resolveType(data: { __typename?: string }): string;
-    };
-  } = {};
-
-  for (const key of typesMap.keys()) {
-    defaultResolvers[key] = {
-      __resolveType(data: { __typename?: string }) {
-        return data.__typename || typesMap.get(key)?.values().next().value;
-      },
-    };
-  }
-  return defaultResolvers;
-};
-
-const sortEnumsByValue = () => {
-  const key = "value";
-  return (a: GraphQLEnumValue, b: GraphQLEnumValue) =>
-    a[key] > b[key] ? 1 : b[key] > a[key] ? -1 : 0;
-};
-
-// TODO: memoize
-// Creates a map of enum types and mock resolver functions that return
-// the first possible value.
-export const mockEnums = (schema: GraphQLSchema) => {
-  return Object.fromEntries(
-    Object.entries(schema.getTypeMap())
-      .filter(
-        (arg): arg is [string, GraphQLEnumType] =>
-          arg[1] instanceof GraphQLEnumType,
-      )
-      .map(([typeName, type]) => {
-        const value = type
-          .getValues()
-          .concat()
-          .sort(sortEnumsByValue())[0]?.value;
-        return [typeName, () => value] as const;
-      }),
-  );
-};
-
-const mockScalars = (schema: GraphQLSchema) => {
-  const typeMap = schema.getTypeMap();
-  const mockScalarsMap: Record<string, () => string> = {};
-
-  for (const typeName of Object.keys(typeMap)) {
-    const type = typeMap[typeName];
-    if (isScalarType(type) && type.astNode) {
-      // console.log(typeName, type);
-      mockScalarsMap[typeName] = () =>
-        `Default value for custom scalar \`${typeName}\``;
-    }
-  }
-  return mockScalarsMap;
-};
-
 export const createHandler = <TResolvers>(
   documentResolversWithOptions: DocumentResolversWithOptions<TResolvers>,
 ) => {
@@ -166,16 +51,15 @@ export const createHandler = <TResolvers>(
 
   let executableSchema = makeExecutableSchema({ typeDefs });
 
-  const enumMocks = mockEnums(executableSchema);
+  const enumMocks = mockEnums<TResolvers>(executableSchema);
+  const customScalarMocks = mockCustomScalars<TResolvers>(executableSchema);
   const typesMap = createPossibleTypesMap(executableSchema);
   const defaultResolvers = createDefaultResolvers(typesMap);
-  const defaultMockScalars = mockScalars(executableSchema);
 
   let schemaWithMocks = addMocksToSchema<TResolvers>({
     schema: executableSchema,
-    // TODO: combine with default custom scalar mocks and user-defined scalar mocks
-    mocks: { ...enumMocks, ...defaultMockScalars },
-    resolvers,
+    mocks: { ...enumMocks, ...customScalarMocks, ...mocks },
+    resolvers: { ...defaultResolvers, ...resolvers },
     preserveResolvers: true,
   });
 
