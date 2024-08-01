@@ -24,3 +24,6 @@ storybook-static
 # jest coverage
 coverage
 coverage.txt
+
+# generated types
+.astro

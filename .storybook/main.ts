@@ -9,7 +9,6 @@ const config: StorybookConfig = {
     "@storybook/addon-links",
     "@storybook/addon-essentials",
     "@storybook/addon-interactions",
-    "@storybook/addon-styling-webpack",
     "@storybook/addon-docs",
   ],
   framework: {
@@ -17,8 +16,16 @@ const config: StorybookConfig = {
     options: {},
   },
   async viteFinal(config, options) {
-    // Add your configuration here
     config.plugins?.push(relay, graphqlLoader());
+    config.css = {
+      postcss: {
+        plugins: [
+          require("tailwindcss")({
+            config: ".storybook/tailwind.config.js",
+          }),
+        ],
+      },
+    };
     return config;
   },
 };
