@@ -1,0 +1,7 @@
+[build]
+  base = "docs"
+  publish = "docs/dist"
+  command = """\
+  pnpm i
+  npm run build
+  """

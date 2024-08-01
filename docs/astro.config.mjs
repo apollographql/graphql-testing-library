@@ -5,22 +5,27 @@ import starlight from "@astrojs/starlight";
 export default defineConfig({
   integrations: [
     starlight({
-      title: "My Docs",
+      title: "GraphQL Testing Library",
       social: {
         github: "https://github.com/apollographql/graphql-testing-library",
+        discord: "https://discord.gg/graphos",
       },
       sidebar: [
         {
-          label: "Guides",
-          items: [
-            // Each item here is one entry in the navigation menu.
-            { label: "Example Guide", slug: "guides/example" },
-          ],
+          label: "Getting started",
+          autogenerate: { directory: "getting-started" },
         },
-        {
-          label: "Examples",
-          autogenerate: { directory: "examples" },
-        },
+        // {
+        //   label: "Examples",
+        //   autogenerate: { directory: "examples" },
+        // },
+        // {
+        //   label: "Guides",
+        //   items: [
+        //     // Each item here is one entry in the navigation menu.
+        //     { label: "Example Guide", slug: "guides/example" },
+        //   ],
+        // },
       ],
     }),
   ],
