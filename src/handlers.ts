@@ -12,7 +12,10 @@ import type {
   SingularExecutionResult,
   SubsequentIncrementalExecutionResult,
 } from "@graphql-tools/executor";
-import { makeExecutableSchema } from "@graphql-tools/schema";
+import {
+  addResolversToSchema,
+  makeExecutableSchema,
+} from "@graphql-tools/schema";
 import {
   addMocksToSchema,
   type IMocks,
@@ -24,6 +27,7 @@ import {
   mockCustomScalars,
   mockEnums,
   hasDirectives,
+  mergeResolvers,
 } from "./utilities.ts";
 
 const encoder = new TextEncoder();
@@ -36,39 +40,60 @@ interface DelayOptions {
 
 type DocumentResolversWithOptions<TResolvers> = {
   typeDefs: DocumentNode;
-  resolvers: Partial<TResolvers> | ((store: IMockStore) => Partial<TResolvers>);
+  resolvers: Resolvers<TResolvers>;
   mocks?: IMocks<TResolvers>;
 } & DelayOptions;
 
-type SchemaWithOptions = {
+type Resolvers<TResolvers> =
+  | Partial<TResolvers>
+  | ((store: IMockStore) => Partial<TResolvers>);
+
+type SchemaWithOptions<TResolvers> = {
   schema: GraphQLSchema;
+  resolvers?: Resolvers<TResolvers>;
 } & DelayOptions;
 
-export const createHandler = <TResolvers>(
+function createHandler<TResolvers>(
   documentResolversWithOptions: DocumentResolversWithOptions<TResolvers>,
-) => {
+) {
   const { resolvers, typeDefs, mocks, ...rest } = documentResolversWithOptions;
 
-  let executableSchema = makeExecutableSchema({ typeDefs });
+  const executableSchema = makeExecutableSchema({ typeDefs });
 
-  const enumMocks = mockEnums<TResolvers>(executableSchema);
-  const customScalarMocks = mockCustomScalars<TResolvers>(executableSchema);
+  const schemaWithMocks = createSchemaWithDefaultMocks<TResolvers>(
+    executableSchema,
+    resolvers,
+  );
+
+  return createHandlerFromSchema<TResolvers>({
+    schema: schemaWithMocks,
+    ...rest,
+  });
+}
+
+function createSchemaWithDefaultMocks<TResolvers>(
+  executableSchema: GraphQLSchema,
+  resolvers: Resolvers<TResolvers>,
+  mocks?: IMocks<TResolvers>,
+) {
+  const enumMocks = mockEnums(executableSchema);
+  const customScalarMocks = mockCustomScalars(executableSchema);
   const typesMap = createPossibleTypesMap(executableSchema);
   const defaultResolvers = createDefaultResolvers(typesMap);
 
-  let schemaWithMocks = addMocksToSchema<TResolvers>({
+  return addMocksToSchema<TResolvers>({
     schema: executableSchema,
-    mocks: { ...enumMocks, ...customScalarMocks, ...mocks },
-    resolvers: { ...defaultResolvers, ...resolvers },
+    // @ts-expect-error reconcile mock resolver types
+    mocks: mergeResolvers(enumMocks, customScalarMocks, mocks ?? {}),
+    // @ts-expect-error reconcile mock resolver types
+    resolvers: mergeResolvers(defaultResolvers, resolvers),
     preserveResolvers: true,
   });
+}
 
-  return createHandlerFromSchema({ schema: schemaWithMocks, ...rest });
-};
-
-export const createHandlerFromSchema = (
-  schemaWithOptions: SchemaWithOptions,
-) => {
+function createHandlerFromSchema<TResolvers>(
+  schemaWithOptions: SchemaWithOptions<TResolvers>,
+) {
   const { schema, delay } = schemaWithOptions;
 
   let _delay = delay ?? "real";
@@ -98,11 +123,22 @@ export const createHandlerFromSchema = (
     });
   }
 
-  // TODO:
-  // function replaceResolvers() {}
+  function withResolvers(resolvers: Resolvers<TResolvers>) {
+    const oldSchema = testSchema;
 
-  // TODO:
-  // function mergeResolvers() {}
+    // @ts-expect-error reconcile mock resolver types
+    testSchema = addResolversToSchema({ schema: oldSchema, resolvers });
+
+    function restore() {
+      testSchema = oldSchema;
+    }
+
+    return Object.assign(restore, {
+      [Symbol.dispose]() {
+        restore();
+      },
+    });
+  }
 
   function replaceDelay(newDelay: Delay) {
     const oldDelay = _delay;
@@ -146,6 +182,7 @@ export const createHandlerFromSchema = (
       JSON.stringify(value),
     ];
   }
+  // attach cleanup/update resolver fns to custom handler class
 
   return {
     handler: graphql.operation<
@@ -227,5 +264,8 @@ export const createHandlerFromSchema = (
     }),
     replaceSchema,
     replaceDelay,
+    withResolvers,
   };
-};
+}
+
+export { createHandler, createHandlerFromSchema, createSchemaWithDefaultMocks };

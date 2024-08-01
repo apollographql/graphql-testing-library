@@ -1,21 +1,20 @@
 import {
   type ASTNode,
-  type GraphQLSchema,
   type GraphQLEnumValue,
+  type GraphQLResolveInfo,
+  type GraphQLSchema,
   GraphQLEnumType,
   isUnionType,
   isObjectType,
   isScalarType,
   visit,
   BREAK,
+  GraphQLScalarType,
+  Kind,
+  GraphQLError,
 } from "graphql";
-import {
-  type IMocks,
-  type IScalarMock,
-  type ITypeMock,
-} from "@graphql-tools/mock";
 
-export function hasDirectives(names: string[], root: ASTNode, all?: boolean) {
+function hasDirectives(names: string[], root: ASTNode, all?: boolean) {
   const nameSet = new Set(names);
   const uniqueCount = nameSet.size;
 
@@ -35,7 +34,7 @@ export function hasDirectives(names: string[], root: ASTNode, all?: boolean) {
 // Generates a Map of possible types. The keys are Union | Interface type names
 // which map to Sets of either union members or types that implement the
 // interface.
-export const createPossibleTypesMap = (executableSchema: GraphQLSchema) => {
+function createPossibleTypesMap(executableSchema: GraphQLSchema) {
   const typeMap = executableSchema.getTypeMap();
   const possibleTypesMap = new Map<string, Set<string>>();
 
@@ -63,11 +62,11 @@ export const createPossibleTypesMap = (executableSchema: GraphQLSchema) => {
     }
   }
   return possibleTypesMap;
-};
+}
 
 // From a Map of possible types, create default resolvers with __resolveType
 // functions that pick the first possible type if no __typename is present.
-export const createDefaultResolvers = (typesMap: Map<string, Set<string>>) => {
+function createDefaultResolvers(typesMap: Map<string, Set<string>>) {
   const defaultResolvers: {
     [key: string]: {
       __resolveType(data: { __typename?: string }): string;
@@ -82,7 +81,7 @@ export const createDefaultResolvers = (typesMap: Map<string, Set<string>>) => {
     };
   }
   return defaultResolvers;
-};
+}
 
 // Sorts enum values alphabetically.
 const sortEnumValues = () => {
@@ -94,10 +93,7 @@ const sortEnumValues = () => {
 // TODO: memoize
 // Creates a map of enum types and mock resolver functions that return
 // the first possible value.
-export const mockEnums = <TResolvers>(
-  schema: GraphQLSchema,
-): IMocks<TResolvers> => {
-  // @ts-ignore
+function mockEnums(schema: GraphQLSchema) {
   return Object.fromEntries(
     Object.entries(schema.getTypeMap())
       .filter(
@@ -112,24 +108,114 @@ export const mockEnums = <TResolvers>(
         return [typeName, () => value] as const;
       }),
   );
-};
+}
 
-export const mockCustomScalars = <Resolvers>(
-  schema: GraphQLSchema,
-): IMocks<Resolvers> => {
+function mockCustomScalars(schema: GraphQLSchema) {
   const typeMap = schema.getTypeMap();
 
   const mockScalarsMap: {
-    [typeOrScalarName: string]: IScalarMock | ITypeMock;
+    [typeOrScalarName: string]: GraphQLScalarType<unknown, unknown>;
   } = {};
 
   for (const typeName of Object.keys(typeMap)) {
     const type = typeMap[typeName];
     // Only mock custom scalars
     if (isScalarType(type) && type.astNode) {
-      mockScalarsMap[typeName] = () =>
-        `Default value for custom scalar \`${typeName}\``;
+      mockScalarsMap[typeName] = new GraphQLScalarType({
+        name: typeName,
+        serialize: (value) => value,
+        parseValue: (value) => value,
+        parseLiteral(ast) {
+          if (ast.kind !== Kind.STRING) {
+            throw new GraphQLError(
+              `Query error: Can only parse strings to Blobs but got a: ${ast.kind}`,
+              [ast],
+            );
+          }
+          // const result = ast.value;
+          // return result;
+          return `Default value for custom scalar \`${typeName}\``;
+        },
+      });
     }
   }
-  return mockScalarsMap as IMocks<Resolvers>;
+  return mockScalarsMap;
+}
+
+export type ResolverMap<ResolversTypes> = {
+  [key in keyof ResolversTypes]?: () => ResolversTypes[key] extends () => unknown
+    ?
+        | ReturnType<ResolversTypes[key]>
+        | {
+            [key2 in keyof ReturnType<ResolversTypes[key]>]:
+              | ReturnType<ResolversTypes[key]>[key2]
+              | ((
+                  args: Record<string, unknown> | undefined,
+                  context: unknown,
+                  field: GraphQLResolveInfo,
+                ) => ReturnType<ResolversTypes[key]>[key2]);
+          }
+        | null
+    : null;
+};
+
+// adapted from https://github.com/apollographql/graphql-tools/pull/1084/files
+// as per https://www.freecodecamp.org/news/a-new-approach-to-mocking-graphql-data-1ef49de3d491/
+
+/**
+ * Given a map of mock GraphQL resolver functions, merge in a map of
+ * desired mocks. Generally, `target` will be the default mocked values,
+ * and `input` will be the values desired for a portal example or Jest tests.
+ */
+function mergeResolver<RTypes>(
+  target: ResolverMap<RTypes>,
+  input: ResolverMap<RTypes>,
+) {
+  const inputTypenames = Object.keys(input) as (keyof ResolverMap<RTypes>)[];
+  const merged = inputTypenames.reduce(
+    (accum, key) => {
+      const inputResolver = input[key];
+      if (!inputResolver) throw new Error("missing input resolver");
+      if (Object.prototype.hasOwnProperty.call(target, key)) {
+        const resolvedInput: unknown = inputResolver();
+        const resolvedTarget: unknown = target[key]?.();
+        if (
+          !!resolvedTarget &&
+          !!resolvedInput &&
+          typeof resolvedTarget === "object" &&
+          typeof resolvedInput === "object" &&
+          !Array.isArray(resolvedTarget) &&
+          !Array.isArray(resolvedInput)
+        ) {
+          return {
+            ...accum,
+            [key]: () => ({ ...resolvedTarget, ...resolvedInput }),
+          };
+        }
+      }
+      return { ...accum, [key]: inputResolver };
+    },
+    { ...target },
+  );
+  return merged;
+}
+
+function mergeResolvers<RTypes>(
+  target: ResolverMap<RTypes>,
+  ...inputs: ResolverMap<RTypes>[]
+) {
+  let resolver = target;
+  inputs.forEach((input) => {
+    resolver = mergeResolver<RTypes>(resolver, input);
+  });
+  return resolver;
+}
+
+export {
+  hasDirectives,
+  createPossibleTypesMap,
+  createDefaultResolvers,
+  mockEnums,
+  mockCustomScalars,
+  mergeResolvers,
 };
