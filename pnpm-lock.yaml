@@ -19,8 +19,8 @@ importers:
         version: 1.2.0
     devDependencies:
       '@apollo/client':
-        specifier: 3.11.2
-        version: 3.11.2(@types/react@18.3.3)(graphql-ws@5.16.0(graphql@16.9.0))(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 3.11.3
+        version: 3.11.3(@types/react@18.3.3)(graphql-ws@5.16.0(graphql@16.9.0))(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@apollo/tailwind-preset':
         specifier: 0.1.13
         version: 0.1.13(tailwindcss@3.4.7(ts-node@10.9.2(@swc/core@1.6.5)(@types/node@20.14.14)(typescript@5.5.4)))
@@ -221,8 +221,8 @@ packages:
   '@apollo/brand@0.5.9':
     resolution: {integrity: sha512-5qFFqAfEL4UDvk0WxMxJJAVZK7qNA8J9p3OU/PL1xEOrPU5G0t4FUCORM0IFg5mkCAtfMUzPHbEKiGXOUMdDKw==}
 
-  '@apollo/client@3.11.2':
-    resolution: {integrity: sha512-HVcsJChOVut6gmmf5YukTG52EXg0cxq0LU7I/0yZPcfcJOPW2cpVqveaxZt+B1fL6ZKrYVdSa2nfuK0oSpv0Yw==}
+  '@apollo/client@3.11.3':
+    resolution: {integrity: sha512-bocd9vQc9PSq4MG6129HKF8ujUirVod98he9OEWpyOs5CXnUC81zNRaUshA4wPSflR6mnx0yRuRankp1V8A+og==}
     peerDependencies:
       graphql: ^15.0.0 || ^16.0.0
       graphql-ws: ^5.5.5
@@ -6671,7 +6671,7 @@ snapshots:
 
   '@apollo/brand@0.5.9': {}
 
-  '@apollo/client@3.11.2(@types/react@18.3.3)(graphql-ws@5.16.0(graphql@16.9.0))(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@apollo/client@3.11.3(@types/react@18.3.3)(graphql-ws@5.16.0(graphql@16.9.0))(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.9.0)
       '@wry/caches': 1.0.1
@@ -8062,7 +8062,7 @@ snapshots:
       '@graphql-tools/optimize': 2.0.0(graphql@16.9.0)
       '@graphql-tools/webpack-loader-runtime': 7.0.0(graphql@16.9.0)
       graphql: 16.9.0
-      tslib: 2.6.2
+      tslib: 2.6.3
 
   '@graphql-typed-document-node/core@3.2.0(graphql@16.9.0)':
     dependencies:
