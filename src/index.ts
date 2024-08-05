@@ -4,23 +4,18 @@ import {
   createSchemaWithDefaultMocks,
 } from "./handlers.js";
 import {
-  mockEnums,
-  mergeResolvers,
-  mockCustomScalars,
-  createPossibleTypesMap,
   createDefaultResolvers,
-  type ResolverMap,
+  createPossibleTypesMap,
+  generateEnumMocksFromSchema,
+  mockCustomScalars,
 } from "./utilities.ts";
-
-export type { ResolverMap };
 
 export {
   createHandler,
   createHandlerFromSchema,
-  mockEnums,
-  mergeResolvers,
+  generateEnumMocksFromSchema,
   mockCustomScalars,
-  createPossibleTypesMap,
   createDefaultResolvers,
+  createPossibleTypesMap,
   createSchemaWithDefaultMocks,
 };

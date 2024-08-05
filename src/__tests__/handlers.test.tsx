@@ -179,58 +179,58 @@ describe("integration tests", () => {
   });
 });
 
-// describe.skip("integration tests with github schema", () => {
-//   it("renders a component fetching from the GitHub api", async () => {
-//     const client = makeClient();
+describe.skip("integration tests with github schema", () => {
+  it("renders a component fetching from the GitHub api", async () => {
+    const client = makeClient();
 
-//     const APP_QUERY = gql`
-//       query AppQuery {
-//         repository(owner: "octocat", name: "Hello-World") {
-//           issues(last: 20, states: CLOSED) {
-//             edges {
-//               node {
-//                 title
-//                 url
-//                 labels(first: 5) {
-//                   edges {
-//                     node {
-//                       name
-//                     }
-//                   }
-//                 }
-//               }
-//             }
-//           }
-//         }
-//       }
-//     `;
+    const APP_QUERY = gql`
+      query AppQuery {
+        repository(owner: "octocat", name: "Hello-World") {
+          issues(last: 20, states: CLOSED) {
+            edges {
+              node {
+                title
+                url
+                labels(first: 5) {
+                  edges {
+                    node {
+                      name
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
 
-//     const Shell = () => {
-//       console.log("render");
-//       return (
-//         <ApolloProvider client={client}>
-//           <Suspense fallback={<h1>Loading...</h1>}>
-//             <App />
-//           </Suspense>
-//         </ApolloProvider>
-//       );
-//     };
+    const Shell = () => {
+      console.log("render");
+      return (
+        <ApolloProvider client={client}>
+          <Suspense fallback={<h1>Loading...</h1>}>
+            <App />
+          </Suspense>
+        </ApolloProvider>
+      );
+    };
 
-//     const App = () => {
-//       const { data } = useSuspenseQuery(APP_QUERY);
-//       if (data) {
-//         console.log(data.repository.issues.edges);
-//       }
-//       return <>hi</>;
-//     };
+    const App = () => {
+      const { data } = useSuspenseQuery(APP_QUERY);
+      if (data) {
+        console.log(data.repository.issues.edges);
+      }
+      return <>hi</>;
+    };
 
-//     render(<Shell />);
+    render(<Shell />);
 
-//     await waitFor(() =>
-//       expect(screen.getByText(/beanie/i)).toBeInTheDocument(),
-//     );
-//   });
-// });
+    await waitFor(() =>
+      expect(screen.getByText(/beanie/i)).toBeInTheDocument(),
+    );
+  });
+});
 
 describe("unit tests", () => {
   it("can roll back delay via disposable", () => {

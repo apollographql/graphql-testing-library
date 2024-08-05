@@ -21,14 +21,15 @@ import {
   type IMocks,
   type IMockStore,
 } from "@graphql-tools/mock";
+import { mergeResolvers } from "@graphql-tools/merge";
 import {
   createDefaultResolvers,
   createPossibleTypesMap,
   mockCustomScalars,
-  mockEnums,
   hasDirectives,
-  mergeResolvers,
+  generateEnumMocksFromSchema,
 } from "./utilities.ts";
+import type { IResolvers, Maybe } from "@graphql-tools/utils";
 
 const encoder = new TextEncoder();
 
@@ -63,6 +64,7 @@ function createHandler<TResolvers>(
   const schemaWithMocks = createSchemaWithDefaultMocks<TResolvers>(
     executableSchema,
     resolvers,
+    mocks,
   );
 
   return createHandlerFromSchema<TResolvers>({
@@ -73,20 +75,27 @@ function createHandler<TResolvers>(
 
 function createSchemaWithDefaultMocks<TResolvers>(
   executableSchema: GraphQLSchema,
-  resolvers: Resolvers<TResolvers>,
+  resolvers: Partial<TResolvers> | ((store: IMockStore) => Partial<TResolvers>),
   mocks?: IMocks<TResolvers>,
 ) {
-  const enumMocks = mockEnums(executableSchema);
+  const enumMocks = generateEnumMocksFromSchema(executableSchema);
   const customScalarMocks = mockCustomScalars(executableSchema);
   const typesMap = createPossibleTypesMap(executableSchema);
   const defaultResolvers = createDefaultResolvers(typesMap);
 
   return addMocksToSchema<TResolvers>({
     schema: executableSchema,
-    // @ts-expect-error reconcile mock resolver types
-    mocks: mergeResolvers(enumMocks, customScalarMocks, mocks ?? {}),
-    // @ts-expect-error reconcile mock resolver types
-    resolvers: mergeResolvers(defaultResolvers, resolvers),
+    mocks: {
+      ...enumMocks,
+      ...customScalarMocks,
+      ...mocks,
+    } as IMocks<TResolvers>,
+    resolvers: mergeResolvers([
+      defaultResolvers,
+      resolvers as Maybe<
+        IResolvers<{ __typename?: string | undefined }, unknown>
+      >,
+    ]) as Partial<TResolvers>,
     preserveResolvers: true,
   });
 }
@@ -126,8 +135,11 @@ function createHandlerFromSchema<TResolvers>(
   function withResolvers(resolvers: Resolvers<TResolvers>) {
     const oldSchema = testSchema;
 
-    // @ts-expect-error reconcile mock resolver types
-    testSchema = addResolversToSchema({ schema: oldSchema, resolvers });
+    testSchema = addResolversToSchema({
+      schema: oldSchema,
+      // @ts-expect-error reconcile mock resolver types
+      resolvers,
+    });
 
     function restore() {
       testSchema = oldSchema;

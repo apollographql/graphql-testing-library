@@ -23,6 +23,9 @@ const { handler, replaceSchema, withResolvers, replaceDelay } =
           })),
       },
     },
+    mocks: {
+      String: () => "foo bar",
+    },
   });
 
 const handlers = [handler];

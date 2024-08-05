@@ -1,7 +1,6 @@
 import {
   type ASTNode,
   type GraphQLEnumValue,
-  type GraphQLResolveInfo,
   type GraphQLSchema,
   GraphQLEnumType,
   isUnionType,
@@ -93,7 +92,7 @@ const sortEnumValues = () => {
 // TODO: memoize
 // Creates a map of enum types and mock resolver functions that return
 // the first possible value.
-function mockEnums(schema: GraphQLSchema) {
+function generateEnumMocksFromSchema(schema: GraphQLSchema) {
   return Object.fromEntries(
     Object.entries(schema.getTypeMap())
       .filter(
@@ -142,80 +141,10 @@ function mockCustomScalars(schema: GraphQLSchema) {
   return mockScalarsMap;
 }
 
-export type ResolverMap<ResolversTypes> = {
-  [key in keyof ResolversTypes]?: () => ResolversTypes[key] extends () => unknown
-    ?
-        | ReturnType<ResolversTypes[key]>
-        | {
-            [key2 in keyof ReturnType<ResolversTypes[key]>]:
-              | ReturnType<ResolversTypes[key]>[key2]
-              | ((
-                  args: Record<string, unknown> | undefined,
-                  context: unknown,
-                  field: GraphQLResolveInfo,
-                ) => ReturnType<ResolversTypes[key]>[key2]);
-          }
-        | null
-    : null;
-};
-
-// adapted from https://github.com/apollographql/graphql-tools/pull/1084/files
-// as per https://www.freecodecamp.org/news/a-new-approach-to-mocking-graphql-data-1ef49de3d491/
-
-/**
- * Given a map of mock GraphQL resolver functions, merge in a map of
- * desired mocks. Generally, `target` will be the default mocked values,
- * and `input` will be the values desired for a portal example or Jest tests.
- */
-function mergeResolver<RTypes>(
-  target: ResolverMap<RTypes>,
-  input: ResolverMap<RTypes>,
-) {
-  const inputTypenames = Object.keys(input) as (keyof ResolverMap<RTypes>)[];
-  const merged = inputTypenames.reduce(
-    (accum, key) => {
-      const inputResolver = input[key];
-      if (!inputResolver) throw new Error("missing input resolver");
-      if (Object.prototype.hasOwnProperty.call(target, key)) {
-        const resolvedInput: unknown = inputResolver();
-        const resolvedTarget: unknown = target[key]?.();
-        if (
-          !!resolvedTarget &&
-          !!resolvedInput &&
-          typeof resolvedTarget === "object" &&
-          typeof resolvedInput === "object" &&
-          !Array.isArray(resolvedTarget) &&
-          !Array.isArray(resolvedInput)
-        ) {
-          return {
-            ...accum,
-            [key]: () => ({ ...resolvedTarget, ...resolvedInput }),
-          };
-        }
-      }
-      return { ...accum, [key]: inputResolver };
-    },
-    { ...target },
-  );
-  return merged;
-}
-
-function mergeResolvers<RTypes>(
-  target: ResolverMap<RTypes>,
-  ...inputs: ResolverMap<RTypes>[]
-) {
-  let resolver = target;
-  inputs.forEach((input) => {
-    resolver = mergeResolver<RTypes>(resolver, input);
-  });
-  return resolver;
-}
-
 export {
   hasDirectives,
   createPossibleTypesMap,
   createDefaultResolvers,
-  mockEnums,
+  generateEnumMocksFromSchema,
   mockCustomScalars,
-  mergeResolvers,
 };
