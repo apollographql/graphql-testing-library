@@ -1,33 +1,32 @@
 import { createHandler } from "../../handlers.js";
-import typeDefs from "../../../.storybook/stories/components/relay/schema.graphql";
-import type { Resolvers } from "../../__generated__/resolvers-types.ts";
+import typeDefs from "../../../.storybook/stories/ecommerce-schema.graphql";
+import type { Resolvers } from "../../__generated__/resolvers-types-ecommerce.ts";
 
-export const products = ["beanie", "bottle", "cap", "onesie", "shirt", "socks"];
+const products = ["beanie", "bottle", "cap", "onesie", "shirt", "socks"];
 
-const { handler, replaceSchema, withResolvers, replaceDelay } =
-  createHandler<Resolvers>({
-    typeDefs,
-    resolvers: {
-      Query: {
-        products: () =>
-          Array.from({ length: products.length }, (_element, id) => ({
-            id: `${id}`,
-            title: products[id],
-            mediaUrl: `https://storage.googleapis.com/hack-the-supergraph/apollo-${products[id]}.jpg`,
-            reviews: [
-              {
-                id: `review-${id}`,
-                rating: id * 2,
-              },
-            ],
-          })),
-      },
+const graphQLHandler = createHandler<Resolvers>({
+  typeDefs,
+  resolvers: {
+    Query: {
+      products: () =>
+        Array.from({ length: products.length }, (_element, id) => ({
+          id: `${id}`,
+          title: products[id],
+          mediaUrl: `https://storage.googleapis.com/hack-the-supergraph/apollo-${products[id]}.jpg`,
+          reviews: [
+            {
+              id: `review-${id}`,
+              rating: id * 2,
+            },
+          ],
+        })),
     },
-    mocks: {
-      String: () => "foo bar",
-    },
-  });
+  },
+  mocks: {
+    String: () => "foo bar",
+  },
+});
 
-const handlers = [handler];
+const handlers = [graphQLHandler];
 
-export { replaceSchema, replaceDelay, handlers, handler, withResolvers };
+export { graphQLHandler, handlers, products };

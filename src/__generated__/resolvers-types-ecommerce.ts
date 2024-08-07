@@ -1,4 +1,8 @@
-import type { GraphQLResolveInfo } from "graphql";
+import {
+  type GraphQLResolveInfo,
+  GraphQLScalarType,
+  type GraphQLScalarTypeConfig,
+} from "graphql";
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -29,6 +33,13 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
+  Date: { input: any; output: any };
+};
+
+export type Book = {
+  id: Scalars["ID"]["output"];
+  publishedAt?: Maybe<Scalars["Date"]["output"]>;
+  title?: Maybe<Scalars["String"]["output"]>;
 };
 
 /** An user's saved cart session. Only one cart can be active at a time */
@@ -38,6 +49,59 @@ export type Cart = {
   items?: Maybe<Array<Maybe<Product>>>;
   /** The current total of all the items in the cart, before taxes and shipping */
   subtotal?: Maybe<Scalars["Float"]["output"]>;
+};
+
+export type ColoringBook = Book & {
+  __typename?: "ColoringBook";
+  colors?: Maybe<Array<Maybe<Scalars["String"]["output"]>>>;
+  id: Scalars["ID"]["output"];
+  publishedAt?: Maybe<Scalars["Date"]["output"]>;
+  title?: Maybe<Scalars["String"]["output"]>;
+};
+
+export enum ContractVariantFailedStep {
+  AddDirectiveDefinitionsIfNotPresent = "ADD_DIRECTIVE_DEFINITIONS_IF_NOT_PRESENT",
+  AddInaccessibleSpecPurpose = "ADD_INACCESSIBLE_SPEC_PURPOSE",
+  DirectiveDefinitionLocationAugmenting = "DIRECTIVE_DEFINITION_LOCATION_AUGMENTING",
+  EmptyEnumMasking = "EMPTY_ENUM_MASKING",
+  EmptyInputObjectMasking = "EMPTY_INPUT_OBJECT_MASKING",
+  EmptyObjectAndInterfaceFieldMasking = "EMPTY_OBJECT_AND_INTERFACE_FIELD_MASKING",
+  EmptyObjectAndInterfaceMasking = "EMPTY_OBJECT_AND_INTERFACE_MASKING",
+  EmptyUnionMasking = "EMPTY_UNION_MASKING",
+  InputValidation = "INPUT_VALIDATION",
+  Parsing = "PARSING",
+  ParsingTagDirectives = "PARSING_TAG_DIRECTIVES",
+  PartialInterfaceMasking = "PARTIAL_INTERFACE_MASKING",
+  SchemaRetrieval = "SCHEMA_RETRIEVAL",
+  TagInheriting = "TAG_INHERITING",
+  TagMatching = "TAG_MATCHING",
+  ToApiSchema = "TO_API_SCHEMA",
+  ToFilterSchema = "TO_FILTER_SCHEMA",
+  Unknown = "UNKNOWN",
+  UnreachableTypeMasking = "UNREACHABLE_TYPE_MASKING",
+  VersionCheck = "VERSION_CHECK",
+}
+
+export type EntitiesError = {
+  __typename?: "EntitiesError";
+  message: Scalars["String"]["output"];
+};
+
+export type EntitiesErrorResponse = {
+  __typename?: "EntitiesErrorResponse";
+  errors: Array<EntitiesError>;
+};
+
+export type EntitiesResponse = {
+  __typename?: "EntitiesResponse";
+  entities: Array<Entity>;
+};
+
+export type EntitiesResponseOrError = EntitiesErrorResponse | EntitiesResponse;
+
+export type Entity = {
+  __typename?: "Entity";
+  typename: Scalars["String"]["output"];
 };
 
 export type Money = {
@@ -115,12 +179,25 @@ export type QuerySearchProductsArgs = {
   searchInput?: ProductSearchInput;
 };
 
+export type ReadableObject = {
+  text?: Maybe<Scalars["String"]["output"]>;
+};
+
 export type Review = {
   __typename?: "Review";
   content?: Maybe<Scalars["String"]["output"]>;
   id: Scalars["ID"]["output"];
   rating?: Maybe<Scalars["Float"]["output"]>;
 };
+
+export type TextBook = Book &
+  ReadableObject & {
+    __typename?: "TextBook";
+    id: Scalars["ID"]["output"];
+    publishedAt?: Maybe<Scalars["Date"]["output"]>;
+    text?: Maybe<Scalars["String"]["output"]>;
+    title?: Maybe<Scalars["String"]["output"]>;
+  };
 
 /** An user account in our system */
 export type User = {
@@ -246,10 +323,33 @@ export type DirectiveResolverFn<
   info: GraphQLResolveInfo,
 ) => TResult | Promise<TResult>;
 
+/** Mapping of union types */
+export type ResolversUnionTypes<_RefType extends Record<string, unknown>> = {
+  EntitiesResponseOrError: EntitiesErrorResponse | EntitiesResponse;
+};
+
+/** Mapping of interface types */
+export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> =
+  {
+    Book: ColoringBook | TextBook;
+    ReadableObject: TextBook;
+  };
+
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  Book: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>["Book"]>;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]["output"]>;
   Cart: ResolverTypeWrapper<Cart>;
+  ColoringBook: ResolverTypeWrapper<ColoringBook>;
+  ContractVariantFailedStep: ContractVariantFailedStep;
+  Date: ResolverTypeWrapper<Scalars["Date"]["output"]>;
+  EntitiesError: ResolverTypeWrapper<EntitiesError>;
+  EntitiesErrorResponse: ResolverTypeWrapper<EntitiesErrorResponse>;
+  EntitiesResponse: ResolverTypeWrapper<EntitiesResponse>;
+  EntitiesResponseOrError: ResolverTypeWrapper<
+    ResolversUnionTypes<ResolversTypes>["EntitiesResponseOrError"]
+  >;
+  Entity: ResolverTypeWrapper<Entity>;
   Float: ResolverTypeWrapper<Scalars["Float"]["output"]>;
   ID: ResolverTypeWrapper<Scalars["ID"]["output"]>;
   Int: ResolverTypeWrapper<Scalars["Int"]["output"]>;
@@ -259,15 +359,27 @@ export type ResolversTypes = {
   Product: ResolverTypeWrapper<Product>;
   ProductSearchInput: ProductSearchInput;
   Query: ResolverTypeWrapper<{}>;
+  ReadableObject: ResolverTypeWrapper<
+    ResolversInterfaceTypes<ResolversTypes>["ReadableObject"]
+  >;
   Review: ResolverTypeWrapper<Review>;
   String: ResolverTypeWrapper<Scalars["String"]["output"]>;
+  TextBook: ResolverTypeWrapper<TextBook>;
   User: ResolverTypeWrapper<User>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  Book: ResolversInterfaceTypes<ResolversParentTypes>["Book"];
   Boolean: Scalars["Boolean"]["output"];
   Cart: Cart;
+  ColoringBook: ColoringBook;
+  Date: Scalars["Date"]["output"];
+  EntitiesError: EntitiesError;
+  EntitiesErrorResponse: EntitiesErrorResponse;
+  EntitiesResponse: EntitiesResponse;
+  EntitiesResponseOrError: ResolversUnionTypes<ResolversParentTypes>["EntitiesResponseOrError"];
+  Entity: Entity;
   Float: Scalars["Float"]["output"];
   ID: Scalars["ID"]["output"];
   Int: Scalars["Int"]["output"];
@@ -277,8 +389,10 @@ export type ResolversParentTypes = {
   Product: Product;
   ProductSearchInput: ProductSearchInput;
   Query: {};
+  ReadableObject: ResolversInterfaceTypes<ResolversParentTypes>["ReadableObject"];
   Review: Review;
   String: Scalars["String"]["output"];
+  TextBook: TextBook;
   User: User;
 };
 
@@ -294,6 +408,25 @@ export type DeferDirectiveResolver<
   Args = DeferDirectiveArgs,
 > = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
+export type BookResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["Book"] = ResolversParentTypes["Book"],
+> = {
+  __resolveType: TypeResolveFn<
+    "ColoringBook" | "TextBook",
+    ParentType,
+    ContextType
+  >;
+  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  publishedAt?: Resolver<
+    Maybe<ResolversTypes["Date"]>,
+    ParentType,
+    ContextType
+  >;
+  title?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+};
+
 export type CartResolvers<
   ContextType = any,
   ParentType extends
@@ -305,6 +438,83 @@ export type CartResolvers<
     ContextType
   >;
   subtotal?: Resolver<Maybe<ResolversTypes["Float"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ColoringBookResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["ColoringBook"] = ResolversParentTypes["ColoringBook"],
+> = {
+  colors?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes["String"]>>>,
+    ParentType,
+    ContextType
+  >;
+  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  publishedAt?: Resolver<
+    Maybe<ResolversTypes["Date"]>,
+    ParentType,
+    ContextType
+  >;
+  title?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export interface DateScalarConfig
+  extends GraphQLScalarTypeConfig<ResolversTypes["Date"], any> {
+  name: "Date";
+}
+
+export type EntitiesErrorResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["EntitiesError"] = ResolversParentTypes["EntitiesError"],
+> = {
+  message?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EntitiesErrorResponseResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["EntitiesErrorResponse"] = ResolversParentTypes["EntitiesErrorResponse"],
+> = {
+  errors?: Resolver<
+    Array<ResolversTypes["EntitiesError"]>,
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EntitiesResponseResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["EntitiesResponse"] = ResolversParentTypes["EntitiesResponse"],
+> = {
+  entities?: Resolver<Array<ResolversTypes["Entity"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EntitiesResponseOrErrorResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["EntitiesResponseOrError"] = ResolversParentTypes["EntitiesResponseOrError"],
+> = {
+  __resolveType: TypeResolveFn<
+    "EntitiesErrorResponse" | "EntitiesResponse",
+    ParentType,
+    ContextType
+  >;
+};
+
+export type EntityResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["Entity"] = ResolversParentTypes["Entity"],
+> = {
+  typename?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -394,6 +604,15 @@ export type QueryResolvers<
   viewer?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
 };
 
+export type ReadableObjectResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["ReadableObject"] = ResolversParentTypes["ReadableObject"],
+> = {
+  __resolveType: TypeResolveFn<"TextBook", ParentType, ContextType>;
+  text?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+};
+
 export type ReviewResolvers<
   ContextType = any,
   ParentType extends
@@ -402,6 +621,22 @@ export type ReviewResolvers<
   content?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   rating?: Resolver<Maybe<ResolversTypes["Float"]>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TextBookResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes["TextBook"] = ResolversParentTypes["TextBook"],
+> = {
+  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  publishedAt?: Resolver<
+    Maybe<ResolversTypes["Date"]>,
+    ParentType,
+    ContextType
+  >;
+  text?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  title?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -428,12 +663,22 @@ export type UserResolvers<
 };
 
 export type Resolvers<ContextType = any> = {
+  Book?: BookResolvers<ContextType>;
   Cart?: CartResolvers<ContextType>;
+  ColoringBook?: ColoringBookResolvers<ContextType>;
+  Date?: GraphQLScalarType;
+  EntitiesError?: EntitiesErrorResolvers<ContextType>;
+  EntitiesErrorResponse?: EntitiesErrorResponseResolvers<ContextType>;
+  EntitiesResponse?: EntitiesResponseResolvers<ContextType>;
+  EntitiesResponseOrError?: EntitiesResponseOrErrorResolvers<ContextType>;
+  Entity?: EntityResolvers<ContextType>;
   Money?: MoneyResolvers<ContextType>;
   Order?: OrderResolvers<ContextType>;
   Product?: ProductResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  ReadableObject?: ReadableObjectResolvers<ContextType>;
   Review?: ReviewResolvers<ContextType>;
+  TextBook?: TextBookResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 };
 

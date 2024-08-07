@@ -4,9 +4,13 @@ const config: CodegenConfig = {
   hooks: {
     afterAllFileWrite: ["prettier --write"],
   },
-  schema: "./.storybook/stories/components/relay/schema.graphql",
   generates: {
-    "./src/__generated__/resolvers-types.ts": {
+    "./src/__generated__/resolvers-types-ecommerce.ts": {
+      schema: "./.storybook/stories/ecommerce-schema.graphql",
+      plugins: ["typescript", "typescript-resolvers"],
+    },
+    "./src/__generated__/resolvers-types-github.ts": {
+      schema: "./.storybook/stories/github-schema.graphql",
       plugins: ["typescript", "typescript-resolvers"],
     },
   },

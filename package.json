@@ -118,11 +118,13 @@
     "wait-on": "7.2.0"
   },
   "dependencies": {
+    "@bundled-es-modules/statuses": "^1.0.1",
     "@graphql-tools/executor": "^1.2.7",
     "@graphql-tools/merge": "^9.0.4",
     "@graphql-tools/mock": "^9.0.4",
     "@graphql-tools/schema": "^10.0.4",
     "@graphql-tools/utils": "^10.3.2",
+    "@types/statuses": "^2.0.5",
     "graphql-tag": "^2.12.6",
     "is-node-process": "^1.2.0"
   },
@@ -137,7 +139,7 @@
   },
   "relay": {
     "src": "./.storybook/stories/components/relay",
-    "schema": "./.storybook/stories/components/relay/schema.graphql",
+    "schema": "./.storybook/stories/ecommerce-schema.graphql",
     "language": "typescript",
     "eagerEsModules": true,
     "exclude": [

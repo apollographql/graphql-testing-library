@@ -89,7 +89,6 @@ const sortEnumValues = () => {
     a[key] > b[key] ? 1 : b[key] > a[key] ? -1 : 0;
 };
 
-// TODO: memoize
 // Creates a map of enum types and mock resolver functions that return
 // the first possible value.
 function generateEnumMocksFromSchema(schema: GraphQLSchema) {
@@ -113,29 +112,15 @@ function mockCustomScalars(schema: GraphQLSchema) {
   const typeMap = schema.getTypeMap();
 
   const mockScalarsMap: {
-    [typeOrScalarName: string]: GraphQLScalarType<unknown, unknown>;
+    [typeOrScalarName: string]: () => string;
   } = {};
 
   for (const typeName of Object.keys(typeMap)) {
     const type = typeMap[typeName];
-    // Only mock custom scalars
+
     if (isScalarType(type) && type.astNode) {
-      mockScalarsMap[typeName] = new GraphQLScalarType({
-        name: typeName,
-        serialize: (value) => value,
-        parseValue: (value) => value,
-        parseLiteral(ast) {
-          if (ast.kind !== Kind.STRING) {
-            throw new GraphQLError(
-              `Query error: Can only parse strings to Blobs but got a: ${ast.kind}`,
-              [ast],
-            );
-          }
-          // const result = ast.value;
-          // return result;
-          return `Default value for custom scalar \`${typeName}\``;
-        },
-      });
+      mockScalarsMap[typeName] = () =>
+        `Default value for custom scalar \`${typeName}\``;
     }
   }
   return mockScalarsMap;

@@ -6,7 +6,14 @@ import {
   type GraphQLSchema,
   type DocumentNode,
 } from "graphql";
-import { HttpResponse, graphql, delay as mswDelay } from "msw";
+import {
+  HttpResponse,
+  graphql,
+  delay as mswDelay,
+  type GraphQLQuery,
+  type GraphQLVariables,
+  type ResponseResolver,
+} from "msw";
 import type {
   InitialIncrementalExecutionResult,
   SingularExecutionResult,
@@ -30,6 +37,7 @@ import {
   generateEnumMocksFromSchema,
 } from "./utilities.ts";
 import type { IResolvers, Maybe } from "@graphql-tools/utils";
+import { CustomRequestHandler } from "./requestHandler.ts";
 
 const encoder = new TextEncoder();
 
@@ -59,10 +67,8 @@ function createHandler<TResolvers>(
 ) {
   const { resolvers, typeDefs, mocks, ...rest } = documentResolversWithOptions;
 
-  const executableSchema = makeExecutableSchema({ typeDefs });
-
   const schemaWithMocks = createSchemaWithDefaultMocks<TResolvers>(
-    executableSchema,
+    typeDefs,
     resolvers,
     mocks,
   );
@@ -74,10 +80,13 @@ function createHandler<TResolvers>(
 }
 
 function createSchemaWithDefaultMocks<TResolvers>(
-  executableSchema: GraphQLSchema,
-  resolvers: Partial<TResolvers> | ((store: IMockStore) => Partial<TResolvers>),
+  typeDefs: DocumentNode,
+  resolvers?:
+    | Partial<TResolvers>
+    | ((store: IMockStore) => Partial<TResolvers>),
   mocks?: IMocks<TResolvers>,
 ) {
+  const executableSchema = makeExecutableSchema({ typeDefs });
   const enumMocks = generateEnumMocksFromSchema(executableSchema);
   const customScalarMocks = mockCustomScalars(executableSchema);
   const typesMap = createPossibleTypesMap(executableSchema);
@@ -92,7 +101,7 @@ function createSchemaWithDefaultMocks<TResolvers>(
     } as IMocks<TResolvers>,
     resolvers: mergeResolvers([
       defaultResolvers,
-      resolvers as Maybe<
+      (resolvers ?? {}) as Maybe<
         IResolvers<{ __typename?: string | undefined }, unknown>
       >,
     ]) as Partial<TResolvers>,
@@ -194,21 +203,20 @@ function createHandlerFromSchema<TResolvers>(
       JSON.stringify(value),
     ];
   }
-  // attach cleanup/update resolver fns to custom handler class
 
-  return {
-    handler: graphql.operation<
+  const requestHandler = createCustomRequestHandler();
+
+  return Object.assign(
+    requestHandler<
       ExecutionResult<Record<string, unknown>, Record<string, unknown>>
-      // @ts-expect-error FIXME: mismatch on the return type between HttpResponse
-      // with a stream vs. json
     >(async ({ query, variables, operationName }) => {
-      const document = gql(query);
+      const document = gql(query as string);
       const hasDeferOrStream = hasDirectives(["defer", "stream"], document);
 
       if (hasDeferOrStream) {
         const result = await execute({
           document,
-          operationName,
+          operationName: operationName as string,
           schema: testSchema,
           variableValues: variables,
         });
@@ -264,7 +272,7 @@ function createHandlerFromSchema<TResolvers>(
       } else {
         const result = await execute({
           document,
-          operationName,
+          operationName: operationName as string,
           schema: testSchema,
           variableValues: variables,
         });
@@ -274,10 +282,21 @@ function createHandlerFromSchema<TResolvers>(
         return HttpResponse.json(result as SingularExecutionResult<any, any>);
       }
     }),
-    replaceSchema,
-    replaceDelay,
-    withResolvers,
-  };
+    {
+      replaceSchema,
+      replaceDelay,
+      withResolvers,
+    },
+  );
 }
+
+const createCustomRequestHandler = () => {
+  return <
+    Query extends GraphQLQuery = GraphQLQuery,
+    Variables extends GraphQLVariables = GraphQLVariables,
+  >(
+    resolver: ResponseResolver,
+  ) => new CustomRequestHandler("all", new RegExp(".*"), "*", resolver);
+};
 
 export { createHandler, createHandlerFromSchema, createSchemaWithDefaultMocks };
