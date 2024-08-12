@@ -34,14 +34,14 @@ importers:
         specifier: 2.0.0
         version: 2.0.0(graphql@16.9.0)
       '@graphql-tools/merge':
-        specifier: 9.0.4
-        version: 9.0.4(graphql@16.9.0)
+        specifier: 9.0.5
+        version: 9.0.5(graphql@16.9.0)
       '@graphql-tools/mock':
         specifier: 9.0.4
         version: 9.0.4(graphql@16.9.0)
       '@graphql-tools/schema':
-        specifier: 10.0.4
-        version: 10.0.4(graphql@16.9.0)
+        specifier: 10.0.5
+        version: 10.0.5(graphql@16.9.0)
       '@playwright/test':
         specifier: 1.46.0
         version: 1.46.0
@@ -1430,8 +1430,8 @@ packages:
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
-  '@graphql-tools/merge@9.0.4':
-    resolution: {integrity: sha512-MivbDLUQ+4Q8G/Hp/9V72hbn810IJDEZQ57F01sHnlrrijyadibfVhaQfW/pNH+9T/l8ySZpaR/DpL5i+ruZ+g==}
+  '@graphql-tools/merge@9.0.5':
+    resolution: {integrity: sha512-WPUBPh9t9eX44kiIy9dV9Bi5S6B91c13X2AldAw0TS9R5cXj3RyHffbKZtIoj/nYLv/tsRSyk/L429ZSiyOriQ==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
@@ -1448,8 +1448,8 @@ packages:
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
-  '@graphql-tools/schema@10.0.4':
-    resolution: {integrity: sha512-HuIwqbKxPaJujox25Ra4qwz0uQzlpsaBOzO6CVfzB/MemZdd+Gib8AIvfhQArK0YIN40aDran/yi+E5Xf0mQww==}
+  '@graphql-tools/schema@10.0.5':
+    resolution: {integrity: sha512-LJl+yvmtRHx4gH6SM4WaLq+Utp8tzyB9cxxF88Z6D/AMVvT6/G+BtnXGdSB5Nmy2bAwebhi5w73tdx49yGUung==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
@@ -1462,6 +1462,12 @@ packages:
 
   '@graphql-tools/utils@10.3.2':
     resolution: {integrity: sha512-iaqOHS4f90KNADBHqVsRBjKpM6iSvsUg1q5GhWMK03loYLaDzftrEwcsl0OkSSnRhJvAsT7q4q3r3YzRoV0v1g==}
+    engines: {node: '>=16.0.0'}
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+
+  '@graphql-tools/utils@10.5.0':
+    resolution: {integrity: sha512-TtdmI5nKMl7QKWENudj7MnaE1skH9y7x2XuG//kHzIox9c6Q8Z2QiWoeD6EuDxCZ4nkRoQpn/YT7kT8FoaV/xQ==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
@@ -3086,6 +3092,10 @@ packages:
 
   cross-inspect@1.0.0:
     resolution: {integrity: sha512-4PFfn4b5ZN6FMNGSZlyb7wUhuN8wvj8t/VQHZdM4JsDcruGJ8L2kf9zao98QIrBPFCpdk27qst/AGTl7pL3ypQ==}
+    engines: {node: '>=16.0.0'}
+
+  cross-inspect@1.0.1:
+    resolution: {integrity: sha512-Pcw1JTvZLSJH83iiGWt6fRcT+BjZlCDRVwYLbUcHzv/CRpB7r0MlSrGbIyQvVSNyGnbt7G4AXuyCiDR3POvZ1A==}
     engines: {node: '>=16.0.0'}
 
   cross-spawn@5.1.0:
@@ -7921,15 +7931,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@graphql-tools/merge@9.0.4(graphql@16.9.0)':
+  '@graphql-tools/merge@9.0.5(graphql@16.9.0)':
     dependencies:
-      '@graphql-tools/utils': 10.3.2(graphql@16.9.0)
+      '@graphql-tools/utils': 10.5.0(graphql@16.9.0)
       graphql: 16.9.0
       tslib: 2.6.3
 
   '@graphql-tools/mock@9.0.4(graphql@16.9.0)':
     dependencies:
-      '@graphql-tools/schema': 10.0.4(graphql@16.9.0)
+      '@graphql-tools/schema': 10.0.5(graphql@16.9.0)
       '@graphql-tools/utils': 10.3.2(graphql@16.9.0)
       fast-json-stable-stringify: 2.1.0
       graphql: 16.9.0
@@ -7940,10 +7950,10 @@ snapshots:
       graphql: 16.9.0
       tslib: 2.6.3
 
-  '@graphql-tools/schema@10.0.4(graphql@16.9.0)':
+  '@graphql-tools/schema@10.0.5(graphql@16.9.0)':
     dependencies:
-      '@graphql-tools/merge': 9.0.4(graphql@16.9.0)
-      '@graphql-tools/utils': 10.3.2(graphql@16.9.0)
+      '@graphql-tools/merge': 9.0.5(graphql@16.9.0)
+      '@graphql-tools/utils': 10.5.0(graphql@16.9.0)
       graphql: 16.9.0
       tslib: 2.6.3
       value-or-promise: 1.0.12
@@ -7960,6 +7970,14 @@ snapshots:
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.9.0)
       cross-inspect: 1.0.0
+      dset: 3.1.3
+      graphql: 16.9.0
+      tslib: 2.6.3
+
+  '@graphql-tools/utils@10.5.0(graphql@16.9.0)':
+    dependencies:
+      '@graphql-typed-document-node/core': 3.2.0(graphql@16.9.0)
+      cross-inspect: 1.0.1
       dset: 3.1.3
       graphql: 16.9.0
       tslib: 2.6.3
@@ -10034,6 +10052,10 @@ snapshots:
       - encoding
 
   cross-inspect@1.0.0:
+    dependencies:
+      tslib: 2.6.3
+
+  cross-inspect@1.0.1:
     dependencies:
       tslib: 2.6.3
 
