@@ -22,9 +22,6 @@ const graphQLHandler = createHandler<Resolvers>({
         })),
     },
   },
-  mocks: {
-    String: () => "foo bar",
-  },
 });
 
 const handlers = [graphQLHandler];
