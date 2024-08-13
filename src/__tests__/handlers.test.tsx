@@ -1,5 +1,10 @@
 import { Suspense } from "react";
-import { ApolloProvider, gql, useSuspenseQuery } from "@apollo/client";
+import {
+  ApolloProvider,
+  gql,
+  useSuspenseQuery,
+  type TypedDocumentNode,
+} from "@apollo/client";
 import { render, screen, waitFor } from "@testing-library/react";
 import {
   App,
@@ -180,7 +185,7 @@ describe("integration tests with github schema", () => {
       githubTypeDefs,
       {
         IssueConnection: {
-          // @ts-expect-error need better TS-fu to accept a deep partial of
+          // @ts-expect-error TODO: improve types to accept a deep partial of
           // whatever the resolver type returns here
           edges: (_parent, _args, _context, info) => {
             return Array(parseInt(info.variableValues.last as string))
@@ -200,7 +205,20 @@ describe("integration tests with github schema", () => {
 
     using _restore = graphQLHandler.replaceSchema(schemaWithMocks);
 
-    const APP_QUERY = gql`
+    const APP_QUERY: TypedDocumentNode<{
+      repository: {
+        issues: {
+          edges: {
+            node: {
+              id: string;
+              title: string;
+              url: string;
+              author: { login: string };
+            };
+          }[];
+        };
+      };
+    }> = gql`
       query AppQuery($owner: String, $name: String, $last: String) {
         repository(owner: $owner, name: $name) {
           issues(last: $last, states: CLOSED) {
@@ -265,13 +283,15 @@ describe("unit tests", () => {
   it("can roll back delay via disposable", () => {
     function innerFn() {
       using _restore = graphQLHandler.replaceDelay(250);
-      // @ts-expect-error
+      // @ts-expect-error intentionally accessing a property that has been
+      // excluded from the type
       expect(graphQLHandler.replaceDelay["currentDelay"]).toBe(250);
     }
 
     innerFn();
 
-    // @ts-expect-error
+    // @ts-expect-error intentionally accessing a property that has been
+    // excluded from the type
     expect(graphQLHandler.replaceDelay["currentDelay"]).toBe(20);
   });
 });
