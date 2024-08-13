@@ -126,7 +126,8 @@
     "@graphql-tools/utils": "^10.3.2",
     "@types/statuses": "^2.0.5",
     "graphql-tag": "^2.12.6",
-    "is-node-process": "^1.2.0"
+    "is-node-process": "^1.2.0",
+    "outvariant": "^1.4.3"
   },
   "peerDependencies": {
     "graphql": "^15.0.0 || ^16.0.0",

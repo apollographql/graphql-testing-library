@@ -8,9 +8,6 @@ import {
   isScalarType,
   visit,
   BREAK,
-  GraphQLScalarType,
-  Kind,
-  GraphQLError,
 } from "graphql";
 
 function hasDirectives(names: string[], root: ASTNode, all?: boolean) {

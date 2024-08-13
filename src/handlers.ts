@@ -1,19 +1,8 @@
 import { gql } from "graphql-tag";
 import { execute } from "@graphql-tools/executor";
 import { isNodeProcess } from "is-node-process";
-import {
-  type ExecutionResult,
-  type GraphQLSchema,
-  type DocumentNode,
-} from "graphql";
-import {
-  HttpResponse,
-  graphql,
-  delay as mswDelay,
-  type GraphQLQuery,
-  type GraphQLVariables,
-  type ResponseResolver,
-} from "msw";
+import type { GraphQLSchema, DocumentNode } from "graphql";
+import { HttpResponse, delay as mswDelay, type ResponseResolver } from "msw";
 import type {
   InitialIncrementalExecutionResult,
   SingularExecutionResult,
@@ -53,9 +42,7 @@ type DocumentResolversWithOptions<TResolvers> = {
   mocks?: IMocks<TResolvers>;
 } & DelayOptions;
 
-type Resolvers<TResolvers> =
-  | Partial<TResolvers>
-  | ((store: IMockStore) => Partial<TResolvers>);
+type Resolvers<TResolvers> = TResolvers | ((store: IMockStore) => TResolvers);
 
 type SchemaWithOptions<TResolvers> = {
   schema: GraphQLSchema;
@@ -81,9 +68,7 @@ function createHandler<TResolvers>(
 
 function createSchemaWithDefaultMocks<TResolvers>(
   typeDefs: DocumentNode,
-  resolvers?:
-    | Partial<TResolvers>
-    | ((store: IMockStore) => Partial<TResolvers>),
+  resolvers?: TResolvers | ((store: IMockStore) => TResolvers),
   mocks?: IMocks<TResolvers>,
 ) {
   const executableSchema = makeExecutableSchema({ typeDefs });
@@ -104,7 +89,7 @@ function createSchemaWithDefaultMocks<TResolvers>(
       (resolvers ?? {}) as Maybe<
         IResolvers<{ __typename?: string | undefined }, unknown>
       >,
-    ]) as Partial<TResolvers>,
+    ]) as TResolvers,
     preserveResolvers: true,
   });
 }
@@ -207,9 +192,7 @@ function createHandlerFromSchema<TResolvers>(
   const requestHandler = createCustomRequestHandler();
 
   return Object.assign(
-    requestHandler<
-      ExecutionResult<Record<string, unknown>, Record<string, unknown>>
-    >(async ({ query, variables, operationName }) => {
+    requestHandler(async ({ query, variables, operationName }) => {
       const document = gql(query as string);
       const hasDeferOrStream = hasDirectives(["defer", "stream"], document);
 
@@ -291,12 +274,8 @@ function createHandlerFromSchema<TResolvers>(
 }
 
 const createCustomRequestHandler = () => {
-  return <
-    Query extends GraphQLQuery = GraphQLQuery,
-    Variables extends GraphQLVariables = GraphQLVariables,
-  >(
-    resolver: ResponseResolver,
-  ) => new CustomRequestHandler("all", new RegExp(".*"), "*", resolver);
+  return (resolver: ResponseResolver) =>
+    new CustomRequestHandler("all", new RegExp(".*"), "*", resolver);
 };
 
 export { createHandler, createHandlerFromSchema, createSchemaWithDefaultMocks };

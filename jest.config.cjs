@@ -18,7 +18,11 @@ module.exports = {
   testEnvironmentOptions: {
     customExportConditions: [""],
   },
-  collectCoverageFrom: ["src/**/*.ts", "!src/__tests__/**/*.ts"],
+  collectCoverageFrom: [
+    "src/**/*.ts",
+    "!src/__tests__/**/*.ts",
+    "!src/requestHandler.ts",
+  ],
   coverageReporters: ["html", "json-summary", "text", "text-summary"],
   reporters: ["default", ["jest-junit", { outputDirectory: "coverage" }]],
   transform: {

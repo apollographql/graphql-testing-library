@@ -180,11 +180,13 @@ describe("integration tests with github schema", () => {
       githubTypeDefs,
       {
         IssueConnection: {
+          // @ts-expect-error need better TS-fu to accept a deep partial of
+          // whatever the resolver type returns here
           edges: (_parent, _args, _context, info) => {
             return Array(parseInt(info.variableValues.last as string))
               .fill(null)
               .map((_item, idx) => ({
-                // cursor: "2",
+                cursor: "2",
                 node: {
                   title: `Some issue ${idx}`,
                   url: `https://github.com/foo-bar/issues/${idx}`,
@@ -232,10 +234,8 @@ describe("integration tests with github schema", () => {
         variables: { owner: "octocat", name: "Hello World", last: "5" },
       });
 
-      if (data) {
-        // console.log(data.repository.issues.edges);
-      }
       if (!data) return null;
+
       return (
         <ul>
           {data.repository.issues.edges.map((item) => (

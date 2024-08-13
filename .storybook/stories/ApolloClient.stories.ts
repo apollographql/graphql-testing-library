@@ -4,7 +4,7 @@ import {
   ApolloApp,
   ApolloAppWithDefer as AppWithDefer,
 } from "./components/apollo-client/ApolloComponent.js";
-import { handler } from "../../src/__tests__/mocks/handlers.js";
+import { graphQLHandler } from "../../src/__tests__/mocks/handlers.js";
 
 export default {
   title: "Example/Apollo Client",
@@ -13,7 +13,7 @@ export default {
     layout: "centered",
     msw: {
       handlers: {
-        graphql: handler,
+        graphql: graphQLHandler,
       },
     },
   },
