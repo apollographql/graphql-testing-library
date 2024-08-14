@@ -146,6 +146,26 @@ function createHandlerFromSchema<TResolvers>(
     });
   }
 
+  function withMocks(mocks: IMocks<TResolvers>) {
+    const oldSchema = testSchema;
+
+    testSchema = addMocksToSchema({
+      schema: oldSchema,
+      mocks: mocks,
+      preserveResolvers: true,
+    });
+
+    function restore() {
+      testSchema = oldSchema;
+    }
+
+    return Object.assign(restore, {
+      [Symbol.dispose]() {
+        restore();
+      },
+    });
+  }
+
   function replaceDelay(newDelay: Delay) {
     const oldDelay = _delay;
     _delay = newDelay;
@@ -269,6 +289,7 @@ function createHandlerFromSchema<TResolvers>(
       replaceSchema,
       replaceDelay,
       withResolvers,
+      withMocks,
     },
   );
 }
