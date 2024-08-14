@@ -1,6 +1,6 @@
 ---
 title: Installation
-description: A guide in my new Starlight docs site.
+# description: A guide in my new Starlight docs site.
 ---
 
 GraphQL Testing Library has `peerDependencies` listings for `msw` at `^2.0.0` and `graphql` at `^15.0.0 || ^16.0.0`.
