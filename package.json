@@ -51,7 +51,7 @@
   "license": "MIT",
   "devDependencies": {
     "@apollo/client": "3.11.4",
-    "@apollo/tailwind-preset": "0.1.13",
+    "@apollo/tailwind-preset": "0.1.14",
     "@changesets/changelog-github": "0.5.0",
     "@changesets/cli": "2.27.7",
     "@graphql-tools/jest-transform": "2.0.0",

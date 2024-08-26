@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@apollo/tailwind-preset':
-        specifier: 0.1.13
-        version: 0.1.13(tailwindcss@3.4.7)
+        specifier: 0.1.14
+        version: 0.1.14(tailwindcss@3.4.7)
       '@astrojs/check':
         specifier: 0.9.3
         version: 0.9.3(typescript@5.5.4)
@@ -37,11 +37,11 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@apollo/brand@0.5.9':
-    resolution: {integrity: sha512-5qFFqAfEL4UDvk0WxMxJJAVZK7qNA8J9p3OU/PL1xEOrPU5G0t4FUCORM0IFg5mkCAtfMUzPHbEKiGXOUMdDKw==}
+  '@apollo/brand@0.6.0':
+    resolution: {integrity: sha512-VsFmaE7ReXOslqSZXuYmIguL0sBIyEjpuceNpNIahJExYbqooUw+bbipZ6MpQXHdyD5eez7XE1meqOGM25GewA==}
 
-  '@apollo/tailwind-preset@0.1.13':
-    resolution: {integrity: sha512-UPVq3mw7vKjMq82gQo8fY6Xjp9HtpILMJk30GuOG+cNOaQwu3dGCmjNqdrtc/9tszTM7/3LmlKU8JfFkHXtJDg==}
+  '@apollo/tailwind-preset@0.1.14':
+    resolution: {integrity: sha512-7gbWvSv3ETdkqS/yjEygUfNQcKZGNWpBKAeFy870AH0LWJMnhRjtCRv02ccIuO1TciVdQW7oZ4Y8DZRY1Nx/Eg==}
     peerDependencies:
       tailwindcss: ^3.4.0
 
@@ -2409,11 +2409,11 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@apollo/brand@0.5.9': {}
+  '@apollo/brand@0.6.0': {}
 
-  '@apollo/tailwind-preset@0.1.13(tailwindcss@3.4.7)':
+  '@apollo/tailwind-preset@0.1.14(tailwindcss@3.4.7)':
     dependencies:
-      '@apollo/brand': 0.5.9
+      '@apollo/brand': 0.6.0
       tailwindcss: 3.4.7
 
   '@astrojs/check@0.9.3(typescript@5.5.4)':
