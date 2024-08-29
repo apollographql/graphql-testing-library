@@ -1,5 +1,13 @@
 # @apollo/graphql-testing-library
 
+## 0.3.0
+
+### Minor Changes
+
+- [#83](https://github.com/apollographql/graphql-testing-library/pull/83) [`2cf1dcd`](https://github.com/apollographql/graphql-testing-library/commit/2cf1dcda275a47fbb50d0f606cb271ab83450a37) Thanks [@alessbell](https://github.com/alessbell)! - Adds helper utilities `createDefaultResolvers`, `createPossibleTypesMap`, `generateEnumMocksFromSchema` and `mockCustomScalars` for those who want to manually create and configure their mock schema.
+
+  Also renames `createHandler` to `createHandlerFromSchema`; `createHandler` now provides an API that will create the mock schema under the hood with default resolvers as well as enum and custom scalar mocks.
+
 ## 0.2.3
 
 ### Patch Changes
