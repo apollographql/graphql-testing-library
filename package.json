@@ -36,6 +36,7 @@
     "changeset-publish": "pnpm run clean && pnpm run build && pnpm run prepdist:changesets && cd dist && changeset publish",
     "changeset-version": "changeset version && pnpm i",
     "changeset-check": "changeset status --verbose --since=origin/main",
+    "generate-types": "graphql-codegen --config codegen.ts",
     "test:jest": "jest",
     "test:vitest": "vitest run",
     "test:storybook": "test-storybook",
@@ -54,10 +55,10 @@
     "@apollo/tailwind-preset": "0.1.14",
     "@changesets/changelog-github": "0.5.0",
     "@changesets/cli": "2.27.7",
+    "@graphql-codegen/cli": "5.0.2",
+    "@graphql-codegen/typescript": "4.0.9",
+    "@graphql-codegen/typescript-resolvers": "4.2.1",
     "@graphql-tools/jest-transform": "2.0.0",
-    "@graphql-tools/merge": "9.0.6",
-    "@graphql-tools/mock": "9.0.4",
-    "@graphql-tools/schema": "10.0.6",
     "@playwright/test": "1.46.1",
     "@storybook/addon-docs": "8.2.9",
     "@storybook/addon-essentials": "8.2.9",
@@ -74,7 +75,7 @@
     "@testing-library/react": "16.0.0",
     "@tsconfig/recommended": "1.0.7",
     "@types/jest": "29.5.12",
-    "@types/node": "20.16.2",
+    "@types/node": "22.2.0",
     "@types/react": "18.3.4",
     "@types/react-dom": "18.3.0",
     "@types/react-relay": "16.0.6",
@@ -114,9 +115,16 @@
     "wait-on": "7.2.0"
   },
   "dependencies": {
+    "@bundled-es-modules/statuses": "^1.0.1",
     "@graphql-tools/executor": "^1.2.7",
+    "@graphql-tools/merge": "^9.0.4",
+    "@graphql-tools/mock": "^9.0.4",
+    "@graphql-tools/schema": "^10.0.4",
+    "@graphql-tools/utils": "^10.3.2",
+    "@types/statuses": "^2.0.5",
     "graphql-tag": "^2.12.6",
-    "is-node-process": "^1.2.0"
+    "is-node-process": "^1.2.0",
+    "outvariant": "^1.4.3"
   },
   "peerDependencies": {
     "graphql": "^15.0.0 || ^16.0.0",
@@ -129,7 +137,7 @@
   },
   "relay": {
     "src": "./.storybook/stories/components/relay",
-    "schema": "./.storybook/stories/components/relay/schema.graphql",
+    "schema": "./.storybook/stories/ecommerce-schema.graphql",
     "language": "typescript",
     "eagerEsModules": true,
     "exclude": [
