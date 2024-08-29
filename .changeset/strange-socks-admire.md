@@ -1,5 +1,5 @@
 ---
-"@apollo/graphql-testing-library": patch
+"@apollo/graphql-testing-library": minor
 ---
 
 Adds helper utilities `createDefaultResolvers`, `createPossibleTypesMap`, `generateEnumMocksFromSchema` and `mockCustomScalars` for those who want to manually create and configure their mock schema.
