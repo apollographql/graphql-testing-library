@@ -4,31 +4,24 @@ import {
   ApolloApp,
   ApolloAppWithDefer as AppWithDefer,
 } from "./components/apollo-client/ApolloComponent.js";
-import { createHandler } from "../../src/handlers.js";
-import { schemaWithMocks } from "../../src/__tests__/mocks/handlers.js";
+import { graphQLHandler } from "../../src/__tests__/mocks/handlers.js";
 
-const { handler } = createHandler(schemaWithMocks);
-
-const meta = {
+export default {
   title: "Example/Apollo Client",
   component: ApolloApp,
   parameters: {
     layout: "centered",
     msw: {
       handlers: {
-        graphql: handler,
+        graphql: graphQLHandler,
       },
     },
   },
 } satisfies Meta<typeof ApolloApp>;
 
-export default meta;
-
 export { AppWithDefer };
 
-type Story = StoryObj<typeof meta>;
-
-export const App: Story = {
+export const App: StoryObj<typeof ApolloApp> = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
