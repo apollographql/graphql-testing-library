@@ -3,6 +3,41 @@ title: Usage in the browser
 # description: A guide in my new Starlight docs site.
 ---
 
-## Usage in a broswer environment
+import { Tabs, TabItem } from "@astrojs/starlight/components";
 
-### With Storybook
+## With Storybook
+
+[Mock Service Worker](https://mswjs.io/) and [GraphQL Testing Library](https://github.com/apollographql/graphql-testing-library) pair nicely with [Storybook](https://storybook.js.org/) when developing in the browser.
+
+To get started, install the [Mock Service Worker Storybook addon](https://storybook.js.org/addons/msw-storybook-addon).
+
+<Tabs syncKey="pkg">
+<TabItem label="npm">
+
+```sh
+npm install --save-dev msw-storybook-addon
+```
+
+</TabItem>
+<TabItem label="pnpm">
+
+```sh
+pnpm add --save-dev msw-storybook-addon
+```
+
+</TabItem>
+<TabItem label="Yarn">
+
+```sh
+yarn add --dev msw-storybook-addon
+```
+
+</TabItem>
+<TabItem label="Bun">
+
+```sh
+bun add --dev msw-storybook-addon
+```
+
+</TabItem>
+</Tabs>

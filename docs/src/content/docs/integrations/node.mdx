@@ -7,7 +7,7 @@ import { Aside } from "@astrojs/starlight/components";
 
 Let's set up [Mock Service Worker](https://mswjs.io/docs) and configure it with GraphQL Testing Library for use in a [Node.js environment](https://mswjs.io/docs/integrations/node) with popular test runners like [Jest](https://jestjs.io/) and [Vitest](https://vitest.dev/).
 
-### With Jest
+## With Jest
 
 In order to use GraphQL Testing Library and MSW with Jest, missing Node.js globals must be polyfilled in your environment.
 
@@ -103,7 +103,7 @@ module.exports = {
 };
 ```
 
-### With Vitest
+## With Vitest
 
 No polyfills are needed in Vitest. In order to transform `.gql`/`.graphql` files, install `vite-plugin-graphql-loader` as a dev dependency and configure it in your `vitest.config.ts`.
 

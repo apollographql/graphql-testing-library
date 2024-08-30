@@ -15,12 +15,16 @@ export default defineConfig({
           label: "Getting started",
           items: [
             { label: "Installation", slug: "installation" },
-            { label: "Usage in Node.js", slug: "integrations/node" },
-            { label: "Usage in the browser", slug: "integrations/browser" },
+            { label: "In Node.js", slug: "integrations/node" },
+            { label: "In the browser", slug: "integrations/browser" },
           ],
         },
         {
-          label: "Storybook",
+          label: "Guides",
+          items: [{ label: "Creating a handler", slug: "creating-a-handler" }],
+        },
+        {
+          label: "Storybook Examples",
           link: "https://apollographql.github.io/graphql-testing-library",
         },
       ],
