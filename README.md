@@ -1,7 +1,11 @@
 <div align="center">
-  <p>
-	  <a href="https://www.apollographql.com/"><img src="https://raw.githubusercontent.com/apollographql/apollo-client-devtools/main/assets/apollo-wordmark.svg" height="100" alt="Apollo GraphQL Logo"></a>
-  </p>
+  <a href="https://mswjs.io/">
+    <img width="150" height="150" src="https://raw.githubusercontent.com/mswjs/msw/main/media/msw-logo.svg">
+  </a>
+  <a href="https://graphql.org/">
+    <img width="150" height="150" src="https://upload.wikimedia.org/wikipedia/commons/1/17/GraphQL_Logo.svg">
+  </a>
+
   <h1>GraphQL Testing Library</h1>
 
   <p>Testing utilities that encourage good practices for TypeScript apps built with GraphQL.</p>
