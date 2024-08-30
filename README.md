@@ -1,9 +1,9 @@
 <div align="center">
-  <a href="https://mswjs.io/">
-    <img width="150" height="150" src="https://raw.githubusercontent.com/mswjs/msw/main/media/msw-logo.svg">
-  </a>
   <a href="https://graphql.org/">
     <img width="150" height="150" src="https://upload.wikimedia.org/wikipedia/commons/1/17/GraphQL_Logo.svg">
+  </a>
+  <a href="https://mswjs.io/">
+    <img width="150" height="150" src="https://raw.githubusercontent.com/mswjs/msw/main/media/msw-logo.svg">
   </a>
 
   <h1>GraphQL Testing Library</h1>
