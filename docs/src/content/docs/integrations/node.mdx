@@ -1,9 +1,9 @@
 ---
-title: Set up
+title: Usage in Node.js
 # description: A guide in my new Starlight docs site.
 ---
 
-## Usage in Node.js
+import { Aside } from "@astrojs/starlight/components";
 
 Let's set up [Mock Service Worker](https://mswjs.io/docs) and configure it with GraphQL Testing Library for use in a [Node.js environment](https://mswjs.io/docs/integrations/node) with popular test runners like [Jest](https://jestjs.io/) and [Vitest](https://vitest.dev/).
 
@@ -64,11 +64,15 @@ if (!Symbol.asyncDispose) {
 
 This file mostly contains the [Jest polyfills recommended by MSW](https://mswjs.io/docs/faq/#requestresponsetextencoder-is-not-defined-jest), with two additions: the version above includes `ReadableStream` which is needed for incremental delivery features, and a polyfill for `Symbol.dispose` which is not available in Jest in versions before `30.0.0-alpha.3`.
 
-> Be sure to also install `undici`, the official fetch implementation in Node.js.
+<Aside type="note">
+
+Be sure to also install `undici`, the official fetch implementation in Node.js.
+
+</Aside>
 
 Then, set the `setupFiles` option in `jest.config.js` to point to your `jest.polyfills.js`:
 
-```js
+```js ins={3}
 // jest.config.js
 module.exports = {
   setupFiles: ["./jest.polyfills.js"],
@@ -81,7 +85,7 @@ Finally, install `@graphql-tools/jest-transform` as a dev dependency and configu
 
 Here are the relevant parts of your final `jest.config.js`:
 
-```js
+```js ins={12-14}
 // jest.config.js
 module.exports = {
   testEnvironment: "jsdom",
@@ -101,8 +105,34 @@ module.exports = {
 
 ### With Vitest
 
-No polyfills are needed in Vitest.
+No polyfills are needed in Vitest. In order to transform `.gql`/`.graphql` files, install `vite-plugin-graphql-loader` as a dev dependency and configure it in your `vitest.config.ts`.
 
-## Usage in a broswer environment
+<Aside type="note">
 
-### With Storybook
+In order to avoid the `graphql` error `Ensure that there is only one instance of "graphql" in the node_modules directory` caused by the [dual package hazard](https://nodejs.org/api/packages.html#dual-package-hazard), set [`server.deps.fallbackCJS`](https://vitest.dev/config/#server-deps-fallbackcjs) to `true`.
+
+</Aside>
+
+```ts ins={4,7, 13-17}
+// vitest.config.ts
+/// <reference types="vitest" />
+import { defineConfig } from "vite";
+import { vitePluginGraphqlLoader } from "vite-plugin-graphql-loader";
+
+export default defineConfig({
+  plugins: [vitePluginGraphqlLoader()],
+  test: {
+    include: ["**/*.test.tsx"],
+    globals: true,
+    environment: "jsdom",
+    setupFiles: ["./setupTests.ts"],
+    server: {
+      deps: {
+        fallbackCJS: true,
+      },
+    },
+  },
+});
+```
+
+Next, follow the Mock Service Worker documentation for [setting up MSW in Node.js](https://mswjs.io/docs/integrations/node).

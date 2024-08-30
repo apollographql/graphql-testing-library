@@ -13,19 +13,16 @@ export default defineConfig({
       sidebar: [
         {
           label: "Getting started",
-          autogenerate: { directory: "getting-started" },
+          items: [
+            { label: "Installation", slug: "installation" },
+            { label: "Usage in Node.js", slug: "integrations/node" },
+            { label: "Usage in the browser", slug: "integrations/browser" },
+          ],
         },
-        // {
-        //   label: "Examples",
-        //   autogenerate: { directory: "examples" },
-        // },
-        // {
-        //   label: "Guides",
-        //   items: [
-        //     // Each item here is one entry in the navigation menu.
-        //     { label: "Example Guide", slug: "guides/example" },
-        //   ],
-        // },
+        {
+          label: "Storybook",
+          link: "https://apollographql.github.io/graphql-testing-library",
+        },
       ],
     }),
   ],
