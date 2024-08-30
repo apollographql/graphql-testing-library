@@ -1,14 +1,14 @@
 ---
 title: GraphQL Testing Library
-description: Testing utilities that encourage good practices for TypeScript apps built with GraphQL.
+description: Generate Mock Service Worker handlers for your GraphQL APIs.
 template: splash
 hero:
-  tagline: Testing utilities that encourage good practices for TypeScript apps built with GraphQL.
+  tagline: Generate Mock Service Worker handlers for your GraphQL APIs.
   image:
-    file: ../../assets/Artboard2.webp
+    file: ../../assets/GraphQLxMSW.svg
   actions:
     - text: Read the docs
-      link: /getting-started/installation
+      link: /installation
       icon: right-arrow
       variant: primary
     - text: View repository
@@ -18,19 +18,20 @@ hero:
 
 import { Card, CardGrid } from "@astrojs/starlight/components";
 
-## Next steps
-
 <CardGrid stagger>
-  <Card title="Update content" icon="pencil">
-    Edit `src/content/docs/index.mdx` to see this page change.
+  <Card title="Client and framework-agnostic" icon="puzzle">
+    GraphQL Testing Library can be used to test apps built with any GraphQL
+    client or front-end stack.
   </Card>
-  <Card title="Add new content" icon="add-document">
-    Add Markdown or MDX files to `src/content/docs` to create new pages.
+  <Card title="The latest GraphQL features" icon="approve-check">
+    Supports experimental incremental delivery features `@defer` and `@stream`
+    out of the box.
   </Card>
-  <Card title="Configure your site" icon="setting">
-    Edit your `sidebar` and other config in `astro.config.mjs`.
+  <Card title="Schema-driven testing" icon="seti:graphql" color="pink">
+    Goodbye hand-written response mocks, hello mock resolvers.
   </Card>
-  <Card title="Read the docs" icon="open-book">
-    Learn more in [the Starlight Docs](https://starlight.astro.build/).
+  <Card title="With the power of MSW" icon="rocket">
+    Learn more about Mock Service Worker by exploring [the MSW
+    docs](https://mswjs.io/).
   </Card>
 </CardGrid>
