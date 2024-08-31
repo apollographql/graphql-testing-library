@@ -13,7 +13,7 @@
     "@apollo/tailwind-preset": "0.1.14",
     "@astrojs/check": "0.9.3",
     "@astrojs/starlight": "0.26.1",
-    "astro": "4.14.6",
+    "astro": "4.15.1",
     "sharp": "0.33.5",
     "typescript": "5.5.4"
   }
