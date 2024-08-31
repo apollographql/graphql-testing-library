@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 .sb-show-main.sb-main-centered #storybook-root {
-  padding: 0
+  padding: 0;
 }
 
 * {
-  font-family: "VT323", monaco, Consolas, "Lucida Console", monospace
+  font-family: "VT323", monaco, Consolas, "Lucida Console", monospace;
 }
 
 .marquee {
@@ -29,6 +29,10 @@
   animation: marquee 20s linear infinite;
 }
 @keyframes marquee {
-  0%   { transform: translate(0, 0); }
-  100% { transform: translate(-100%, 0); }
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-100%, 0);
+  }
 }

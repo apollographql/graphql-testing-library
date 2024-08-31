@@ -1,6 +1,5 @@
 import { createHandler } from "../../handlers.js";
 import ecommerceSchema from "../../../.storybook/stories/schemas/ecommerce.graphql";
-import wnbaSchema from "../../../demo/server/src/wnba.graphql";
 import type { Resolvers } from "../../__generated__/resolvers-types-ecommerce.ts";
 
 const products = ["beanie", "bottle", "cap", "onesie", "shirt", "socks"];
@@ -27,4 +26,4 @@ const ecommerceHandler = createHandler<Resolvers>({
 
 const handlers = [ecommerceHandler];
 
-export { handlers, ecommerceHandler };
+export { handlers, products, ecommerceHandler };
