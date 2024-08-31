@@ -13,6 +13,12 @@ In order to use GraphQL Testing Library and MSW with Jest, missing Node.js globa
 
 Create a `jest.polyfills.js` file with the following contents:
 
+<Aside type="note">
+
+Be sure to also install `undici`, the official fetch implementation in Node.js.
+
+</Aside>
+
 ```ts
 // jest.polyfills.js
 /**
@@ -62,13 +68,7 @@ if (!Symbol.asyncDispose) {
 }
 ```
 
-This file mostly contains the [Jest polyfills recommended by MSW](https://mswjs.io/docs/faq/#requestresponsetextencoder-is-not-defined-jest), with two additions: the version above includes `ReadableStream` which is needed for incremental delivery features, and a polyfill for `Symbol.dispose` which is not available in Jest in versions before `30.0.0-alpha.3`.
-
-<Aside type="note">
-
-Be sure to also install `undici`, the official fetch implementation in Node.js.
-
-</Aside>
+This file mostly contains the [Jest polyfills recommended by MSW](https://mswjs.io/docs/faq/#requestresponsetextencoder-is-not-defined-jest), with two additions: the version above includes `ReadableStream` which is needed for incremental delivery features, and a polyfill for `Symbol.dispose` which is not available in Jest in versions below `30.0.0-alpha.3`.
 
 Then, set the `setupFiles` option in `jest.config.js` to point to your `jest.polyfills.js`:
 
@@ -81,7 +81,7 @@ module.exports = {
 
 Next, follow the Mock Service Worker documentation for [setting up MSW in Node.js](https://mswjs.io/docs/integrations/node).
 
-Finally, install `@graphql-tools/jest-transform` as a dev dependency and configure Jest to transform `.gql`/`.graphql` files, since your GraphQL API's schema is needed to configure the Mock Service Worker [request handler](https://mswjs.io/docs/concepts/request-handler/) this library generates.
+Finally, install `@graphql-tools/jest-transform` as a dev dependency and configure Jest to transform `.gql`/`.graphql` files, since your GraphQL API's schema document is required when [creating a request handler](/creating-a-handler).
 
 Here are the relevant parts of your final `jest.config.js`:
 
@@ -105,11 +105,13 @@ module.exports = {
 
 ## With Vitest
 
-No polyfills are needed in Vitest. In order to transform `.gql`/`.graphql` files, install `vite-plugin-graphql-loader` as a dev dependency and configure it in your `vitest.config.ts`.
+Vitest does not need to be configured with any polyfills.
 
-<Aside type="note">
+In order to transform `.gql`/`.graphql` files, install `vite-plugin-graphql-loader` as a dev dependency and configure it in your `vitest.config.ts`.
 
-In order to avoid the `graphql` error `Ensure that there is only one instance of "graphql" in the node_modules directory` caused by the [dual package hazard](https://nodejs.org/api/packages.html#dual-package-hazard), set [`server.deps.fallbackCJS`](https://vitest.dev/config/#server-deps-fallbackcjs) to `true`.
+<Aside type="caution">
+
+In order to avoid the `graphql` error `Ensure that there is only one instance of "graphql" in the node_modules directory` caused by the [dual package hazard](https://nodejs.org/api/packages.html#dual-package-hazard), please set [`server.deps.fallbackCJS`](https://vitest.dev/config/#server-deps-fallbackcjs) to `true`.
 
 </Aside>
 

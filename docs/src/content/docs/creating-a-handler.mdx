@@ -2,3 +2,71 @@
 title: Creating a handler
 # description: A guide in my new Starlight docs site.
 ---
+
+import { Aside } from "@astrojs/starlight/components";
+
+Once [Mock Service Worker](https://mswjs.io/) has been configured in your environment, you're ready to create your first request handler and begin writing mock resolvers.
+
+Create a `handlers.ts` inside the `mocks` folder you created during MSW set-up.
+
+## `createHandler`
+
+Let's create a GraphQL request handler using the `createHandler` function.
+
+<Aside type="tip">
+
+If your project is using [GraphQL-Codegen](https://the-guild.dev/graphql/codegen) or a similar tool to generate resolver types, you can pass `Resolvers` as a generic type argument to `createHandler` to type check mock resolvers.
+
+</Aside>
+
+```ts
+// src/mocks/handlers.ts
+import { createHandler } from "@apollo/graphql-testing-library";
+import typeDefs from "../../schema.graphql";
+import type { Resolvers } from "../../__generated__/resolvers-types.ts";
+
+const graphQLHandler = createHandler<Resolvers>({
+  typeDefs,
+  // Configure the mock resolvers for your handler.
+  // `resolvers` can be overridden in individual tests.
+  resolvers: {
+    Query: {
+      products: (parent, arguments, context, info) =>
+        Array.from({ length: 2 }, (element, index) => ({
+          id: `${index}`,
+          title: `Product ${index}`,
+        })),
+    },
+  },
+  // Mock any type in the schema directly.
+  // `mocks` can also be overridden in individual tests.
+  mocks: {
+    FooBarType: () => ({
+      foo: "bar",
+      baz: "qux",
+    }),
+    CustomScalar: () => "Foo bar",
+    String: () => "Hello world",
+  },
+});
+```
+
+The handler `graphQLHandler` can now be passed to Mock Service Worker's [`setupServer` in Node.js](https://mswjs.io/docs/integrations/node#setup) or [`setupWorker` in the browser](). It will intercept all GraphQL operations and generate a response using your mock schema. 🚀
+
+## Default mocks
+
+Using the provided schema's type definitions, GraphQL Testing Library creates a mock schema under the hood with a set of default mocks:
+
+- **Union and Interface types**: Union and Interface types are configured with a default `__resolveType` function set that selects the first possible type (can be overriden via mock `resolvers`).
+- **Enum types**: Enum types return the first possible value by default (can be overridden via `mocks` option).
+- **Custom scalars**: Custom scalars return `Default value for custom scalar ${typeName}` by default (can be overridden via `mocks` option).
+
+<Aside type="note">
+
+For full control over the creation of your mock schema, use the `createHandlerFromSchema` API instead which takes a `GraphQLSchema` instead of a `DocumentNode`.
+
+</Aside>
+
+## Request timing
+
+- talk about `delay`

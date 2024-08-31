@@ -31,7 +31,6 @@ This library has `peerDependencies` listings for `msw` at `^2.0.0` and `graphql`
 npm install --save-dev @apollo/graphql-testing-library msw graphql
 pnpm add --save-dev @apollo/graphql-testing-library msw graphql
 yarn add --dev @apollo/graphql-testing-library msw graphql
-bun add --dev @apollo/graphql-testing-library msw graphql
 ```
 
 ## Usage

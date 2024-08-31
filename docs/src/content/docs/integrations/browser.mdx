@@ -3,13 +3,15 @@ title: Usage in the browser
 # description: A guide in my new Starlight docs site.
 ---
 
-import { Tabs, TabItem } from "@astrojs/starlight/components";
+import { Tabs, TabItem, Aside } from "@astrojs/starlight/components";
 
 ## With Storybook
 
 [Mock Service Worker](https://mswjs.io/) and [GraphQL Testing Library](https://github.com/apollographql/graphql-testing-library) pair nicely with [Storybook](https://storybook.js.org/) when developing in the browser.
 
-To get started, install the [Mock Service Worker Storybook addon](https://storybook.js.org/addons/msw-storybook-addon).
+### Installation
+
+To get started, install the [Mock Service Worker Storybook addon](https://storybook.js.org/addons/msw-storybook-addon) and configure it using the instructions in the README.
 
 <Tabs syncKey="pkg">
 <TabItem label="npm">
@@ -33,11 +35,100 @@ yarn add --dev msw-storybook-addon
 ```
 
 </TabItem>
-<TabItem label="Bun">
+</Tabs>
 
-```sh
-bun add --dev msw-storybook-addon
+### Usage
+
+```ts
+// storybook/preview.tsx
+import { initialize, mswLoader } from "msw-storybook-addon";
+import { HttpResponse, http } from "msw";
+import { createHandler } from "@apollo/graphql-testing-library";
+import typeDefs from "../../../.storybook/stories/ecommerce-schema.graphql";
+
+// Initialize MSW
+initialize();
+
+// Provide the MSW addon loader globally
+export const loaders = [mswLoader];
+
+const defaultHandlers = {
+  // Initialize default handlers here, including any non-GraphQL endpoints.
+  // For example, let's say this app displays the status of a service by
+  // making a GET request to a dedicated endpoint.
+  apiStatus: http.get("https://status.example.com/api/status.json", () => {
+    return HttpResponse.json({
+      status: { description: "All Systems Operational!" },
+    });
+  }),
+  // Default handler for all GraphQL requests.
+  // Individual stories will overwrite this handler via the
+  // exported ComponentName.parameters.msw.handlers.graphql property.
+  graphql: createHandler({
+    typeDefs,
+    resolvers: {
+      Query: {
+        // Your mock resolvers here
+      },
+    },
+  }),
+};
+
+export const parameters = {
+  msw: {
+    handlers: defaultHandlers,
+  },
+};
 ```
 
-</TabItem>
-</Tabs>
+If your app is using a GraphQL client that relies on the presence of a provider component, like Apollo Client with `ApolloProvider`, you can provide it globally via decorator.
+
+<Aside type="note">
+
+In general, be wary of sharing cache instances across stories or tests. On the Apollo Client team, we advise you not to share a single `ApolloClient` instance because, even if the cache is reset, the client maintains some internal state that is not reset which could have unintended consequences.
+
+By creating a `makeClient` function or equivalent, every test or story can use the same client configuration as your production client, but no two tests or stories share the same instance.
+
+</Aside>
+
+```tsx
+// storybook/preview.tsx
+import { ApolloProvider } from "@apollo/client";
+import { Decorator } from "@storybook/react";
+
+export const makeClient = () => {
+  return new ApolloClient({
+    cache: new InMemoryCache(),
+    uri: "https://example.com/graphql",
+  });
+};
+
+export const decorators: Decorator[] = [
+  (story) => <ApolloProvider client={makeClient()}>{story()}</ApolloProvider>,
+];
+```
+
+Now, in individual Storybook stories, the `graphql` handler can be overridden by setting a new handler via `parameters`:
+
+```tsx
+// storybook/MyComponent.story.tsx
+import { Meta, StoryObj } from "@storybook/react";
+import { createHandler } from "@apollo/graphql-testing-library";
+import { MyComponent } from "./MyComponent";
+
+// You do not need to specify a default GraphQL handler,
+// since it's already been set in preview.tsx
+export default {
+  component: MyComponent,
+} as Meta<typeof MyComponent>;
+
+export const ErrorState: StoryObj<typeof MyComponent> = {
+  parameters: {
+    msw: {
+      handlers: {
+        graphql: createHandler({}),
+      },
+    },
+  },
+};
+```

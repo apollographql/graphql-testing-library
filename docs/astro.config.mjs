@@ -21,7 +21,10 @@ export default defineConfig({
         },
         {
           label: "Guides",
-          items: [{ label: "Creating a handler", slug: "creating-a-handler" }],
+          items: [
+            { label: "Creating a handler", slug: "creating-a-handler" },
+            { label: "Writing a test", slug: "writing-a-test" },
+          ],
         },
         {
           label: "Storybook Examples",
