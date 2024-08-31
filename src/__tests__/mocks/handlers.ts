@@ -1,9 +1,10 @@
 import { addMocksToSchema } from "@graphql-tools/mock";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { createHandler } from "../../handlers.js";
-import graphqlSchema from "../../../.storybook/stories/components/relay/schema.graphql";
+import ecommerceSchema from "../../../.storybook/stories/schemas/ecommerce.graphql";
+import wnbaSchema from "../../../demo/server/src/wnba.graphql";
 
-const schema = makeExecutableSchema({ typeDefs: graphqlSchema });
+const schema = makeExecutableSchema({ typeDefs: ecommerceSchema });
 
 const products = ["beanie", "bottle", "cap", "onesie", "shirt", "socks"];
 
@@ -28,8 +29,18 @@ const schemaWithMocks = addMocksToSchema({
   },
 });
 
-const { handler, replaceSchema, replaceDelay } = createHandler(schemaWithMocks);
+const {
+  handler: ecommerceHandler,
+  replaceSchema,
+  replaceDelay,
+} = createHandler(schemaWithMocks);
 
-const handlers = [handler];
+const handlers = [ecommerceHandler];
 
-export { replaceSchema, replaceDelay, handlers, schemaWithMocks };
+export {
+  replaceSchema,
+  replaceDelay,
+  handlers,
+  ecommerceHandler,
+  schemaWithMocks,
+};

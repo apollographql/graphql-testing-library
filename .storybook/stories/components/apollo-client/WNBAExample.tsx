@@ -14,9 +14,7 @@ import {
   useFragment,
 } from "@apollo/client";
 
-import { TeamLogo } from "../TeamLogo.tsx";
-import { Product, Reviews } from "../Product.js";
-import { Container } from "../Container.js";
+import { TeamLogo } from "../TeamLogo";
 
 const httpLink = new HttpLink({
   uri: "http://localhost:4000/graphql",
@@ -104,14 +102,6 @@ export function ApolloApp() {
   return (
     <Wrapper>
       <App />
-    </Wrapper>
-  );
-}
-
-export function ApolloAppWithDefer() {
-  return (
-    <Wrapper>
-      <AppWithDefer />
     </Wrapper>
   );
 }
@@ -223,44 +213,5 @@ function Team({ team }: { team: string }) {
         </>
       ) : null}
     </div>
-  );
-}
-
-const APP_QUERY_WITH_DEFER: TypedDocumentNode<{
-  products: {
-    id: string;
-    title: string;
-    mediaUrl: string;
-    reviews?: Array<{ rating: number; id: string }>;
-  }[];
-}> = gql`
-  query AppQueryWithDefer {
-    products {
-      id
-      ... @defer {
-        reviews {
-          id
-          rating
-        }
-      }
-      title
-      mediaUrl
-    }
-  }
-`;
-
-export function AppWithDefer() {
-  // Use useSuspenseQuery here because we want to demo the loading experience
-  // with/without defer.
-  const { data } = useSuspenseQuery(APP_QUERY_WITH_DEFER);
-
-  return (
-    <Container>
-      {data.products.map((product) => (
-        <Product key={product.id} product={product}>
-          <Reviews reviews={product.reviews || []} />
-        </Product>
-      ))}
-    </Container>
   );
 }

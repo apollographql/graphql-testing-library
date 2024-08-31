@@ -4,10 +4,10 @@ import {
   App,
   AppWithDefer,
   makeClient,
-} from "../../.storybook/stories/components/apollo-client/ApolloComponent.tsx";
+} from "../../.storybook/stories/components/apollo-client/EcommerceExample.tsx";
 import { addMocksToSchema } from "@graphql-tools/mock";
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import graphqlSchema from "../../.storybook/stories/components/relay/schema.graphql";
+import graphqlSchema from "../../.storybook/stories/schemas/ecommerce.graphql";
 import { replaceSchema, replaceDelay } from "./mocks/handlers.js";
 import { render, screen, waitFor } from "@testing-library/react";
 

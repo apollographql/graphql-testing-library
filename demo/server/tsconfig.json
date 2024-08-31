@@ -9,5 +9,6 @@
     "esModuleInterop": true,
     "types": ["node"],
     "skipLibCheck": true
-  }
+  },
+  "include": ["../../graphql.d.ts"]
 }

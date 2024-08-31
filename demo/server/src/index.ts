@@ -7,6 +7,7 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import { WebSocketServer } from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { PubSub } from "graphql-subscriptions";
+import typeDefs from "./wnba.graphql";
 import bodyParser from "body-parser";
 import cors from "cors";
 
@@ -102,57 +103,6 @@ const teams = [
     losses: 11,
   },
 ];
-
-// Schema definition
-const typeDefs = `#graphql
-  type Query {
-    teams: [Team!]!
-    team(id: ID): Team!
-    coaches: [Coach!]!
-    favoriteTeam: ID!
-  }
-
-  type Mutation {
-    setCurrentTeam(team: ID!): Team!
-  }
-
-  type Team {
-    id: ID!
-    name: String!
-    wins: Int!
-    losses: Int!
-    coach: Coach!
-    # roster: [Player!]!
-  }
-
-  type Coach {
-    id: ID!
-    team: ID!
-    name: String!
-  }
-
-  type Player {
-    id: ID!
-    name: String!
-    position: String!
-  }
-
-  type Game {
-    home: Team!
-    away: Team!
-    id: ID!
-  }
-
-  type Subscription {
-    numberIncremented: Int
-    score(gameId: ID!): Score
-  }
-
-  type Score {
-    home: Int!
-    away: Int!
-  }
-`;
 
 let currentTeam = "1";
 

@@ -134,7 +134,7 @@
   },
   "relay": {
     "src": "./.storybook/stories/components/relay",
-    "schema": "./.storybook/stories/components/relay/schema.graphql",
+    "schema": "./.storybook/stories/schemas/ecommerce.graphql",
     "language": "typescript",
     "eagerEsModules": true,
     "exclude": [

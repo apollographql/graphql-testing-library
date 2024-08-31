@@ -1,30 +1,49 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { within, expect, waitFor } from "@storybook/test";
 import {
-  ApolloApp,
+  ApolloApp as ApolloEcommerceApp,
   ApolloAppWithDefer as AppWithDefer,
-} from "./components/apollo-client/ApolloComponent.js";
-import { createHandler } from "../../src/handlers.js";
-import { schemaWithMocks } from "../../src/__tests__/mocks/handlers.js";
-
-const { handler } = createHandler(schemaWithMocks);
+} from "./components/apollo-client/EcommerceExample.js";
+import { ApolloApp as ApolloWNBAApp } from "./components/apollo-client/WNBAExample.js";
+import { ecommerceHandler } from "../../src/__tests__/mocks/handlers.js";
 
 const meta = {
   title: "Example/Apollo Client",
-  component: ApolloApp,
+  component: ApolloEcommerceApp,
   parameters: {
     layout: "centered",
     msw: {
       handlers: {
-        // graphql: handler,
+        graphql: ecommerceHandler,
       },
     },
   },
-} satisfies Meta<typeof ApolloApp>;
+} satisfies Meta<typeof ApolloEcommerceApp>;
 
 export default meta;
 
-export { AppWithDefer };
+// const WNBNAppStory = {
+//   component: ApolloWNBAApp,
+//   parameters: {
+//     msw: {
+//       handlers: {
+//         graphql: ecommerceHandler,
+//       },
+//     },
+//   },
+// } satisfies Meta<typeof ApolloWNBAApp>;
+
+const WNBAAppStory = () => <ApolloWNBAApp />;
+
+WNBAAppStory.parameters = {
+  msw: {
+    handlers: {
+      graphql: ecommerceHandler,
+    },
+  },
+};
+
+export { AppWithDefer, WNBAAppStory };
 
 type Story = StoryObj<typeof meta>;
 
