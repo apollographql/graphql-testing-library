@@ -1,15 +1,20 @@
-import { ApolloProvider } from "@apollo/client";
 import { Suspense } from "react";
+import {
+  ApolloProvider,
+  gql,
+  useSuspenseQuery,
+  type TypedDocumentNode,
+} from "@apollo/client";
+import { render, screen, waitFor } from "@testing-library/react";
 import {
   App,
   AppWithDefer,
   makeClient,
 } from "../../.storybook/stories/components/apollo-client/EcommerceExample.tsx";
-import { addMocksToSchema } from "@graphql-tools/mock";
-import { makeExecutableSchema } from "@graphql-tools/schema";
-import graphqlSchema from "../../.storybook/stories/schemas/ecommerce.graphql";
-import { replaceSchema, replaceDelay } from "./mocks/handlers.js";
-import { render, screen, waitFor } from "@testing-library/react";
+import { ecommerceHandler, products } from "./mocks/handlers.js";
+import { createSchemaWithDefaultMocks } from "../handlers.ts";
+import githubTypeDefs from "../../.storybook/stories/schemas/github.graphql";
+import type { Resolvers } from "../__generated__/resolvers-types-github.ts";
 
 describe("integration tests", () => {
   describe("single execution result response", () => {
@@ -77,31 +82,23 @@ describe("integration tests", () => {
       });
     });
     it("can set a new schema via replaceSchema", async () => {
-      // Create an executable GraphQL schema with no resolvers
-      const schema = makeExecutableSchema({ typeDefs: graphqlSchema });
-
-      // Create a new schema with mocks
-      const schemaWithMocks = addMocksToSchema({
-        schema,
-        resolvers: {
-          Query: {
-            products: () => {
-              return Array.from({ length: 6 }, (_element, id) => ({
-                id,
-                title: `Foo bar ${id}`,
-                reviews: [
-                  {
-                    id: `review-${id}`,
-                    rating: id,
-                  },
-                ],
-              }));
-            },
+      using _restore = ecommerceHandler.withResolvers({
+        Query: {
+          products: () => {
+            return Array.from({ length: 6 }, (_element, id) => ({
+              id: `${id}`,
+              title: `Foo bar ${id}`,
+              mediaUrl: `https://storage.googleapis.com/hack-the-supergraph/apollo-${products[id]}.jpg`,
+              reviews: [
+                {
+                  id: `review-${id}`,
+                  rating: id,
+                },
+              ],
+            }));
           },
         },
       });
-
-      using _restore = replaceSchema(schemaWithMocks);
 
       const client = makeClient();
 
@@ -143,7 +140,7 @@ describe("integration tests", () => {
       // Usually, in Jest tests we want this to be 20ms (the default in Node
       // processes) so renders are *not* auto-batched, but in certain tests we may
       // want a shorter or longer delay before chunks or entire responses resolve
-      using _restore = replaceDelay(1);
+      using _restore = ecommerceHandler.replaceDelay(1);
 
       const client = makeClient();
 
@@ -180,17 +177,121 @@ describe("integration tests", () => {
   });
 });
 
+describe("integration tests with github schema", () => {
+  it("renders a component fetching from the GitHub api", async () => {
+    const client = makeClient();
+
+    const schemaWithMocks = createSchemaWithDefaultMocks<Resolvers>(
+      githubTypeDefs,
+      {
+        IssueConnection: {
+          // @ts-expect-error TODO: improve types to accept a deep partial of
+          // whatever the resolver type returns here
+          edges: (_parent, _args, _context, info) => {
+            return Array(parseInt(info.variableValues.last as string))
+              .fill(null)
+              .map((_item, idx) => ({
+                cursor: "2",
+                node: {
+                  title: `Some issue ${idx}`,
+                  url: `https://github.com/foo-bar/issues/${idx}`,
+                  id: `${idx}`,
+                },
+              }));
+          },
+        },
+      },
+    );
+
+    using _restore = ecommerceHandler.replaceSchema(schemaWithMocks);
+
+    const APP_QUERY: TypedDocumentNode<{
+      repository: {
+        issues: {
+          edges: {
+            node: {
+              id: string;
+              title: string;
+              url: string;
+              author: { login: string };
+            };
+          }[];
+        };
+      };
+    }> = gql`
+      query AppQuery($owner: String, $name: String, $last: String) {
+        repository(owner: $owner, name: $name) {
+          issues(last: $last, states: CLOSED) {
+            edges {
+              node {
+                id
+                title
+                url
+                author {
+                  login
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+
+    const Shell = () => {
+      return (
+        <ApolloProvider client={client}>
+          <Suspense fallback={<h1>Loading...</h1>}>
+            <App />
+          </Suspense>
+        </ApolloProvider>
+      );
+    };
+
+    const App = () => {
+      const { data } = useSuspenseQuery(APP_QUERY, {
+        variables: { owner: "octocat", name: "Hello World", last: "5" },
+      });
+
+      if (!data) return null;
+
+      return (
+        <ul>
+          {data.repository.issues.edges.map((item) => (
+            <li key={item.node.id}>{item.node.url}</li>
+          ))}
+        </ul>
+      );
+    };
+
+    render(<Shell />);
+
+    await waitFor(() =>
+      expect(
+        screen.getByText("https://github.com/foo-bar/issues/0"),
+      ).toBeInTheDocument(),
+    );
+
+    [1, 2, 3, 4].forEach((num) => {
+      expect(
+        screen.getByText(`https://github.com/foo-bar/issues/${num}`),
+      ).toBeInTheDocument();
+    });
+  });
+});
+
 describe("unit tests", () => {
   it("can roll back delay via disposable", () => {
     function innerFn() {
-      using _restore = replaceDelay(250);
-      // @ts-expect-error
-      expect(replaceDelay["currentDelay"]).toBe(250);
+      using _restore = ecommerceHandler.replaceDelay(250);
+      // @ts-expect-error intentionally accessing a property that has been
+      // excluded from the type
+      expect(ecommerceHandler.replaceDelay["currentDelay"]).toBe(250);
     }
 
     innerFn();
 
-    // @ts-expect-error
-    expect(replaceDelay["currentDelay"]).toBe(20);
+    // @ts-expect-error intentionally accessing a property that has been
+    // excluded from the type
+    expect(ecommerceHandler.replaceDelay["currentDelay"]).toBe(20);
   });
 });

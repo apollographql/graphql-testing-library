@@ -22,17 +22,6 @@ const meta = {
 
 export default meta;
 
-// const WNBNAppStory = {
-//   component: ApolloWNBAApp,
-//   parameters: {
-//     msw: {
-//       handlers: {
-//         graphql: ecommerceHandler,
-//       },
-//     },
-//   },
-// } satisfies Meta<typeof ApolloWNBAApp>;
-
 const WNBAAppStory = () => <ApolloWNBAApp />;
 
 WNBAAppStory.parameters = {
@@ -45,9 +34,7 @@ WNBAAppStory.parameters = {
 
 export { AppWithDefer, WNBAAppStory };
 
-type Story = StoryObj<typeof meta>;
-
-export const App: Story = {
+export const App: StoryObj<typeof ApolloEcommerceApp> = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(

@@ -1,21 +1,17 @@
-import { addMocksToSchema } from "@graphql-tools/mock";
-import { makeExecutableSchema } from "@graphql-tools/schema";
 import { createHandler } from "../../handlers.js";
 import ecommerceSchema from "../../../.storybook/stories/schemas/ecommerce.graphql";
 import wnbaSchema from "../../../demo/server/src/wnba.graphql";
-
-const schema = makeExecutableSchema({ typeDefs: ecommerceSchema });
+import type { Resolvers } from "../../__generated__/resolvers-types-ecommerce.ts";
 
 const products = ["beanie", "bottle", "cap", "onesie", "shirt", "socks"];
 
-// Create a new schema with mocks
-const schemaWithMocks = addMocksToSchema({
-  schema,
+const ecommerceHandler = createHandler<Resolvers>({
+  typeDefs: ecommerceSchema,
   resolvers: {
     Query: {
       products: () =>
         Array.from({ length: products.length }, (_element, id) => ({
-          id,
+          id: `${id}`,
           title: products[id],
           mediaUrl: `https://storage.googleapis.com/hack-the-supergraph/apollo-${products[id]}.jpg`,
           reviews: [
@@ -29,18 +25,6 @@ const schemaWithMocks = addMocksToSchema({
   },
 });
 
-const {
-  handler: ecommerceHandler,
-  replaceSchema,
-  replaceDelay,
-} = createHandler(schemaWithMocks);
-
 const handlers = [ecommerceHandler];
 
-export {
-  replaceSchema,
-  replaceDelay,
-  handlers,
-  ecommerceHandler,
-  schemaWithMocks,
-};
+export { handlers, ecommerceHandler };

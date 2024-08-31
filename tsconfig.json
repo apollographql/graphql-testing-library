@@ -25,6 +25,7 @@
   },
   "include": [
     "src",
+    "global.d.ts",
     "graphql.d.ts",
     "setupTests.ts",
     ".storybook/vite-env.d.ts"
