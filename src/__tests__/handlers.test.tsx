@@ -178,7 +178,7 @@ describe("integration tests", () => {
     });
   });
   describe("mutations", () => {
-    it.only("uses the initial mock schema", async () => {
+    it("uses the initial mock schema", async () => {
       const schemaWithMocks = createSchemaWithDefaultMocks(wnbaTypeDefs, {
         Query: {
           team: () => {
