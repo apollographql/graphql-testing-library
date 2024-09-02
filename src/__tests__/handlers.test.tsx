@@ -11,9 +11,11 @@ import {
   AppWithDefer,
   makeClient,
 } from "../../.storybook/stories/components/apollo-client/EcommerceExample.tsx";
+import { App as WNBAApp } from "../../.storybook/stories/components/apollo-client/WNBAExample.tsx";
 import { ecommerceHandler, products } from "./mocks/handlers.js";
 import { createSchemaWithDefaultMocks } from "../handlers.ts";
 import githubTypeDefs from "../../.storybook/stories/schemas/github.graphql";
+import wnbaTypeDefs from "../../.storybook/stories/schemas/wnba.graphql";
 import type { Resolvers } from "../__generated__/resolvers-types-github.ts";
 
 describe("integration tests", () => {
@@ -173,6 +175,54 @@ describe("integration tests", () => {
       //   expect(screen.getAllByTestId(/rating/i)[0]).toHaveTextContent("0/5");
       // });
       expect(screen.getByText(/beanie/i)).toBeInTheDocument();
+    });
+  });
+  describe("mutations", () => {
+    it.only("uses the initial mock schema", async () => {
+      const schemaWithMocks = createSchemaWithDefaultMocks(wnbaTypeDefs, {
+        Query: {
+          team: () => {
+            return {
+              id: "1",
+              name: "New York Liberty",
+            };
+          },
+          teams: () => {
+            return [
+              {
+                id: "1",
+                name: "New York Liberty",
+              },
+              {
+                id: "2",
+                name: "Las Vegas Aces",
+              },
+            ];
+          },
+        },
+      });
+
+      using _restore = ecommerceHandler.replaceSchema(schemaWithMocks);
+      const client = makeClient();
+
+      render(
+        <ApolloProvider client={client}>
+          <Suspense fallback={<h1>Loading...</h1>}>
+            <WNBAApp />
+          </Suspense>
+        </ApolloProvider>,
+      );
+
+      // The app kicks off the request and we see the initial loading indicator...
+      await waitFor(() =>
+        expect(
+          screen.getByRole("heading", { name: /loading/i }),
+        ).toHaveTextContent("Loading..."),
+      );
+
+      await waitFor(() =>
+        expect(screen.getByText("New York Liberty")).toBeInTheDocument(),
+      );
     });
   });
 });

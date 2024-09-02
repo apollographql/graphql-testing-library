@@ -7,7 +7,7 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import { WebSocketServer } from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { PubSub } from "graphql-subscriptions";
-import typeDefs from "./wnba.graphql";
+import typeDefs from "../../../.storybook/stories/schemas/wnba.graphql";
 import bodyParser from "body-parser";
 import cors from "cors";
 

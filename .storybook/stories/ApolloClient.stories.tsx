@@ -6,6 +6,12 @@ import {
 } from "./components/apollo-client/EcommerceExample.js";
 import { ApolloApp as ApolloWNBAApp } from "./components/apollo-client/WNBAExample.js";
 import { ecommerceHandler } from "../../src/__tests__/mocks/handlers.js";
+import {
+  createHandler,
+  createHandlerFromSchema,
+  createSchemaWithDefaultMocks,
+} from "../../src/handlers.js";
+import wnbaTypeDefs from "../stories/schemas/wnba.graphql";
 
 const meta = {
   title: "Example/Apollo Client",
@@ -24,10 +30,37 @@ export default meta;
 
 const WNBAAppStory = () => <ApolloWNBAApp />;
 
+const teams = [
+  {
+    id: "1",
+    name: "New York Liberty",
+  },
+  {
+    id: "2",
+    name: "Las Vegas Aces",
+  },
+];
+
+const handler = createHandler({
+  typeDefs: wnbaTypeDefs,
+  resolvers: {
+    Mutation: {
+      setCurrentTeam: (_p, { team }) => teams.find((t) => t.id === team),
+    },
+    Query: {
+      team: () => ({
+        id: "1",
+        name: "New York Liberty",
+      }),
+      teams: () => teams,
+    },
+  },
+});
+
 WNBAAppStory.parameters = {
   msw: {
     handlers: {
-      graphql: ecommerceHandler,
+      graphql: handler,
     },
   },
 };
