@@ -14,7 +14,7 @@ import {
   useFragment,
 } from "@apollo/client";
 
-import { TeamLogo } from "../TeamLogo";
+import { TeamLogo } from "../TeamLogo.js";
 
 const httpLink = new HttpLink({
   uri: "http://localhost:4000/graphql",
