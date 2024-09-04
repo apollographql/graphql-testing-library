@@ -1,11 +1,11 @@
 import { createHandler } from "../../handlers.js";
-import typeDefs from "../../../.storybook/stories/ecommerce-schema.graphql";
+import ecommerceSchema from "../../../.storybook/stories/schemas/ecommerce.graphql";
 import type { Resolvers } from "../../__generated__/resolvers-types-ecommerce.ts";
 
 const products = ["beanie", "bottle", "cap", "onesie", "shirt", "socks"];
 
-const graphQLHandler = createHandler<Resolvers>({
-  typeDefs,
+const ecommerceHandler = createHandler<Resolvers>({
+  typeDefs: ecommerceSchema,
   resolvers: {
     Query: {
       products: () =>
@@ -24,6 +24,6 @@ const graphQLHandler = createHandler<Resolvers>({
   },
 });
 
-const handlers = [graphQLHandler];
+const handlers = [ecommerceHandler];
 
-export { graphQLHandler, handlers, products };
+export { handlers, products, ecommerceHandler };

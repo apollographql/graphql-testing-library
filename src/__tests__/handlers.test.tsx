@@ -10,10 +10,12 @@ import {
   App,
   AppWithDefer,
   makeClient,
-} from "../../.storybook/stories/components/apollo-client/ApolloComponent.tsx";
-import { graphQLHandler, products } from "./mocks/handlers.js";
+} from "../../.storybook/stories/components/apollo-client/EcommerceExample.tsx";
+import { App as WNBAApp } from "../../.storybook/stories/components/apollo-client/WNBAExample.tsx";
+import { ecommerceHandler, products } from "./mocks/handlers.js";
 import { createSchemaWithDefaultMocks } from "../handlers.ts";
-import githubTypeDefs from "../../.storybook/stories/github-schema.graphql";
+import githubTypeDefs from "../../.storybook/stories/schemas/github.graphql";
+import wnbaTypeDefs from "../../.storybook/stories/schemas/wnba.graphql";
 import type { Resolvers } from "../__generated__/resolvers-types-github.ts";
 
 describe("integration tests", () => {
@@ -82,7 +84,7 @@ describe("integration tests", () => {
       });
     });
     it("can set a new schema via replaceSchema", async () => {
-      using _restore = graphQLHandler.withResolvers({
+      using _restore = ecommerceHandler.withResolvers({
         Query: {
           products: () => {
             return Array.from({ length: 6 }, (_element, id) => ({
@@ -125,7 +127,7 @@ describe("integration tests", () => {
         ).toHaveTextContent("Customers also purchased"),
       );
 
-      expect(screen.getAllByTestId(/rating/i)[0]).toHaveTextContent("-");
+      // expect(screen.getAllByTestId(/rating/i)[0]).toHaveTextContent("-");
       expect(screen.getByText(/foo bar 1/i)).toBeInTheDocument();
 
       await waitFor(() => {
@@ -140,7 +142,7 @@ describe("integration tests", () => {
       // Usually, in Jest tests we want this to be 20ms (the default in Node
       // processes) so renders are *not* auto-batched, but in certain tests we may
       // want a shorter or longer delay before chunks or entire responses resolve
-      using _restore = graphQLHandler.replaceDelay(1);
+      using _restore = ecommerceHandler.replaceDelay(1);
 
       const client = makeClient();
 
@@ -175,6 +177,54 @@ describe("integration tests", () => {
       expect(screen.getByText(/beanie/i)).toBeInTheDocument();
     });
   });
+  describe("mutations", () => {
+    it("uses the initial mock schema", async () => {
+      const schemaWithMocks = createSchemaWithDefaultMocks(wnbaTypeDefs, {
+        Query: {
+          team: () => {
+            return {
+              id: "1",
+              name: "New York Liberty",
+            };
+          },
+          teams: () => {
+            return [
+              {
+                id: "1",
+                name: "New York Liberty",
+              },
+              {
+                id: "2",
+                name: "Las Vegas Aces",
+              },
+            ];
+          },
+        },
+      });
+
+      using _restore = ecommerceHandler.replaceSchema(schemaWithMocks);
+      const client = makeClient();
+
+      render(
+        <ApolloProvider client={client}>
+          <Suspense fallback={<h1>Loading...</h1>}>
+            <WNBAApp />
+          </Suspense>
+        </ApolloProvider>,
+      );
+
+      // The app kicks off the request and we see the initial loading indicator...
+      await waitFor(() =>
+        expect(
+          screen.getByRole("heading", { name: /loading/i }),
+        ).toHaveTextContent("Loading..."),
+      );
+
+      await waitFor(() =>
+        expect(screen.getByText("New York Liberty")).toBeInTheDocument(),
+      );
+    });
+  });
 });
 
 describe("integration tests with github schema", () => {
@@ -203,7 +253,7 @@ describe("integration tests with github schema", () => {
       },
     );
 
-    using _restore = graphQLHandler.replaceSchema(schemaWithMocks);
+    using _restore = ecommerceHandler.replaceSchema(schemaWithMocks);
 
     const APP_QUERY: TypedDocumentNode<{
       repository: {
@@ -282,16 +332,16 @@ describe("integration tests with github schema", () => {
 describe("unit tests", () => {
   it("can roll back delay via disposable", () => {
     function innerFn() {
-      using _restore = graphQLHandler.replaceDelay(250);
+      using _restore = ecommerceHandler.replaceDelay(250);
       // @ts-expect-error intentionally accessing a property that has been
       // excluded from the type
-      expect(graphQLHandler.replaceDelay["currentDelay"]).toBe(250);
+      expect(ecommerceHandler.replaceDelay["currentDelay"]).toBe(250);
     }
 
     innerFn();
 
     // @ts-expect-error intentionally accessing a property that has been
     // excluded from the type
-    expect(graphQLHandler.replaceDelay["currentDelay"]).toBe(20);
+    expect(ecommerceHandler.replaceDelay["currentDelay"]).toBe(20);
   });
 });

@@ -4,7 +4,7 @@ import {
   RelayApp,
   RelayAppWithDefer as AppWithDefer,
 } from "./components/relay/RelayComponent.js";
-import { graphQLHandler } from "../../src/__tests__/mocks/handlers.js";
+import { ecommerceHandler } from "../../src/__tests__/mocks/handlers.js";
 
 export default {
   title: "Example/Relay",
@@ -13,15 +13,13 @@ export default {
     layout: "centered",
     msw: {
       handlers: {
-        graphql: graphQLHandler,
+        graphql: ecommerceHandler,
       },
     },
   },
 } satisfies Meta<typeof RelayApp>;
 
-export { AppWithDefer };
-
-export const App: StoryObj<typeof RelayApp> = {
+export const EcommerceApp: StoryObj<typeof RelayApp> = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
@@ -40,3 +38,5 @@ export const App: StoryObj<typeof RelayApp> = {
     );
   },
 };
+
+export const EcommerceAppWithDefer = () => <AppWithDefer />;

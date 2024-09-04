@@ -2,6 +2,9 @@ module.exports = {
   globals: {
     "globalThis.__DEV__": JSON.stringify(true),
   },
+  moduleNameMapper: {
+    "\\.svg": "<rootDir>/src/__tests__/mocks/svg.js",
+  },
   extensionsToTreatAsEsm: [".ts", ".tsx"],
   testEnvironment: "jsdom",
   roots: ["<rootDir>/src/__tests__"],

@@ -6,11 +6,11 @@ const config: CodegenConfig = {
   },
   generates: {
     "./src/__generated__/resolvers-types-ecommerce.ts": {
-      schema: "./.storybook/stories/ecommerce-schema.graphql",
+      schema: "./.storybook/stories/schemas/ecommerce.graphql",
       plugins: ["typescript", "typescript-resolvers"],
     },
     "./src/__generated__/resolvers-types-github.ts": {
-      schema: "./.storybook/stories/github-schema.graphql",
+      schema: "./.storybook/stories/schemas/github.graphql",
       plugins: ["typescript", "typescript-resolvers"],
     },
   },
