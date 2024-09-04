@@ -6,11 +6,7 @@ import {
 } from "./components/apollo-client/EcommerceExample.js";
 import { ApolloApp as ApolloWNBAApp } from "./components/apollo-client/WNBAExample.js";
 import { ecommerceHandler } from "../../src/__tests__/mocks/handlers.js";
-import {
-  createHandler,
-  createHandlerFromSchema,
-  createSchemaWithDefaultMocks,
-} from "../../src/handlers.js";
+import { createHandler } from "../../src/handlers.js";
 import wnbaTypeDefs from "../stories/schemas/wnba.graphql";
 
 const meta = {
@@ -28,46 +24,7 @@ const meta = {
 
 export default meta;
 
-const WNBAAppStory = () => <ApolloWNBAApp />;
-
-const teams = [
-  {
-    id: "1",
-    name: "New York Liberty",
-  },
-  {
-    id: "2",
-    name: "Las Vegas Aces",
-  },
-];
-
-const handler = createHandler({
-  typeDefs: wnbaTypeDefs,
-  resolvers: {
-    Mutation: {
-      setCurrentTeam: (_p, { team }) => teams.find((t) => t.id === team),
-    },
-    Query: {
-      team: () => ({
-        id: "1",
-        name: "New York Liberty",
-      }),
-      teams: () => teams,
-    },
-  },
-});
-
-WNBAAppStory.parameters = {
-  msw: {
-    handlers: {
-      graphql: handler,
-    },
-  },
-};
-
-export { AppWithDefer, WNBAAppStory };
-
-export const App: StoryObj<typeof ApolloEcommerceApp> = {
+export const EcommerceApp: StoryObj<typeof ApolloEcommerceApp> = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
@@ -84,5 +41,42 @@ export const App: StoryObj<typeof ApolloEcommerceApp> = {
       () => expect(canvas.getByText(/beanie/i)).toBeInTheDocument(),
       { timeout: 2000 },
     );
+  },
+};
+
+export const EcommerceAppWithDefer = () => <AppWithDefer />;
+
+export const WNBAApp = () => <ApolloWNBAApp />;
+
+const teams = [
+  {
+    id: "1",
+    name: "New York Liberty",
+  },
+  {
+    id: "2",
+    name: "Las Vegas Aces",
+  },
+];
+
+WNBAApp.parameters = {
+  msw: {
+    handlers: {
+      graphql: createHandler({
+        typeDefs: wnbaTypeDefs,
+        resolvers: {
+          Mutation: {
+            setCurrentTeam: (_p, { team }) => teams.find((t) => t.id === team),
+          },
+          Query: {
+            team: () => ({
+              id: "1",
+              name: "New York Liberty",
+            }),
+            teams: () => teams,
+          },
+        },
+      }),
+    },
   },
 };

@@ -121,10 +121,10 @@ export function App() {
 
   return (
     <div
-      className={`${currentTeamSlug} bg-primary w-screen h-screen p-10 pt-16`}
+      className={`wnba ${currentTeamSlug} bg-primary w-screen h-screen p-10 pt-16`}
     >
       <div className="marquee">
-        <p>Welcome, basketball fans! 🏀</p>
+        <p>Welcome to the W 🏀</p>
       </div>
 
       <div

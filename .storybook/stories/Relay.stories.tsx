@@ -19,9 +19,7 @@ export default {
   },
 } satisfies Meta<typeof RelayApp>;
 
-export { AppWithDefer };
-
-export const App: StoryObj<typeof RelayApp> = {
+export const EcommerceApp: StoryObj<typeof RelayApp> = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
@@ -40,3 +38,5 @@ export const App: StoryObj<typeof RelayApp> = {
     );
   },
 };
+
+export const EcommerceAppWithDefer = () => <AppWithDefer />;
