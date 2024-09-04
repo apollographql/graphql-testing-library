@@ -1,9 +1,16 @@
 <div align="center">
+  <a href="https://graphql.org/">
+    <img width="150" height="150" src="https://upload.wikimedia.org/wikipedia/commons/1/17/GraphQL_Logo.svg">
+  </a>
+  <a href="https://mswjs.io/">
+    <img width="150" height="150" src="https://raw.githubusercontent.com/mswjs/msw/main/media/msw-logo.svg">
+  </a>
+
   <h1>GraphQL Testing Library</h1>
 
-  <!-- <a href="https://www.apollographql.com/"><img src="https://raw.githubusercontent.com/apollographql/apollo-client-devtools/main/assets/apollo-wordmark.svg" height="100" alt="Apollo Client"></a> -->
+  <p>Generate Mock Service Worker handlers for your GraphQL APIs.</p>
 
-  <p>Testing utilities that encourage good practices for apps built with GraphQL.</p>
+[![npm version](https://badge.fury.io/js/%40apollo%2Fgraphql-testing-library.svg)](https://badge.fury.io/js/%40apollo%2Fgraphql-testing-library) ![badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/alessbell/3fd56e82b55e134ee9cf57f28b0b3d49/raw/jest-coverage-comment__main.json) ![workflow](https://github.com/apollographql/graphql-testing-library/actions/workflows/test.yml/badge.svg) [![Join our Discord server](https://img.shields.io/discord/1022972389463687228.svg?color=7389D8&labelColor=6A7EC2&logo=discord&logoColor=ffffff&style=flat-square)](https://discord.gg/graphos)
 
 </div>
 <hr />
@@ -15,7 +22,6 @@ MSW is the [Testing Library-recommended](https://testing-library.com/docs/react-
 This library currently supports incremental delivery features `@defer` and `@stream` out of the box, with plans to support subscriptions over multipart HTTP as well as other transports such as WebSockets, [currently in beta in MSW](https://github.com/mswjs/msw/discussions/2010).
 
 > This project is not affiliated with the ["Testing Library"](https://github.com/testing-library) ecosystem that inspired it. We're just fans :)
-
 
 ## Installation
 
@@ -63,10 +69,10 @@ const schemaWithMocks = addMocksToSchema({
 // operations, and `replaceSchema` allows you to replace the mock schema
 // the `handler` use to resolve requests against.
 const { handler, replaceSchema } = createHandler(schemaWithMocks, {
-  // It accepts a config object as the second argument where you can specify a 
-  // delay min and max, which will add random delays to your tests within the /
-  // threshold to simulate a real network connection.
-  // Default: delay: { min: 300, max: 300 }
-  delay: { min: 200, max: 500 },
+  // It accepts a config object as the second argument where you can specify a
+  // delay duration, which uses MSW's delay API:
+  // https://mswjs.io/docs/api/delay
+  // Default: "real" (100-400ms in browsers, 20ms in Node-like processes)
+  delay: number | "infinite" | "real",
 });
 ```

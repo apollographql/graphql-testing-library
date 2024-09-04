@@ -1,0 +1,37 @@
+---
+title: GraphQL Testing Library
+description: Generate Mock Service Worker handlers for your GraphQL APIs.
+template: splash
+hero:
+  tagline: Generate Mock Service Worker handlers for your GraphQL APIs.
+  image:
+    file: ../../assets/GraphQLxMSW.svg
+  actions:
+    - text: Read the docs
+      link: /installation
+      icon: right-arrow
+      variant: primary
+    - text: View repository
+      link: https://github.com/apollographql/graphql-testing-library
+      icon: external
+---
+
+import { Card, CardGrid } from "@astrojs/starlight/components";
+
+<CardGrid stagger>
+  <Card title="Client and framework-agnostic" icon="puzzle">
+    GraphQL Testing Library can be used to test apps built with any GraphQL
+    client or front-end stack.
+  </Card>
+  <Card title="The latest GraphQL features" icon="approve-check">
+    Supports experimental incremental delivery features `@defer` and `@stream`
+    out of the box.
+  </Card>
+  <Card title="Schema-driven testing" icon="seti:graphql" color="pink">
+    Goodbye hand-written response mocks, hello mock resolvers.
+  </Card>
+  <Card title="With the power of MSW" icon="rocket">
+    Learn more about Mock Service Worker by exploring [the MSW
+    docs](https://mswjs.io/).
+  </Card>
+</CardGrid>

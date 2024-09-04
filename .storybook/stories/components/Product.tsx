@@ -30,7 +30,9 @@ function Product({
             </a>
           </h3>
         </div>
-        <p className="text-sm font-medium text-gray-900">{children}</p>
+        <p data-testid="rating" className="text-sm font-medium text-gray-900">
+          {children}
+        </p>
       </div>
     </div>
   );
@@ -45,7 +47,7 @@ function Reviews({ reviews }: { reviews: Array<ReviewType> }) {
           ?.map((i) => i.rating)
           .reduce((curr, acc) => {
             return curr + acc;
-          }) / reviews.length
+          }) / reviews.length,
       )}/5`
     : "-";
 }

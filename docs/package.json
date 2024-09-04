@@ -1,0 +1,20 @@
+{
+  "name": "docs",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@apollo/tailwind-preset": "0.1.14",
+    "@astrojs/check": "0.9.3",
+    "@astrojs/starlight": "0.26.2",
+    "astro": "4.15.2",
+    "sharp": "0.33.5",
+    "typescript": "5.5.4"
+  }
+}

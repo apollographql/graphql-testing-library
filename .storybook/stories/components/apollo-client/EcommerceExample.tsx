@@ -5,7 +5,6 @@ import {
   InMemoryCache,
   ApolloClient,
   ApolloProvider,
-  ApolloLink,
   HttpLink,
   useSuspenseQuery,
   split,
@@ -20,7 +19,7 @@ import { getMainDefinition } from "@apollo/client/utilities";
 const wsLink = new GraphQLWsLink(
   createClient({
     url: "ws://localhost:4000/graphql",
-  })
+  }),
 );
 
 const httpLink = new HttpLink({
@@ -36,7 +35,7 @@ const splitLink = split(
     );
   },
   wsLink,
-  httpLink
+  httpLink,
 );
 
 export const makeClient = () =>

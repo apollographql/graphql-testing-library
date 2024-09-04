@@ -1,0 +1,53 @@
+---
+title: Getting started
+# description: A guide in my new Starlight docs site.
+---
+
+import { Tabs, TabItem, Aside } from "@astrojs/starlight/components";
+
+GraphQL Testing Library provides utilities for creating [Mock Service Worker](https://mswjs.io/) (MSW) [request handlers](https://mswjs.io/docs/concepts/request-handler/) for [GraphQL](https://graphql.org/) APIs.
+
+This guide will help you get started with MSW, create a request handler using a GraphQL schema and begin writing tests that can run in Node.js, the browser or React Native.
+
+<Aside type="tip">
+
+Just as MSW allows you to "write client-agnostic mocks and reuse them across any frameworks, tools, and environments," GraphQL Testing Library is also client-agnostic: you can use it with any GraphQL client, or no client at all!
+
+</Aside>
+
+## Installation
+
+GraphQL Testing Library has `peerDependencies` listings for `msw` at `^2.0.0` and `graphql` at `^15.0.0 || ^16.0.0`.
+
+Install them along with this library using your preferred package manager:
+
+<Tabs syncKey="pkg">
+<TabItem label="npm">
+
+```sh
+npm install --save-dev @apollo/graphql-testing-library msw graphql
+```
+
+</TabItem>
+<TabItem label="pnpm">
+
+```sh
+pnpm add --save-dev @apollo/graphql-testing-library msw graphql
+```
+
+</TabItem>
+<TabItem label="Yarn">
+
+```sh
+yarn add --dev @apollo/graphql-testing-library msw graphql
+```
+
+</TabItem>
+<TabItem label="Bun">
+
+```sh
+bun add --dev @apollo/graphql-testing-library msw graphql
+```
+
+</TabItem>
+</Tabs>

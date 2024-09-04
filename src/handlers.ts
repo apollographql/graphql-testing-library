@@ -1,60 +1,124 @@
 import { gql } from "graphql-tag";
 import { execute, subscribe } from "@graphql-tools/executor";
-import type { ExecutionResult, GraphQLSchema, ASTNode } from "graphql";
-import { visit, BREAK } from "graphql";
-import { HttpResponse, graphql, ws } from "msw";
+import { isNodeProcess } from "is-node-process";
+import type { GraphQLSchema, DocumentNode } from "graphql";
+import {
+  HttpResponse,
+  delay as mswDelay,
+  ws,
+  type ResponseResolver,
+} from "msw";
 import type {
   InitialIncrementalExecutionResult,
   SingularExecutionResult,
   SubsequentIncrementalExecutionResult,
 } from "@graphql-tools/executor";
+import {
+  addResolversToSchema,
+  makeExecutableSchema,
+} from "@graphql-tools/schema";
+import {
+  addMocksToSchema,
+  type IMocks,
+  type IMockStore,
+} from "@graphql-tools/mock";
+import { mergeResolvers } from "@graphql-tools/merge";
+import {
+  isAsyncGenerator,
+  createDefaultResolvers,
+  createPossibleTypesMap,
+  mockCustomScalars,
+  hasDirectives,
+  generateEnumMocksFromSchema,
+} from "./utilities.ts";
+import type { IResolvers, Maybe } from "@graphql-tools/utils";
+import { CustomRequestHandler } from "./requestHandler.ts";
 
 const encoder = new TextEncoder();
 
-function isAsyncGenerator(T: unknown): T is AsyncGenerator {
-  return typeof T[Symbol.asyncIterator] !== "undefined";
+type Delay = number | "infinite" | "real";
+
+interface DelayOptions {
+  delay?: Delay;
 }
 
-export function hasDirectives(names: string[], root: ASTNode, all?: boolean) {
-  const nameSet = new Set(names);
-  const uniqueCount = nameSet.size;
+type DocumentResolversWithOptions<TResolvers> = {
+  typeDefs: DocumentNode;
+  resolvers: Resolvers<TResolvers>;
+  mocks?: IMocks<TResolvers>;
+} & DelayOptions;
 
-  visit(root, {
-    Directive(node) {
-      if (nameSet.delete(node.name.value) && (!all || !nameSet.size)) {
-        return BREAK;
-      }
-    },
+type Resolvers<TResolvers> = TResolvers | ((store: IMockStore) => TResolvers);
+
+type SchemaWithOptions<TResolvers> = {
+  schema: GraphQLSchema;
+  resolvers?: Resolvers<TResolvers>;
+} & DelayOptions;
+
+function createHandler<TResolvers>(
+  documentResolversWithOptions: DocumentResolversWithOptions<TResolvers>,
+) {
+  const { resolvers, typeDefs, mocks, ...rest } = documentResolversWithOptions;
+
+  const schemaWithMocks = createSchemaWithDefaultMocks<TResolvers>(
+    typeDefs,
+    resolvers,
+    mocks,
+  );
+
+  return createHandlerFromSchema<TResolvers>({
+    schema: schemaWithMocks,
+    ...rest,
   });
-
-  // If we found all the names, nameSet will be empty. If we only care about
-  // finding some of them, the < condition is sufficient.
-  return all ? !nameSet.size : nameSet.size < uniqueCount;
 }
 
-const wait = (time: number) =>
-  new Promise((resolve) => setTimeout(resolve, time));
+function createSchemaWithDefaultMocks<TResolvers>(
+  typeDefs: DocumentNode,
+  resolvers?: TResolvers | ((store: IMockStore) => TResolvers),
+  mocks?: IMocks<TResolvers>,
+) {
+  const executableSchema = makeExecutableSchema({ typeDefs });
+  const enumMocks = generateEnumMocksFromSchema(executableSchema);
+  const customScalarMocks = mockCustomScalars(executableSchema);
+  const typesMap = createPossibleTypesMap(executableSchema);
+  const defaultResolvers = createDefaultResolvers(typesMap);
 
-interface Options {
-  delay?: { min: number; max: number };
+  return addMocksToSchema<TResolvers>({
+    schema: executableSchema,
+    mocks: {
+      ...enumMocks,
+      ...customScalarMocks,
+      ...mocks,
+    } as IMocks<TResolvers>,
+    resolvers: mergeResolvers([
+      defaultResolvers,
+      (resolvers ?? {}) as Maybe<
+        IResolvers<{ __typename?: string | undefined }, unknown>
+      >,
+    ]) as TResolvers,
+    preserveResolvers: true,
+  });
 }
 
-export const createHandler = (
-  schema: GraphQLSchema,
-  { delay }: Options = {}
-) => {
-  let testSchema: GraphQLSchema = schema;
-  const delayMin = delay?.min ?? 300;
-  const delayMax = delay?.max ?? delayMin + 300;
+function createHandlerFromSchema<TResolvers>(
+  schemaWithOptions: SchemaWithOptions<TResolvers>,
+) {
+  const { schema, delay } = schemaWithOptions;
 
-  if (delayMin > delayMax) {
-    throw new Error(
-      "Please configure a minimum delay that is less than the maximum delay. The default minimum delay is 3ms."
-    );
+  let _delay = delay ?? "real";
+  // The default node server response time in MSW's delay utility is 5ms.
+  // See https://github.com/mswjs/msw/blob/main/src/core/delay.ts#L16
+  // This sometimes caused multipart responses to be batched into a single
+  // render by React, so we'll use a longer delay of 20ms.
+  if (_delay === "real" && isNodeProcess()) {
+    _delay = 20;
   }
+
+  let testSchema: GraphQLSchema = schema;
 
   function replaceSchema(newSchema: GraphQLSchema) {
     const oldSchema = testSchema;
+
     testSchema = newSchema;
 
     function restore() {
@@ -68,6 +132,66 @@ export const createHandler = (
     });
   }
 
+  function withResolvers(resolvers: Resolvers<TResolvers>) {
+    const oldSchema = testSchema;
+
+    testSchema = addResolversToSchema({
+      schema: oldSchema,
+      // @ts-expect-error reconcile mock resolver types
+      resolvers,
+    });
+
+    function restore() {
+      testSchema = oldSchema;
+    }
+
+    return Object.assign(restore, {
+      [Symbol.dispose]() {
+        restore();
+      },
+    });
+  }
+
+  function withMocks(mocks: IMocks<TResolvers>) {
+    const oldSchema = testSchema;
+
+    testSchema = addMocksToSchema({
+      schema: oldSchema,
+      mocks: mocks,
+    });
+
+    function restore() {
+      testSchema = oldSchema;
+    }
+
+    return Object.assign(restore, {
+      [Symbol.dispose]() {
+        restore();
+      },
+    });
+  }
+
+  function replaceDelay(newDelay: Delay) {
+    const oldDelay = _delay;
+    _delay = newDelay;
+
+    function restore() {
+      _delay = oldDelay;
+    }
+
+    return Object.assign(restore, {
+      [Symbol.dispose]() {
+        restore();
+      },
+    });
+  }
+
+  Object.defineProperty(replaceDelay, "currentDelay", {
+    get() {
+      return _delay;
+    },
+  });
+
   const boundaryStr = "-";
   const contentType = "Content-Type: application/json";
   const boundary = `--${boundaryStr}`;
@@ -77,7 +201,7 @@ export const createHandler = (
   function createChunkArray(
     value:
       | InitialIncrementalExecutionResult<any, Record<string, unknown>>
-      | SubsequentIncrementalExecutionResult<any, Record<string, unknown>>
+      | SubsequentIncrementalExecutionResult<any, Record<string, unknown>>,
   ) {
     return [
       CRLF,
@@ -90,20 +214,17 @@ export const createHandler = (
     ];
   }
 
-  return {
-    handler: graphql.operation<
-      ExecutionResult<Record<string, unknown>, Record<string, unknown>>
-      // @ts-expect-error FIXME: mismatch on the return type between HttpResponse
-      // with a stream vs. json
-    >(async ({ query, variables, operationName }) => {
-      const document = gql(query);
-      const hasDefer = hasDirectives(["defer"], document);
-      const hasStream = hasDirectives(["stream"], document);
+  const requestHandler = createCustomRequestHandler();
 
-      if (hasDefer || hasStream) {
+  return Object.assign(
+    requestHandler(async ({ query, variables, operationName }) => {
+      const document = gql(query as string);
+      const hasDeferOrStream = hasDirectives(["defer", "stream"], document);
+
+      if (hasDeferOrStream) {
         const result = await execute({
           document,
-          operationName,
+          operationName: operationName as string,
           schema: testSchema,
           variableValues: variables,
         });
@@ -136,13 +257,12 @@ export const createHandler = (
           async start(controller) {
             try {
               for (const chunk of chunks) {
-                if (delayMin > 0) {
-                  const randomDelay =
-                    Math.random() * (delayMax - delayMin) + delayMin;
-
-                  if (chunk === boundary || chunk === terminatingBoundary) {
-                    await wait(randomDelay);
-                  }
+                if (
+                  ![CRLF, contentType, terminatingBoundary, boundary].includes(
+                    chunk,
+                  )
+                ) {
+                  await mswDelay(_delay);
                 }
                 controller.enqueue(encoder.encode(chunk));
               }
@@ -160,42 +280,58 @@ export const createHandler = (
       } else {
         const result = await execute({
           document,
-          operationName,
+          operationName: operationName as string,
           schema: testSchema,
           variableValues: variables,
         });
-        const randomDelay = Math.random() * (delayMax - delayMin) + delayMin;
-        await wait(randomDelay);
+
+        await mswDelay(_delay);
+
         return HttpResponse.json(result as SingularExecutionResult<any, any>);
       }
     }),
-    replaceSchema,
-  };
-};
-
-type CreateWSHandlerOptions = {
-  uri?: string;
-};
-
-export const createWSHandler = (
-  schema: GraphQLSchema,
-  options: CreateWSHandlerOptions = {}
-) => {
-  let isComplete = false;
-  let subscription = ws.link(options.uri || "ws://localhost:4000/graphql");
-
-  function restore() {
-    isComplete = false;
-  }
-
-  return {
-    [Symbol.dispose]() {
-      restore();
+    {
+      replaceSchema,
+      replaceDelay,
+      withResolvers,
+      withMocks,
     },
-    wsHandler: subscription.on("connection", ({ client }) => {
+  );
+}
+
+const createCustomRequestHandler = () => {
+  return (resolver: ResponseResolver) =>
+    new CustomRequestHandler("all", new RegExp(".*"), "*", resolver);
+};
+
+function createWSHandler<TResolvers>(
+  documentResolversWithOptions: DocumentResolversWithOptions<TResolvers> & {
+    uri?: string;
+  },
+) {
+  console.log("HELLO");
+  let isComplete = false;
+  const subscription = ws.link(
+    documentResolversWithOptions.uri || "ws://localhost:4000/graphql",
+  );
+
+  const { resolvers, typeDefs, mocks } = documentResolversWithOptions;
+
+  const schemaWithMocks = createSchemaWithDefaultMocks<TResolvers>(
+    typeDefs,
+    resolvers,
+    mocks,
+  );
+
+  // function restore() {
+  //   isComplete = false;
+  // }
+
+  const handler = Object.assign(
+    subscription.on("connection", ({ client }) => {
       client.addEventListener("message", async (event) => {
         const json = JSON.parse(
-          typeof event.data === "string" ? event.data : ""
+          typeof event.data === "string" ? event.data : "",
         );
 
         if (json.type === "connection_init" && !isComplete) {
@@ -204,7 +340,7 @@ export const createWSHandler = (
 
         if (json.type === "subscribe" && !isComplete) {
           const result = await subscribe({
-            schema,
+            schema: schemaWithMocks,
             document: gql(json.payload.query),
             operationName: json.payload.operationName,
             variableValues: json.payload.variables,
@@ -217,7 +353,7 @@ export const createWSHandler = (
                   id: json.id,
                   type: "next",
                   payload: chunk,
-                })
+                }),
               );
             }
 
@@ -231,5 +367,14 @@ export const createWSHandler = (
         }
       });
     }),
-  };
+    {},
+  );
+  return handler;
+}
+
+export {
+  createHandler,
+  createWSHandler,
+  createHandlerFromSchema,
+  createSchemaWithDefaultMocks,
 };

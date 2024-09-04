@@ -19,7 +19,5 @@
       "matchUpdateTypes": ["patch"]
     }
   ],
-  "ignoreDeps": [
-    "eslint"
-  ]
+  "ignoreDeps": ["eslint"]
 }

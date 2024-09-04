@@ -4,46 +4,39 @@ import {
   RelayApp,
   RelayAppWithDefer as AppWithDefer,
 } from "./components/relay/RelayComponent.js";
-import { createHandler } from "../../src/handlers.js";
-import { schemaWithMocks } from "../../src/__tests__/mocks/handlers.js";
+import { ecommerceHandler } from "../../src/__tests__/mocks/handlers.js";
 
-const { handler } = createHandler(schemaWithMocks);
-
-const meta = {
+export default {
   title: "Example/Relay",
   component: RelayApp,
   parameters: {
     layout: "centered",
     msw: {
       handlers: {
-        graphql: handler,
+        graphql: ecommerceHandler,
       },
     },
   },
 } satisfies Meta<typeof RelayApp>;
 
-export default meta;
-
-export { AppWithDefer };
-
-type Story = StoryObj<typeof meta>;
-
-export const App: Story = {
+export const EcommerceApp: StoryObj<typeof RelayApp> = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
-      canvas.getByRole("heading", { name: /loading/i })
+      canvas.getByRole("heading", { name: /loading/i }),
     ).toHaveTextContent("Loading...");
     await waitFor(
       () =>
         expect(
-          canvas.getByRole("heading", { name: /customers/i })
+          canvas.getByRole("heading", { name: /customers/i }),
         ).toHaveTextContent("Customers also purchased"),
-      { timeout: 2000 }
+      { timeout: 2000 },
     );
     await waitFor(
       () => expect(canvas.getByText(/beanie/i)).toBeInTheDocument(),
-      { timeout: 2000 }
+      { timeout: 2000 },
     );
   },
 };
+
+export const EcommerceAppWithDefer = () => <AppWithDefer />;

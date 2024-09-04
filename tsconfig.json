@@ -23,5 +23,12 @@
     "lib": ["es2022", "dom", "dom.iterable"],
     "types": ["@testing-library/jest-dom/jest-globals"]
   },
-  "include": ["src", "graphql.d.ts", "setupTests.ts", ".storybook"]
+  "include": [
+    "src",
+    "global.d.ts",
+    "graphql.d.ts",
+    "setupTests.ts",
+    ".storybook",
+    ".storybook/vite-env.d.ts"
+  ]
 }

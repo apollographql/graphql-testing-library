@@ -2,6 +2,9 @@ module.exports = {
   globals: {
     "globalThis.__DEV__": JSON.stringify(true),
   },
+  moduleNameMapper: {
+    "\\.svg": "<rootDir>/src/__tests__/mocks/svg.js",
+  },
   extensionsToTreatAsEsm: [".ts", ".tsx"],
   testEnvironment: "jsdom",
   roots: ["<rootDir>/src/__tests__"],
@@ -18,6 +21,13 @@ module.exports = {
   testEnvironmentOptions: {
     customExportConditions: [""],
   },
+  collectCoverageFrom: [
+    "src/**/*.ts",
+    "!src/__tests__/**/*.ts",
+    "!src/requestHandler.ts",
+  ],
+  coverageReporters: ["html", "json-summary", "text", "text-summary"],
+  reporters: ["default", ["jest-junit", { outputDirectory: "coverage" }]],
   transform: {
     "\\.(gql|graphql)$": "@graphql-tools/jest-transform",
     "^.+\\.tsx?$": [

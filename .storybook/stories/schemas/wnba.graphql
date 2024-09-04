@@ -1,0 +1,46 @@
+type Query {
+  teams: [Team!]!
+  team(id: ID): Team!
+  coaches: [Coach!]!
+  favoriteTeam: ID!
+}
+
+type Mutation {
+  setCurrentTeam(team: ID!): Team!
+}
+
+type Team {
+  id: ID!
+  name: String!
+  wins: Int!
+  losses: Int!
+  coach: Coach!
+}
+
+type Coach {
+  id: ID!
+  team: ID!
+  name: String!
+}
+
+type Player {
+  id: ID!
+  name: String!
+  position: String!
+}
+
+type Game {
+  home: Team!
+  away: Team!
+  id: ID!
+}
+
+type Subscription {
+  numberIncremented: Int
+  score(gameId: ID!): Score
+}
+
+type Score {
+  home: Int!
+  away: Int!
+}
