@@ -51,7 +51,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@apollo/client": "3.11.5",
+    "@apollo/client": "3.11.6",
     "@apollo/tailwind-preset": "0.1.14",
     "@changesets/changelog-github": "0.5.0",
     "@changesets/cli": "2.27.7",
@@ -112,7 +112,7 @@
     "tw-colors": "3.3.1",
     "typescript": "5.5.4",
     "undici": "6.19.8",
-    "vite": "5.4.2",
+    "vite": "5.4.3",
     "vite-plugin-graphql-loader": "4.0.4",
     "vite-plugin-relay": "2.1.0",
     "vite-plugin-svgr": "4.2.0",
