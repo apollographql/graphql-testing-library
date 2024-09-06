@@ -304,12 +304,11 @@ const createCustomRequestHandler = () => {
     new CustomRequestHandler("all", new RegExp(".*"), "*", resolver);
 };
 
-function createWSHandler<TResolvers>(
+function createWebSocketHandler<TResolvers>(
   documentResolversWithOptions: DocumentResolversWithOptions<TResolvers> & {
     uri?: string;
   },
 ) {
-  console.log("HELLO");
   let isComplete = false;
   const subscription = ws.link(
     documentResolversWithOptions.uri || "ws://localhost:4000/graphql",
@@ -374,7 +373,7 @@ function createWSHandler<TResolvers>(
 
 export {
   createHandler,
-  createWSHandler,
+  createWebSocketHandler,
   createHandlerFromSchema,
   createSchemaWithDefaultMocks,
 };

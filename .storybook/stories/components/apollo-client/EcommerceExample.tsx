@@ -123,14 +123,6 @@ export function ApolloAppWithDefer() {
   );
 }
 
-export function ApolloAppSubscription() {
-  return (
-    <Wrapper>
-      <AppWithWSSubscription />
-    </Wrapper>
-  );
-}
-
 export function App() {
   // Use useSuspenseQuery here because we want to demo the loading experience
   // with/without defer.
@@ -161,10 +153,4 @@ export function AppWithDefer() {
       ))}
     </Container>
   );
-}
-
-export function AppWithWSSubscription() {
-  const { data } = useSubscription(APP_SUBSCRIPTION);
-
-  return <>{data?.numberIncremented}</>;
 }

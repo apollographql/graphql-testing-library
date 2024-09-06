@@ -83,7 +83,7 @@ describe("integration tests", () => {
         expect(screen.getAllByTestId(/rating/i)[0]).not.toHaveTextContent("-");
       });
     });
-    it("can set a new schema via replaceSchema", async () => {
+    it("can set a new schema via withResolvers", async () => {
       using _restore = ecommerceHandler.withResolvers({
         Query: {
           products: () => {

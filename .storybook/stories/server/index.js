@@ -13,27 +13,179 @@ import cors from "cors";
 const PORT = 4000;
 const pubsub = new PubSub();
 
-// Schema definition
 const typeDefs = `#graphql
-  type Query {
-    currentNumber: Int
-  }
+type Query {
+  teams: [Team!]!
+  team(id: ID): Team!
+  coaches: [Coach!]!
+  favoriteTeam: ID!
+}
 
-  type Subscription {
-    numberIncremented: Int
-  }
+type Mutation {
+  setCurrentTeam(team: ID!): Team!
+}
+
+type Team {
+  id: ID!
+  name: String!
+  wins: Int!
+  losses: Int!
+  coach: Coach!
+}
+
+type Coach {
+  id: ID!
+  team: ID!
+  name: String!
+}
+
+type Player {
+  id: ID!
+  name: String!
+  position: String!
+}
+
+type Game {
+  home: Team!
+  away: Team!
+  id: ID!
+}
+
+type Subscription {
+  numberIncremented: Int
+  score: Score
+}
+
+type Score {
+  home: Int!
+  away: Int!
+}
 `;
+
+const coaches = [
+  {
+    id: "1",
+    name: "Sandy Brondello",
+  },
+  {
+    id: "2",
+    name: "Becky Hammon",
+  },
+  {
+    id: "3",
+    name: "Curt Miller",
+  },
+];
+
+const teams = [
+  {
+    id: "1",
+    name: "New York Liberty",
+    wins: 26,
+    losses: 6,
+  },
+  {
+    id: "2",
+    name: "Las Vegas Aces",
+    wins: 18,
+    losses: 12,
+  },
+  {
+    id: "3",
+    name: "Los Angeles Sparks",
+    wins: 7,
+    losses: 24,
+  },
+  {
+    id: "4",
+    name: "Atlanta Dream",
+    wins: 10,
+    losses: 20,
+  },
+  {
+    id: "5",
+    name: "Chicago Sky",
+    wins: 11,
+    losses: 19,
+  },
+  {
+    id: "6",
+    name: "Connecticut Sun",
+    wins: 22,
+    losses: 8,
+  },
+  {
+    id: "7",
+    name: "Indiana Fever",
+    wins: 15,
+    losses: 16,
+  },
+  {
+    id: "8",
+    name: "Washington Mystics",
+    wins: 9,
+    losses: 22,
+  },
+  {
+    id: "9",
+    name: "Dallas Wings",
+    wins: 8,
+    losses: 22,
+  },
+  {
+    id: "10",
+    name: "Minnesota Lynx",
+    wins: 23,
+    losses: 8,
+  },
+  {
+    id: "11",
+    name: "Phoenix Mercury",
+    wins: 16,
+    losses: 16,
+  },
+  {
+    id: "12",
+    name: "Seattle Storm",
+    wins: 19,
+    losses: 11,
+  },
+  {
+    id: "13",
+    name: "Golden State Valkyries",
+    wins: 0,
+    losses: 0,
+  },
+];
+
+let currentTeam = "1";
 
 // Resolver map
 const resolvers = {
   Query: {
-    currentNumber() {
-      return currentNumber;
+    team(_parent, { id }) {
+      console.log({ id });
+      return teams.find((team) => team.id === (id || currentTeam));
+    },
+    teams() {
+      console.log(teams);
+      return teams;
+    },
+    coaches() {
+      return coaches;
     },
   },
   Subscription: {
-    numberIncremented: {
-      subscribe: () => pubsub.asyncIterator(["NUMBER_INCREMENTED"]),
+    score: {
+      subscribe: () => {
+        return pubsub.asyncIterator(["POINT_SCORED"]);
+      },
+    },
+  },
+  Mutation: {
+    setCurrentTeam(_parent, { team }) {
+      currentTeam = team;
+      return teams.find((t) => t.id === team);
     },
   },
 };
@@ -74,26 +226,30 @@ const server = new ApolloServer({
   ],
 });
 
-// @ts-ignore
 await server.start();
-
 app.use("/graphql", cors(), bodyParser.json(), expressMiddleware(server));
+
+const score = { home: 0, away: 0 };
+let currentNumber = 1;
+
+function scorePoint() {
+  currentNumber++;
+  if (currentNumber % 2 === 0) {
+    score.home += 2;
+  } else {
+    score.away += 2;
+  }
+  pubsub.publish("POINT_SCORED", { score });
+  setTimeout(scorePoint, 1000);
+}
+
+// Start incrementing
+scorePoint();
 
 // Now that our HTTP server is fully set up, actually listen.
 httpServer.listen(PORT, () => {
   console.log(`🚀 Query endpoint ready at http://localhost:${PORT}/graphql`);
   console.log(
-    `🚀 Subscription endpoint ready at ws://localhost:${PORT}/graphql`
+    `🚀 Subscription endpoint ready at ws://localhost:${PORT}/graphql`,
   );
 });
-
-// In the background, increment a number every second and notify subscribers when it changes.
-let currentNumber = 0;
-function incrementNumber() {
-  currentNumber++;
-  pubsub.publish("NUMBER_INCREMENTED", { numberIncremented: currentNumber });
-  setTimeout(incrementNumber, 1000);
-}
-
-// Start incrementing
-incrementNumber();

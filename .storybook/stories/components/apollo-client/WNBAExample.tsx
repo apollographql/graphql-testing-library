@@ -12,6 +12,7 @@ import {
   useSuspenseQuery,
   useMutation,
   useFragment,
+  useSubscription,
 } from "@apollo/client";
 
 import { TeamLogo } from "../TeamLogo.js";
@@ -90,6 +91,15 @@ const APP_MUTATION = gql`
   ${TEAM_FRAGMENT}
 `;
 
+const APP_SUBSCRIPTION = gql`
+  subscription GetCurrentScore {
+    score {
+      home
+      away
+    }
+  }
+`;
+
 function Wrapper({ children }: { children: ReactNode }) {
   return (
     <ApolloProvider client={client}>
@@ -121,22 +131,47 @@ export function App() {
 
   return (
     <div
-      className={`wnba ${currentTeamSlug} bg-primary w-screen h-screen p-10 pt-16`}
+      className={`wnba ${currentTeamSlug} bg-primary w-screen h-screen p-10 pt-16 flex flex-col`}
     >
       <div className="marquee">
         <p>Welcome to the W 🏀</p>
       </div>
 
       <div
-        className="text-7xl mb-2"
+        className="text-7xl m-auto mt-0 mb-6"
         style={{
           textShadow: `0.03em 0.03em hsl(var(--twc-secondary)), 0.03em 0.03em hsl(var(--twc-secondary)), -0.03em -0.03em hsl(var(--twc-secondary))`,
         }}
       >
         WNBA stats central
       </div>
-      <TeamSelect currentTeam={data?.team.id} teams={data?.teams} />
-      <Team team={data?.team.id} />
+      <div className="flex flex-row">
+        <BoxScore />
+        <TeamSelect currentTeam={data?.team.id} teams={data?.teams} />
+      </div>
+      <div className="flex flex-row">
+        <div className="flex-1 flex-col border-secondary border-y-4 border-l-4 p-4"></div>
+        <div className="flex-1 flex-col border-secondary border-4 p-4">
+          <Team team={data?.team.id} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BoxScore() {
+  const { data } = useSubscription(APP_SUBSCRIPTION);
+
+  return (
+    <div className="border-secondary border-4 inline-flex p-4 text-2xl mb-10 mr-auto">
+      <div className="text-center">
+        <TeamLogo className="h-28 w-28 m-0 mb-4" team="4" />{" "}
+        <span className="text-secondary">{data?.score?.home || 0}</span>
+      </div>
+      <div className="text-center">
+        <TeamLogo className="h-28 w-28 m-0 mb-4" team="5" />{" "}
+        <span className="text-secondary">{data?.score?.away || 0}</span>
+      </div>
     </div>
   );
 }
@@ -164,7 +199,7 @@ function TeamSelect({
   });
 
   return (
-    <div>
+    <div className="">
       <label htmlFor="teams" className="text-secondary">
         <span className="pr-4 text-4xl">My team:</span>
       </label>
@@ -202,7 +237,7 @@ function Team({ team }: { team: string }) {
   });
 
   return (
-    <div className="pt-20">
+    <div className="ml-auto">
       <div className="">
         <TeamLogo team={data.id} />
       </div>

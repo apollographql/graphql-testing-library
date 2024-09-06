@@ -13,7 +13,7 @@ export default {
     layout: "centered",
     msw: {
       handlers: {
-        graphql: ecommerceHandler,
+        // graphql: ecommerceHandler,
       },
     },
   },

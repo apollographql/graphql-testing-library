@@ -37,7 +37,7 @@ type Game {
 
 type Subscription {
   numberIncremented: Int
-  score(gameId: ID!): Score
+  score: Score
 }
 
 type Score {

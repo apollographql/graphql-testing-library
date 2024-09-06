@@ -57,6 +57,10 @@ module.exports = {
         primary: "#2C5235",
         secondary: "#FEE11A",
       },
+      valkyries: {
+        primary: "#AC96DB",
+        secondary: "#2E2A26",
+      },
     }),
   ],
 };

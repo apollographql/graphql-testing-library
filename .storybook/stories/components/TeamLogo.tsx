@@ -10,6 +10,7 @@ import NewYork from "./logos/NewYorkLiberty.svg?react";
 import Phoenix from "./logos/PhoenixMercury.svg?react";
 import Seattle from "./logos/SeattleStorm.svg?react";
 import Washington from "./logos/WashingtonMystics.svg?react";
+import GoldenState from "./logos/GoldenStateValkyries.png";
 
 // indexed by team ID
 const logos = [
@@ -26,9 +27,20 @@ const logos = [
   Minnesota,
   Phoenix,
   Seattle,
+  GoldenState,
 ];
 
-export function TeamLogo({ team }: { team: string }) {
+export function TeamLogo({
+  team,
+  className = "h-40 w-40 m-0",
+}: {
+  team: string;
+  className?: string;
+}) {
   const Logo = logos[parseInt(team)] || (() => "Error: no logo found");
-  return <Logo className="h-40 w-40 m-0" />;
+
+  if (typeof Logo === "string")
+    return <img className={`${className} bg-white`} src={GoldenState} />;
+
+  return <Logo className={className} />;
 }
