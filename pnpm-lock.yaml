@@ -169,11 +169,11 @@ importers:
         specifier: 25.0.0
         version: 25.0.0
       msw:
-        specifier: 2.4.2
-        version: 2.4.2(graphql@16.9.0)(typescript@5.5.4)
+        specifier: 2.4.3
+        version: 2.4.3(typescript@5.5.4)
       msw-storybook-addon:
         specifier: 2.0.3
-        version: 2.0.3(msw@2.4.2(graphql@16.9.0)(typescript@5.5.4))
+        version: 2.0.3(msw@2.4.3(typescript@5.5.4))
       playwright:
         specifier: 1.47.0
         version: 1.47.0
@@ -5231,16 +5231,13 @@ packages:
     peerDependencies:
       msw: ^2.0.0
 
-  msw@2.4.2:
-    resolution: {integrity: sha512-GImSQGhn19czhVpxPdiUDK8CMZ6jbBcvOhzfJd8KFErjEER2wDKWs1UYaetJs2GSNlAqt6heZYm7g3eLatTcog==}
+  msw@2.4.3:
+    resolution: {integrity: sha512-PXK3wOQHwDtz6JYVyAVlQtzrLr6bOAJxggw5UHm3CId79+W7238aNBD1zJVkFY53o/DMacuIfgesW2nv9yCO3Q==}
     engines: {node: '>=18'}
     hasBin: true
     peerDependencies:
-      graphql: '>= 16.8.x'
       typescript: '>= 4.8.x'
     peerDependenciesMeta:
-      graphql:
-        optional: true
       typescript:
         optional: true
 
@@ -13491,12 +13488,12 @@ snapshots:
 
   ms@2.1.3: {}
 
-  msw-storybook-addon@2.0.3(msw@2.4.2(graphql@16.9.0)(typescript@5.5.4)):
+  msw-storybook-addon@2.0.3(msw@2.4.3(typescript@5.5.4)):
     dependencies:
       is-node-process: 1.2.0
-      msw: 2.4.2(graphql@16.9.0)(typescript@5.5.4)
+      msw: 2.4.3(typescript@5.5.4)
 
-  msw@2.4.2(graphql@16.9.0)(typescript@5.5.4):
+  msw@2.4.3(typescript@5.5.4):
     dependencies:
       '@bundled-es-modules/cookie': 2.0.0
       '@bundled-es-modules/statuses': 1.0.1
@@ -13507,6 +13504,7 @@ snapshots:
       '@types/cookie': 0.6.0
       '@types/statuses': 2.0.5
       chalk: 4.1.2
+      graphql: 16.9.0
       headers-polyfill: 4.0.3
       is-node-process: 1.2.0
       outvariant: 1.4.3
@@ -13515,7 +13513,6 @@ snapshots:
       type-fest: 4.26.0
       yargs: 17.7.2
     optionalDependencies:
-      graphql: 16.9.0
       typescript: 5.5.4
 
   mute-stream@0.0.8: {}
