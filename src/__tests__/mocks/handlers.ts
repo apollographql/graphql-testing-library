@@ -3,20 +3,21 @@ import type { Resolvers } from "../../__generated__/resolvers-types-ecommerce.ts
 import { createHandler } from "../../handlers.js";
 
 const products = ["beanie", "bottle", "cap", "onesie", "shirt", "socks"];
+const productImgURL = "https://storage.googleapis.com/hack-the-supergraph";
 
 const ecommerceHandler = createHandler<Resolvers>({
   typeDefs: ecommerceSchema,
   resolvers: {
     Query: {
       products: () =>
-        Array.from({ length: products.length }, (_element, id) => ({
-          id: `${id}`,
-          title: products[id],
-          mediaUrl: `https://storage.googleapis.com/hack-the-supergraph/apollo-${products[id]}.jpg`,
+        products.map((_element, index) => ({
+          id: `${index}`,
+          title: products[index],
+          mediaUrl: `${productImgURL}/apollo-${products[index]}.jpg`,
           reviews: [
             {
-              id: `review-${id}`,
-              rating: id * 2,
+              id: `review-${index}`,
+              rating: index * 2,
             },
           ],
         })),
