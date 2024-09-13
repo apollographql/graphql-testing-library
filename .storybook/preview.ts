@@ -1,5 +1,5 @@
 import type { Preview } from "@storybook/react";
-import { initialize, mswLoader, getWorker } from "msw-storybook-addon";
+import { initialize, mswLoader } from "msw-storybook-addon";
 import "./stories/input.css";
 
 let options = {};

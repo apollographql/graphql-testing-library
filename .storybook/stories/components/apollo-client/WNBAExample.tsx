@@ -138,7 +138,7 @@ export function App() {
       </div>
 
       <div
-        className="text-7xl m-auto mt-0 mb-6"
+        className="text-7xl m-auto mt-0 mb-10"
         style={{
           textShadow: `0.03em 0.03em hsl(var(--twc-secondary)), 0.03em 0.03em hsl(var(--twc-secondary)), -0.03em -0.03em hsl(var(--twc-secondary))`,
         }}
@@ -147,11 +147,10 @@ export function App() {
       </div>
       <div className="flex flex-row">
         <BoxScore />
-        <TeamSelect currentTeam={data?.team.id} teams={data?.teams} />
-      </div>
-      <div className="flex flex-row">
-        <div className="flex-1 flex-col border-secondary border-y-4 border-l-4 p-4"></div>
-        <div className="flex-1 flex-col border-secondary border-4 p-4">
+        <div className="flex flex-col flex-1 ml-20">
+          <div className="mb-4">
+            <TeamSelect currentTeam={data?.team.id} teams={data?.teams} />
+          </div>
           <Team team={data?.team.id} />
         </div>
       </div>
@@ -163,14 +162,18 @@ function BoxScore() {
   const { data } = useSubscription(APP_SUBSCRIPTION);
 
   return (
-    <div className="border-secondary border-4 inline-flex p-4 text-2xl mb-10 mr-auto">
+    <div className="border-secondary border-4 inline-flex p-4 mb-10 mr-auto">
       <div className="text-center">
         <TeamLogo className="h-28 w-28 m-0 mb-4" team="4" />{" "}
-        <span className="text-secondary">{data?.score?.home || 0}</span>
+        <span className="text-secondary text-4xl">
+          {data?.score?.home || 0}
+        </span>
       </div>
       <div className="text-center">
         <TeamLogo className="h-28 w-28 m-0 mb-4" team="5" />{" "}
-        <span className="text-secondary">{data?.score?.away || 0}</span>
+        <span className="text-secondary text-4xl">
+          {data?.score?.away || 0}
+        </span>
       </div>
     </div>
   );
@@ -199,7 +202,7 @@ function TeamSelect({
   });
 
   return (
-    <div className="">
+    <div className="flex flex-row">
       <label htmlFor="teams" className="text-secondary">
         <span className="pr-4 text-4xl">My team:</span>
       </label>
@@ -237,14 +240,15 @@ function Team({ team }: { team: string }) {
   });
 
   return (
-    <div className="ml-auto">
-      <div className="">
-        <TeamLogo team={data.id} />
-      </div>
+    <div className="flex flex-row">
+      <TeamLogo team={data.id} />
       {data ? (
         <>
-          <p className="text-4xl text-secondary">Wins: {data?.wins}</p>
-          <p className="text-4xl text-secondary">Losses: {data?.losses}</p>
+          <div className="text-4xl ml-4 my-auto text-secondary flex flex-row flex-1">
+            Wins: {data?.wins}
+            <br />
+            Losses: {data?.losses}
+          </div>
         </>
       ) : null}
     </div>

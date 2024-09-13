@@ -4,7 +4,7 @@ import {
   RelayApp,
   RelayAppWithDefer as AppWithDefer,
 } from "./components/relay/RelayComponent.js";
-import { ecommerceHandler } from "../../src/__tests__/mocks/handlers.js";
+import { ecommerceHandler as handler } from "../../src/__tests__/mocks/handlers.js";
 
 export default {
   title: "Example/Relay",
@@ -13,7 +13,7 @@ export default {
     layout: "centered",
     msw: {
       handlers: {
-        // graphql: ecommerceHandler,
+        graphql: handler,
       },
     },
   },

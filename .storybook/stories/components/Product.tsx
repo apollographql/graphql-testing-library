@@ -21,16 +21,16 @@ function Product({
           className="h-full w-full object-cover object-center lg:h-full lg:w-full"
         />
       </div>
-      <div className="mt-4 flex justify-between">
+      <div className="mt-4 flex justify-between text-xl">
         <div>
-          <h3 className="text-sm text-gray-700">
+          <h3 className=" text-gray-700">
             <a href="#">
               <span aria-hidden="true" className="absolute inset-0" />
               {product.title}
             </a>
           </h3>
         </div>
-        <p data-testid="rating" className="text-sm font-medium text-gray-900">
+        <p data-testid="rating" className="font-medium text-gray-900">
           {children}
         </p>
       </div>
