@@ -105,7 +105,7 @@ function createHandlerFromSchema<TResolvers>(
   // This sometimes caused multipart responses to be batched into a single
   // render by React, so we'll use a longer delay of 20ms.
   if (_delay === "real" && isNodeProcess()) {
-    _delay = 20;
+    _delay = 50;
   }
 
   let testSchema: GraphQLSchema = schema;

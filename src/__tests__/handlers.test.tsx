@@ -342,6 +342,6 @@ describe("unit tests", () => {
 
     // @ts-expect-error intentionally accessing a property that has been
     // excluded from the type
-    expect(ecommerceHandler.replaceDelay["currentDelay"]).toBe(20);
+    expect(ecommerceHandler.replaceDelay["currentDelay"]).toBe(50);
   });
 });
