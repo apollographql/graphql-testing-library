@@ -130,8 +130,8 @@ importers:
         specifier: 16.0.6
         version: 16.0.6
       '@types/relay-runtime':
-        specifier: 17.0.4
-        version: 17.0.4
+        specifier: 18.0.0
+        version: 18.0.0
       '@typescript-eslint/eslint-plugin':
         specifier: 8.6.0
         version: 8.6.0(@typescript-eslint/parser@8.6.0(eslint@8.57.0)(typescript@5.6.2))(eslint@8.57.0)(typescript@5.6.2)
@@ -139,11 +139,11 @@ importers:
         specifier: 8.6.0
         version: 8.6.0(eslint@8.57.0)(typescript@5.6.2)
       babel-plugin-relay:
-        specifier: 17.0.0
-        version: 17.0.0
+        specifier: 18.1.0
+        version: 18.1.0
       concurrently:
-        specifier: 8.2.2
-        version: 8.2.2
+        specifier: 9.0.1
+        version: 9.0.1
       eslint:
         specifier: 8.57.0
         version: 8.57.0
@@ -187,14 +187,14 @@ importers:
         specifier: 18.3.1
         version: 18.3.1
       react-relay:
-        specifier: 17.0.0
-        version: 17.0.0(react@18.3.1)
+        specifier: 18.1.0
+        version: 18.1.0(react@18.3.1)
       relay-compiler:
-        specifier: 17.0.0
-        version: 17.0.0
+        specifier: 18.1.0
+        version: 18.1.0
       relay-runtime:
-        specifier: 17.0.0
-        version: 17.0.0
+        specifier: 18.1.0
+        version: 18.1.0
       storybook:
         specifier: 8.3.3
         version: 8.3.3
@@ -230,7 +230,7 @@ importers:
         version: 4.0.4
       vite-plugin-relay:
         specifier: 2.1.0
-        version: 2.1.0(babel-plugin-relay@17.0.0)(vite@5.4.8(@types/node@22.5.5))
+        version: 2.1.0(babel-plugin-relay@18.1.0)(vite@5.4.8(@types/node@22.5.5))
       vite-plugin-svgr:
         specifier: 4.2.0
         version: 4.2.0(rollup@4.21.2)(typescript@5.6.2)(vite@5.4.8(@types/node@22.5.5))
@@ -2100,8 +2100,8 @@ packages:
   '@types/react@18.3.10':
     resolution: {integrity: sha512-02sAAlBnP39JgXwkAq3PeU9DVaaGpZyF3MGcC0MKgQVkZor5IiiDAipVaxQHtDJAmO4GIy/rVBy/LzVj76Cyqg==}
 
-  '@types/relay-runtime@17.0.4':
-    resolution: {integrity: sha512-fB77br4lXlBYM/HpI6VI6KCrj5pw0LiAnkZOkffjirNYso+dzXGWkeIm0G0MGszD8WY1et+r1Uj2TA6rscBXNQ==}
+  '@types/relay-runtime@18.0.0':
+    resolution: {integrity: sha512-LK9NAw/WsdiMtQU+SxnhFd2bA6HfRsjniAENdznA8BKbGGvcMi0K8Gyq/XtoNmCMR9jxzO9rqFTksKkiXgsGYg==}
 
   '@types/resolve@1.20.6':
     resolution: {integrity: sha512-A4STmOXPhMUtHH+S6ymgE2GiBSMqf4oTvcQZMcHzokuTLVYzXTB8ttjcgxOVaAp2lGwEdzZ0J+cRbbeevQj1UQ==}
@@ -2520,8 +2520,8 @@ packages:
   babel-plugin-macros@2.8.0:
     resolution: {integrity: sha512-SEP5kJpfGYqYKpBrj5XU3ahw5p5GOHJ0U5ssOSQ/WBVdwkD2Dzlce95exQTs3jOVWPPKLBN2rlEWkCK7dSmLvg==}
 
-  babel-plugin-relay@17.0.0:
-    resolution: {integrity: sha512-aBIEDp6jFOAO+CD+GGKv4/WOQ7cnS6hZysJI0dFbLRQXZ6XQar0lytxQ4zuqPU0RpGnUeN5htK3NTewu2TZ53A==}
+  babel-plugin-relay@18.1.0:
+    resolution: {integrity: sha512-k3ehQO5CEOgKLJmHAswkV+qatPdfH2fAkibo/ejUsSyadE+iA+Uzb2uBcVdgvLRSH+n1euuqtV2BBUEKeJRmrg==}
 
   babel-plugin-syntax-trailing-function-commas@7.0.0-beta.0:
     resolution: {integrity: sha512-Xj9XuRuz3nTSbaTXWv3itLOcxyF4oPD8douBBmj7U9BBC6nEBYfyOJYQMf/8PJAFotC62UY5dFfIGEPr7WswzQ==}
@@ -2856,9 +2856,9 @@ packages:
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
-  concurrently@8.2.2:
-    resolution: {integrity: sha512-1dP4gpXFhei8IOtlXRE/T/4H88ElHgTiUzh71YUmtjTEHMSRS2Z/fgOxHSxxusGHogsRfxNq1vyAwxSC+EVyDg==}
-    engines: {node: ^14.13.0 || >=16.0.0}
+  concurrently@9.0.1:
+    resolution: {integrity: sha512-wYKvCd/f54sTXJMSfV6Ln/B8UrfLBKOYa+lzc6CHay3Qek+LorVSBdMVfyewFhRbH0Rbabsk4D+3PL/VjQ5gzg==}
+    engines: {node: '>=18'}
     hasBin: true
 
   consola@3.2.3:
@@ -3048,10 +3048,6 @@ packages:
 
   datasette@1.0.1:
     resolution: {integrity: sha512-aJdlCBToEJUP4M57r67r4V6tltwGKa3qetnjpBtXYIlqbX9tM9jsoDMxb4xd9AGjpp3282oHRmqI5Z8TVAU0Mg==}
-
-  date-fns@2.30.0:
-    resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==}
-    engines: {node: '>=0.11'}
 
   debounce@1.2.1:
     resolution: {integrity: sha512-XRRe6Glud4rd/ZGQfiV1ruXSfbvfJedlV9Y6zOlP+2K04vBYiJEte6stfFkCP03aMnY5tsipamumUjL14fofug==}
@@ -3381,6 +3377,7 @@ packages:
   eslint@8.57.0:
     resolution: {integrity: sha512-dZ6+mexnaTIbSBZWgou51U6OmzIhYM2VcNdtiTtI7qPNZm35Akpr0f6vtw3w1Kmn5PYo+tZVfh13WrhpS6oLqQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
 
   espree@9.6.1:
@@ -5314,8 +5311,8 @@ packages:
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
 
-  react-relay@17.0.0:
-    resolution: {integrity: sha512-Kn0CMiKZtWc+EisFPmzuZ53RtDeLlJO+EUVJwqxNkOs5g1jDjVi1v+k48kHeTyim2X43Rr0S2aeailllci5SgQ==}
+  react-relay@18.1.0:
+    resolution: {integrity: sha512-kqRbWid1A+B5HyvS05zwQacBhgWbIAlclTOO4CEWTwq0Sz00rZP1S9Bfcrl0ViImNKZHNa8+2I27409v9Sw1bQ==}
     peerDependencies:
       react: ^16.9.0 || ^17 || ^18
 
@@ -5379,15 +5376,15 @@ packages:
   rehype-slug@6.0.0:
     resolution: {integrity: sha512-lWyvf/jwu+oS5+hL5eClVd3hNdmwM1kAC0BUvEGD19pajQMIzcNUd/k9GsfQ+FfECvX+JE+e9/btsKH0EjJT6A==}
 
-  relay-compiler@17.0.0:
-    resolution: {integrity: sha512-U2e/R0o40HJOQ13pwkvToqWqk6J3ASMyHmcxixVMZKfcwcpsTTOiKob215ZRh+4bqPwkNy97+V9CuzJ5hJmGtw==}
+  relay-compiler@18.1.0:
+    resolution: {integrity: sha512-DGWIORIij0TIys/Xd5W/iToqTv7UcN6fqCPDqwYhLnfU7ukdK8rpk7f6RCYvhyZG71e7a1b3TLGOQY8A3XE3yg==}
     hasBin: true
 
   relay-runtime@12.0.0:
     resolution: {integrity: sha512-QU6JKr1tMsry22DXNy9Whsq5rmvwr3LSZiiWV/9+DFpuTWvp+WFhobWMc8TC4OjKFfNhEZy7mOiqUAn5atQtug==}
 
-  relay-runtime@17.0.0:
-    resolution: {integrity: sha512-7b2R3G3DP7VHq7/1ltwQfYn3KkTHIB2NNt3KijIZoNQ73avwpOXBEL0MelSXwq8L+K8lcgAW5VAT7o0LUhnJPQ==}
+  relay-runtime@18.1.0:
+    resolution: {integrity: sha512-C3Ct6mty9ZD93KnzHLP4mFw9T3zqPL5VwFaNPRvVgdJYSwQT2dfzWz1336fWwMgAXIQGZIqIjedeamjy6P4ZkA==}
 
   release-zalgo@1.0.0:
     resolution: {integrity: sha512-gUAyHVHPPC5wdqX/LG4LWtRYtgjxyX78oanFNTMMyFEfOqdC54s3eE82imuWKbOeqYht2CrNf64Qb8vgmmtZGA==}
@@ -5653,9 +5650,6 @@ packages:
 
   space-separated-tokens@2.0.2:
     resolution: {integrity: sha512-PEGlAwrG8yXGXRjW32fGbg66JAlOAwbObuqVoJpv/mRgoWDQfgH1wDPvtzWyUSNAXBGSk8h755YDbbcEy3SH2Q==}
-
-  spawn-command@0.0.2:
-    resolution: {integrity: sha512-zC8zGoGkmc8J9ndvml8Xksr1Amk9qBujgbF0JAIWO7kXr43w0h/0GJNM/Vustixu+YE8N/MTrQ7N31FvHUACxQ==}
 
   spawn-wrap@2.0.0:
     resolution: {integrity: sha512-EeajNjfN9zMnULLwhZZQU3GWBoFNkbngTUPfaawT4RkMiviTxcX0qfhVbGey39mfctfDHkWtuecgQ8NJcyQWHg==}
@@ -8883,14 +8877,14 @@ snapshots:
   '@types/react-relay@16.0.6':
     dependencies:
       '@types/react': 18.3.10
-      '@types/relay-runtime': 17.0.4
+      '@types/relay-runtime': 18.0.0
 
   '@types/react@18.3.10':
     dependencies:
       '@types/prop-types': 15.7.12
       csstype: 3.1.3
 
-  '@types/relay-runtime@17.0.4': {}
+  '@types/relay-runtime@18.0.0': {}
 
   '@types/resolve@1.20.6': {}
 
@@ -9410,7 +9404,7 @@ snapshots:
       cosmiconfig: 6.0.0
       resolve: 1.22.8
 
-  babel-plugin-relay@17.0.0:
+  babel-plugin-relay@18.1.0:
     dependencies:
       babel-plugin-macros: 2.8.0
       cosmiconfig: 5.2.1
@@ -9832,14 +9826,12 @@ snapshots:
 
   concat-map@0.0.1: {}
 
-  concurrently@8.2.2:
+  concurrently@9.0.1:
     dependencies:
       chalk: 4.1.2
-      date-fns: 2.30.0
       lodash: 4.17.21
       rxjs: 7.8.1
       shell-quote: 1.8.1
-      spawn-command: 0.0.2
       supports-color: 8.1.1
       tree-kill: 1.2.2
       yargs: 17.7.2
@@ -10050,10 +10042,6 @@ snapshots:
       comparejs: 1.0.0
       eventemitter2: 5.0.1
       lodash: 4.17.5
-
-  date-fns@2.30.0:
-    dependencies:
-      '@babel/runtime': 7.25.6
 
   debounce@1.2.1: {}
 
@@ -12749,14 +12737,14 @@ snapshots:
 
   react-is@18.3.1: {}
 
-  react-relay@17.0.0(react@18.3.1):
+  react-relay@18.1.0(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.25.6
       fbjs: 3.0.5
       invariant: 2.2.4
       nullthrows: 1.1.1
       react: 18.3.1
-      relay-runtime: 17.0.0
+      relay-runtime: 18.1.0
     transitivePeerDependencies:
       - encoding
 
@@ -12840,7 +12828,7 @@ snapshots:
       hast-util-to-string: 3.0.0
       unist-util-visit: 5.0.0
 
-  relay-compiler@17.0.0: {}
+  relay-compiler@18.1.0: {}
 
   relay-runtime@12.0.0:
     dependencies:
@@ -12850,7 +12838,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  relay-runtime@17.0.0:
+  relay-runtime@18.1.0:
     dependencies:
       '@babel/runtime': 7.25.6
       fbjs: 3.0.5
@@ -13145,8 +13133,6 @@ snapshots:
       whatwg-url: 7.1.0
 
   space-separated-tokens@2.0.2: {}
-
-  spawn-command@0.0.2: {}
 
   spawn-wrap@2.0.0:
     dependencies:
@@ -13793,10 +13779,10 @@ snapshots:
       graphql-tag: 2.12.6(graphql@16.9.0)
       magic-string: 0.30.11
 
-  vite-plugin-relay@2.1.0(babel-plugin-relay@17.0.0)(vite@5.4.8(@types/node@22.5.5)):
+  vite-plugin-relay@2.1.0(babel-plugin-relay@18.1.0)(vite@5.4.8(@types/node@22.5.5)):
     dependencies:
       '@babel/core': 7.25.2
-      babel-plugin-relay: 17.0.0
+      babel-plugin-relay: 18.1.0
       vite: 5.4.8(@types/node@22.5.5)
     transitivePeerDependencies:
       - supports-color
