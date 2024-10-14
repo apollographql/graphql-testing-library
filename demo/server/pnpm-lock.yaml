@@ -43,8 +43,8 @@ importers:
         specifier: 2.8.17
         version: 2.8.17
       '@types/node':
-        specifier: 18.19.54
-        version: 18.19.54
+        specifier: 18.19.55
+        version: 18.19.55
       '@types/ws':
         specifier: 8.5.12
         version: 8.5.12
@@ -211,8 +211,8 @@ packages:
   '@types/node-fetch@2.6.11':
     resolution: {integrity: sha512-24xFj9R5+rfQJLRyM56qh+wnVSYhyXC2tkoBndtY0U+vubqNsYXGjufB2nn8Q6gt0LrARwL6UBtMCSVCwl4B1g==}
 
-  '@types/node@18.19.54':
-    resolution: {integrity: sha512-+BRgt0G5gYjTvdLac9sIeE0iZcJxi4Jc4PV5EUzqi+88jmQLr+fRZdv2tCTV7IHKSGxM6SaLoOXQWWUiLUItMw==}
+  '@types/node@18.19.55':
+    resolution: {integrity: sha512-zzw5Vw52205Zr/nmErSEkN5FLqXPuKX/k5d1D7RKHATGqU7y6YfX9QxZraUzUrFGqH6XzOzG196BC35ltJC4Cw==}
 
   '@types/qs@6.9.15':
     resolution: {integrity: sha512-uXHQKES6DQKKCLh441Xv/dwxOq1TVS3JPUMlEqoEglvlhR6Mxnlew/Xq/LRVHpLyk7iK3zODe1qYHIMltO7XGg==}
@@ -772,19 +772,19 @@ snapshots:
   '@types/body-parser@1.19.5':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 18.19.54
+      '@types/node': 18.19.55
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 18.19.54
+      '@types/node': 18.19.55
 
   '@types/cors@2.8.17':
     dependencies:
-      '@types/node': 18.19.54
+      '@types/node': 18.19.55
 
   '@types/express-serve-static-core@4.19.5':
     dependencies:
-      '@types/node': 18.19.54
+      '@types/node': 18.19.55
       '@types/qs': 6.9.15
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -804,10 +804,10 @@ snapshots:
 
   '@types/node-fetch@2.6.11':
     dependencies:
-      '@types/node': 18.19.54
+      '@types/node': 18.19.55
       form-data: 4.0.0
 
-  '@types/node@18.19.54':
+  '@types/node@18.19.55':
     dependencies:
       undici-types: 5.26.5
 
@@ -818,17 +818,17 @@ snapshots:
   '@types/send@0.17.4':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 18.19.54
+      '@types/node': 18.19.55
 
   '@types/serve-static@1.15.7':
     dependencies:
       '@types/http-errors': 2.0.4
-      '@types/node': 18.19.54
+      '@types/node': 18.19.55
       '@types/send': 0.17.4
 
   '@types/ws@8.5.12':
     dependencies:
-      '@types/node': 18.19.54
+      '@types/node': 18.19.55
 
   accepts@1.3.8:
     dependencies:
