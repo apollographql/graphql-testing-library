@@ -1,4 +1,4 @@
-<div align="center">
+<div align="center" data-test>
   <a href="https://graphql.org/">
     <img width="150" height="150" src="https://upload.wikimedia.org/wikipedia/commons/1/17/GraphQL_Logo.svg">
   </a>
