@@ -7,8 +7,7 @@ export default defineConfig({
     starlight({
       title: "GraphQL Testing Library",
       social: {
-        github: "https://github.com/apollographql/graphql-testing-library",
-        discord: "https://discord.gg/graphos",
+        github: "https://github.com/apollographql/graphql-testing-library"
       },
       sidebar: [
         {
