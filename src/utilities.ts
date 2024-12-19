@@ -72,7 +72,11 @@ function createDefaultResolvers(typesMap: Map<string, Set<string>>) {
   for (const key of typesMap.keys()) {
     defaultResolvers[key] = {
       __resolveType(data) {
-        return data.__typename || typesMap.get(key)?.values().next().value;
+        return (
+          // fallback to an empty string here to satisfy TS, since
+          // all keys in typesMap should have '
+          data.__typename || typesMap.get(key)?.values().next().value || ""
+        );
       },
     };
   }
