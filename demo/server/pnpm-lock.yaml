@@ -33,8 +33,8 @@ importers:
         specifier: ^5.5.5
         version: 5.16.0(graphql@16.9.0)
       typescript:
-        specifier: ^4.7.4
-        version: 4.9.5
+        specifier: ^5.0.0
+        version: 5.7.2
       ws:
         specifier: ^8.4.2
         version: 8.18.0
@@ -559,9 +559,9 @@ packages:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}
     engines: {node: '>= 0.6'}
 
-  typescript@4.9.5:
-    resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
-    engines: {node: '>=4.2.0'}
+  typescript@5.7.2:
+    resolution: {integrity: sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg==}
+    engines: {node: '>=14.17'}
     hasBin: true
 
   undici-types@5.26.5:
@@ -1189,7 +1189,7 @@ snapshots:
       media-typer: 0.3.0
       mime-types: 2.1.35
 
-  typescript@4.9.5: {}
+  typescript@5.7.2: {}
 
   undici-types@5.26.5: {}
 
