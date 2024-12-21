@@ -91,8 +91,8 @@ importers:
         specifier: 8.4.7
         version: 8.4.7(storybook@8.4.7(prettier@3.4.2))
       '@storybook/test-runner':
-        specifier: 0.20.1
-        version: 0.20.1(@types/node@22.10.2)(storybook@8.4.7(prettier@3.4.2))
+        specifier: 0.21.0
+        version: 0.21.0(@types/node@22.10.2)(storybook@8.4.7(prettier@3.4.2))
       '@svgr/plugin-jsx':
         specifier: 8.1.0
         version: 8.1.0(@svgr/core@8.1.0(typescript@5.7.2))
@@ -1766,8 +1766,8 @@ packages:
       typescript:
         optional: true
 
-  '@storybook/test-runner@0.20.1':
-    resolution: {integrity: sha512-3WU/th/uncIR6vpQDK9hKjiZjmczsluoLbgkRV7ufxY9IgHCGcbIjvT5EPS+XZIaOrNGjaPsyB5cE1okKn9iSA==}
+  '@storybook/test-runner@0.21.0':
+    resolution: {integrity: sha512-aG2QvKXSIjMN1CA9PJK/esnidZWgt1gAkfo9Kqf8+NqBSsmP/2GyL5vxu1lkRFO/4qCv5JenNZ5Uj6ie4b2oag==}
     engines: {node: ^16.10.0 || ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -4899,11 +4899,6 @@ packages:
   pkg-dir@4.2.0:
     resolution: {integrity: sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==}
     engines: {node: '>=8'}
-
-  playwright-core@1.47.2:
-    resolution: {integrity: sha512-3JvMfF+9LJfe16l7AbSmU555PaTl2tPyQsVInqm3id16pdDfvZ8TTZ/pyzmkbDrZTQefyzU7AIHlZqQnxpqHVQ==}
-    engines: {node: '>=18'}
-    hasBin: true
 
   playwright-core@1.49.1:
     resolution: {integrity: sha512-BzmpVcs4kE2CH15rWfzpjzVGhWERJfmnXmniSyKeRZUs9Ws65m+RGIi7mjJK/euCegfn3i7jvqWeWyHe9y3Vgg==}
@@ -8240,7 +8235,7 @@ snapshots:
       '@storybook/test': 8.4.7(storybook@8.4.7(prettier@3.4.2))
       typescript: 5.7.2
 
-  '@storybook/test-runner@0.20.1(@types/node@22.10.2)(storybook@8.4.7(prettier@3.4.2))':
+  '@storybook/test-runner@0.21.0(@types/node@22.10.2)(storybook@8.4.7(prettier@3.4.2))':
     dependencies:
       '@babel/core': 7.25.2
       '@babel/generator': 7.25.6
@@ -11091,7 +11086,7 @@ snapshots:
       jest-process-manager: 0.4.0
       jest-runner: 29.7.0
       nyc: 15.1.0
-      playwright-core: 1.47.2
+      playwright-core: 1.49.1
       rimraf: 3.0.2
       uuid: 8.3.2
     transitivePeerDependencies:
@@ -11996,8 +11991,6 @@ snapshots:
   pkg-dir@4.2.0:
     dependencies:
       find-up: 4.1.0
-
-  playwright-core@1.47.2: {}
 
   playwright-core@1.49.1: {}
 
