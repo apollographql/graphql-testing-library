@@ -24,8 +24,8 @@
   },
   "devDependencies": {
     "@types/cors": "2.8.17",
-    "@types/node": "18.19.54",
-    "@types/ws": "8.5.12"
+    "@types/node": "18.19.68",
+    "@types/ws": "8.5.13"
   },
   "keywords": []
 }
