@@ -125,7 +125,7 @@
     "@graphql-tools/merge": "^9.0.4",
     "@graphql-tools/mock": "^9.0.4",
     "@graphql-tools/schema": "^10.0.4",
-    "@graphql-tools/utils": "^10.3.2",
+    "@graphql-tools/utils": "^11.0.0",
     "@types/statuses": "^2.0.5",
     "graphql-tag": "^2.12.6",
     "is-node-process": "^1.2.0",
