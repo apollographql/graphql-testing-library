@@ -19,7 +19,7 @@
 
 MSW is the [Testing Library-recommended](https://testing-library.com/docs/react-testing-library/example-intro/#full-example) way to declaratively mock API communication in your tests without stubbing `window.fetch`.
 
-This library currently supports incremental delivery features `@defer` and `@stream` out of the box, with plans to support subscriptions over multipart HTTP as well as other transports such as WebSockets, [currently in beta in MSW](https://github.com/mswjs/msw/discussions/2010).
+This library currently supports incremental delivery features `@defer` and `@stream` out of the box, with plans to support subscriptions over multipart HTTP as well as other transports such as [WebSockets](https://mswjs.io/blog/enter-websockets).
 
 > This project is not affiliated with the ["Testing Library"](https://github.com/testing-library) ecosystem that inspired it. We're just fans :)
 
