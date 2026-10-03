@@ -12,7 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "@apollo/server": "^4.0.0",
-    "@graphql-tools/schema": "^9.0.13",
+    "@graphql-tools/schema": "^10.0.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "express": "^4.17.1",
