@@ -30,8 +30,8 @@ importers:
         specifier: ^1.2.1
         version: 1.2.1(graphql@16.9.0)
       graphql-ws:
-        specifier: ^5.5.5
-        version: 5.16.0(graphql@16.9.0)
+        specifier: ^6.0.0
+        version: 6.3.0(graphql@16.9.0)(ws@8.18.0)
       typescript:
         specifier: ^4.7.4
         version: 4.9.5
@@ -362,11 +362,21 @@ packages:
     peerDependencies:
       graphql: ^0.10.5 || ^0.11.3 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
 
-  graphql-ws@5.16.0:
-    resolution: {integrity: sha512-Ju2RCU2dQMgSKtArPbEtsK5gNLnsQyTNIo/T7cZNp96niC1x0KdJNZV0TIoilceBPQwfb5itrGl8pkFeOUMl4A==}
-    engines: {node: '>=10'}
+  graphql-ws@6.3.0:
+    resolution: {integrity: sha512-qBAXPtFjWHF3QypDyNcBp8Rycd+rmofxUSJsu3bGI9QMMq7pImKBSLSg9hZ2ojIMbJ54T/LPjKBIeOUoJbNBnQ==}
+    engines: {node: '>=20'}
     peerDependencies:
-      graphql: '>=0.11 <=16'
+      '@fastify/websocket': ^10 || ^11
+      crossws: ~0.3 || ~0.4
+      graphql: ^15.10.1 || ^16 || ^17
+      ws: ^8
+    peerDependenciesMeta:
+      '@fastify/websocket':
+        optional: true
+      crossws:
+        optional: true
+      ws:
+        optional: true
 
   graphql@16.9.0:
     resolution: {integrity: sha512-GGTKBX4SD7Wdb8mqeDLni2oaRGYQWjWHGKPQ24ZMnUtKfcsVoiv4uX8+LJr1K6U5VW2Lu1BwJnj7uiori0YtRw==}
@@ -998,9 +1008,11 @@ snapshots:
       graphql: 16.9.0
       iterall: 1.3.0
 
-  graphql-ws@5.16.0(graphql@16.9.0):
+  graphql-ws@6.3.0(graphql@16.9.0)(ws@8.18.0):
     dependencies:
       graphql: 16.9.0
+    optionalDependencies:
+      ws: 8.18.0
 
   graphql@16.9.0: {}
 
