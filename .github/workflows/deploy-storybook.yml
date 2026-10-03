@@ -34,7 +34,7 @@ jobs:
 
       - name: Build and publish
         id: build-publish
-        uses: bitovi/github-actions-storybook-to-github-pages@v1.0.3
+        uses: bitovi/github-actions-storybook-to-github-pages@v1.0.4
         with:
           path: storybook-static
           build_command: pnpm run build-storybook
